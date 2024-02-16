@@ -1,5 +1,7 @@
+// mysql2
 import mysql from 'mysql2/promise';
 
+// Config
 import config from './config.js';
 const { dbPort, dbHost, dbUser, dbPassword, dbName } = config;
 

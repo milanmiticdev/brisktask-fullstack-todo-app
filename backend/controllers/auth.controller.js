@@ -12,9 +12,11 @@ import ApiError from './../utils/ApiError.js';
 import validation from './../utils/validation.js';
 const { validateName, validateEmail, validatePassword } = validation;
 
+// Config
 import config from './../config/config.js';
 const { jwtSecret, jwtExpires } = config;
 
+// Login controller
 const login = async (req, res, next) => {
 	const { email, password } = req.body;
 
@@ -27,6 +29,7 @@ const login = async (req, res, next) => {
 			const [[result]] = await pool.query(sql, [email.trim()]);
 
 			if (result && (await bcrypt.compare(password.trim(), result.password))) {
+				// Creating a token
 				const token = jwt.sign(
 					{ userId: result.id, userEmail: result.email, userRole: result.role },
 					jwtSecret,
@@ -34,6 +37,7 @@ const login = async (req, res, next) => {
 						expiresIn: jwtExpires,
 					}
 				);
+
 				return res.status(201).json({
 					token,
 					user: { id: result.id, email: result.email, role: result.role },
@@ -55,6 +59,7 @@ const login = async (req, res, next) => {
 	}
 };
 
+// Registration controller
 const register = async (req, res, next) => {
 	const { name, email, password } = req.body;
 
@@ -70,8 +75,8 @@ const register = async (req, res, next) => {
 			if (result) {
 				throw new ApiError(422, 'User already exists.');
 			} else {
+				// Hashing a password
 				let hashedPassword;
-
 				try {
 					hashedPassword = await bcrypt.hash(password.trim(), 12);
 				} catch (error) {
@@ -83,6 +88,7 @@ const register = async (req, res, next) => {
 					const [result] = await pool.query(sql, [name.trim(), email.trim(), hashedPassword]);
 
 					if (result && result.affectedRows !== 0) {
+						// Creating a token
 						const token = jwt.sign(
 							{ userId: result.insertId, userEmail: email.trim(), userRole: 'user' },
 							jwtSecret,
@@ -90,6 +96,7 @@ const register = async (req, res, next) => {
 								expiresIn: jwtExpires,
 							}
 						);
+
 						return res.status(201).json({
 							token,
 							user: { id: result.insertId, email: email.trim(), role: 'user' },
