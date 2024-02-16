@@ -1,3 +1,4 @@
+// Custom error
 import ApiError from './../utils/ApiError.js';
 
 const middleware = (error, req, res, next) => {
