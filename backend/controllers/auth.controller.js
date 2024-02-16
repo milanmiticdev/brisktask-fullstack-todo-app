@@ -16,7 +16,43 @@ import config from './../config/config.js';
 const { jwtSecret, jwtExpires } = config;
 
 const login = async (req, res, next) => {
-	res.status(200).json({ message: 'Success' });
+	const { email, password } = req.body;
+
+	const emailState = validateEmail(email);
+	const passwordState = validatePassword(password);
+
+	if (!emailState.error && !passwordState.error) {
+		try {
+			const sql = 'SELECT * FROM users WHERE email = ?';
+			const [[result]] = await pool.query(sql, [email.trim()]);
+
+			if (result && (await bcrypt.compare(password.trim(), result.password))) {
+				const token = jwt.sign(
+					{ userId: result.id, userEmail: result.email, userRole: result.role },
+					jwtSecret,
+					{
+						expiresIn: jwtExpires,
+					}
+				);
+				return res.status(201).json({
+					token,
+					user: { id: result.id, email: result.email, role: result.role },
+					message: 'Login successful.',
+					status: 200,
+				});
+			} else {
+				throw new ApiError(401, 'Incorrect credentials.');
+			}
+		} catch (error) {
+			next(error);
+		}
+	} else {
+		return res.status(403).json({
+			message: 'Invalid inputs',
+			state: { emailState, passwordState },
+			status: 403,
+		});
+	}
 };
 
 const register = async (req, res, next) => {
@@ -29,7 +65,7 @@ const register = async (req, res, next) => {
 	if (!nameState.error && !emailState.error && !passwordState.error) {
 		try {
 			const sql = 'SELECT * FROM users WHERE email = ?';
-			const [[result]] = await pool.query(sql, [email]);
+			const [[result]] = await pool.query(sql, [email.trim()]);
 
 			if (result) {
 				throw new ApiError(422, 'User already exists.');
