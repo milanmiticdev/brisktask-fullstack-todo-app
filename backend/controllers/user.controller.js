@@ -8,7 +8,7 @@ import ApiError from './../utils/ApiError.js';
 import validation from './../utils/validation.js';
 const { validateName, validateEmail, validatePassword } = validation;
 
-const getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res, next) => {
 	const userData = req.userData;
 
 	if (userData.role === 'admin') {
@@ -41,7 +41,7 @@ const getAllUsers = async (req, res) => {
 	}
 };
 
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
 	const { userId } = req.params;
 	const userData = req.userData;
 
@@ -102,7 +102,7 @@ const getUserById = async (req, res) => {
 	}
 };
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
 	const { name, email, password } = req.body;
 	const userData = req.userData;
 
@@ -154,7 +154,7 @@ const createUser = async (req, res) => {
 	}
 };
 
-const updateUserById = async (req, res) => {
+const updateUserById = async (req, res, next) => {
 	const { name, email, password } = req.body;
 	const { userId } = req.params;
 	const userData = req.userData;
@@ -244,7 +244,7 @@ const updateUserById = async (req, res) => {
 	}
 };
 
-const deleteUserById = async (req, res) => {
+const deleteUserById = async (req, res, next) => {
 	const { userId } = req.params;
 	const userData = req.userData;
 
