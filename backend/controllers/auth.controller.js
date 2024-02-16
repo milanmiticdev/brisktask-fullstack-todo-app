@@ -48,13 +48,13 @@ const login = async (req, res, next) => {
 				throw new ApiError(401, 'Incorrect credentials.');
 			}
 		} catch (error) {
-			next(error);
+			return next(error);
 		}
 	} else {
-		return res.status(403).json({
+		return res.status(400).json({
 			message: 'Invalid inputs',
 			state: { emailState, passwordState },
-			status: 403,
+			status: 400,
 		});
 	}
 };
@@ -75,17 +75,13 @@ const register = async (req, res, next) => {
 			if (result) {
 				throw new ApiError(422, 'User already exists.');
 			} else {
-				// Hashing a password
-				let hashedPassword;
-				try {
-					hashedPassword = await bcrypt.hash(password.trim(), 12);
-				} catch (error) {
-					next(error);
-				}
-
 				try {
 					const sql = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
-					const [result] = await pool.query(sql, [name.trim(), email.trim(), hashedPassword]);
+					const [result] = await pool.query(sql, [
+						name.trim(),
+						email.trim(),
+						await bcrypt.hash(password.trim(), 12),
+					]);
 
 					if (result && result.affectedRows !== 0) {
 						// Creating a token
@@ -107,17 +103,17 @@ const register = async (req, res, next) => {
 						throw new ApiError(500, 'Something went wrong.');
 					}
 				} catch (error) {
-					next(error);
+					return next(error);
 				}
 			}
 		} catch (error) {
-			next(error);
+			return next(error);
 		}
 	} else {
-		return res.status(403).json({
+		return res.status(400).json({
 			message: 'Invalid inputs',
 			state: { nameState, emailState, passwordState },
-			status: 403,
+			status: 400,
 		});
 	}
 };

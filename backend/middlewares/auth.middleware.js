@@ -4,7 +4,7 @@ const { jwtSecret } = config;
 
 const middleware = (req, res, next) => {
 	if (req.method === 'OPTIONS') {
-		next();
+		return next();
 	} else {
 		try {
 			// Spliting 'Bearer TOKEN'

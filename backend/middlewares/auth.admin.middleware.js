@@ -4,7 +4,7 @@ const { jwtSecret } = config;
 
 const middleware = (req, res, next) => {
 	if (req.method === 'OPTIONS') {
-		next();
+		return next();
 	} else {
 		try {
 			// Spliting 'Bearer TOKEN'
@@ -23,7 +23,7 @@ const middleware = (req, res, next) => {
 					};
 					return next();
 				} else {
-					throw new ApiError(401, 'Forbidden Access - Not authorized.');
+					throw new ApiError(403, 'Forbidden Access - Not an admin.');
 				}
 			}
 		} catch (error) {
