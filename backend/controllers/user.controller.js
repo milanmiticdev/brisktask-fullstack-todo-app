@@ -104,7 +104,7 @@ const getUserById = async (req, res) => {
 
 const createUser = async (req, res) => {
 	const { name, email, password } = req.body;
-	const { userData } = req.userData;
+	const userData = req.userData;
 
 	const nameState = validateName(name);
 	const emailState = validateEmail(email);
@@ -157,7 +157,7 @@ const createUser = async (req, res) => {
 const updateUserById = async (req, res) => {
 	const { name, email, password } = req.body;
 	const { userId } = req.params;
-	const { userData } = req.userData;
+	const userData = req.userData;
 
 	const nameStatus = validateName(name);
 	const emailStatus = validateEmail(email);
@@ -246,7 +246,7 @@ const updateUserById = async (req, res) => {
 
 const deleteUserById = async (req, res) => {
 	const { userId } = req.params;
-	const { userData } = req.userData;
+	const userData = req.userData;
 
 	if (userData.role === 'admin' && userId) {
 		try {
