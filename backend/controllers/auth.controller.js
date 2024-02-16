@@ -1,3 +1,5 @@
+import pool from './../config/database.js';
+
 const login = async (req, res, next) => {
 	res.status(200).json({ message: 'Success' });
 };

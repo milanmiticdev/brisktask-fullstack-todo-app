@@ -2,6 +2,7 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import config from './config/config.js';
+const { serverHostname, serverPort } = config;
 
 import authRouter from './routes/auth.router.js';
 import taskRouter from './routes/task.router.js';
@@ -26,10 +27,8 @@ app.use(
 	})
 );
 
-app.use('/auth', authRouter);
-app.use('/users', taskRouter);
-app.use('/tasks', userRouter);
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/users', taskRouter);
+app.use('/api/v1/tasks', userRouter);
 
-const { serverHostname, serverPort } = config;
-
-app.listen(serverPort, () => `Server started on ${serverHostname}:${serverPort}`);
+app.listen(serverPort, () => console.log(`Server started on ${serverHostname}:${serverPort}`));
