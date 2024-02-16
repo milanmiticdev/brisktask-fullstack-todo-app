@@ -10,7 +10,7 @@ const config = {
 	dbPassword: process.env.DATABASE_PASSWORD,
 	dbName: process.env.DATABASE_NAME,
 	jwtSecret: process.env.JWT_SECRET,
-	jwtTokenExpires: process.env.JWT_TOKEN_EXPIRES,
+	jwtExpires: process.env.JWT_TOKEN_EXPIRES,
 };
 
 export default config;

@@ -70,3 +70,5 @@ const validatePassword = password => {
 };
 
 const validation = { validateName, validateEmail, validatePassword };
+
+export default validation;
