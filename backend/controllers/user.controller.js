@@ -19,8 +19,6 @@ const getAllUsers = async (req, res, next) => {
 
 			if (result && result.length > 0) {
 				return res.status(200).json({
-					message: 'Users fetched.',
-					status: 200,
 					users: result.map(user => ({
 						id: result.id,
 						name: result.name,
@@ -29,6 +27,8 @@ const getAllUsers = async (req, res, next) => {
 						createdAt: result.created_at,
 						updatedAt: result.updated_at,
 					})),
+					message: 'Users fetched.',
+					status: 200,
 				});
 			} else {
 				throw new ApiError(404, 'User does not exist.');
@@ -45,7 +45,9 @@ const getUserById = async (req, res, next) => {
 	const { userId } = req.params;
 	const userData = req.userData;
 
-	if (userData.role === 'admin' && userId) {
+	if (!userId) {
+		return res.status(400).json({ message: 'No user id.', status: 400 });
+	} else if (userData.role === 'admin') {
 		try {
 			const sql = 'SELECT * FROM users WHERE id = ?';
 			const [[result]] = await pool.query(sql, userId);
@@ -69,8 +71,6 @@ const getUserById = async (req, res, next) => {
 		} catch (error) {
 			return next(error);
 		}
-	} else if (!userId) {
-		return res.status(400).json({ message: 'Please provide user ID.', status: 400 });
 	} else {
 		if (userId !== userData.id) {
 			return res.status(401).json({ message: 'Forbidden Access - Not Authenticated.', status: 401 });
@@ -121,11 +121,7 @@ const createUser = async (req, res, next) => {
 				} else {
 					try {
 						const sql = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
-						const [result] = await pool.query(sql, [
-							name.trim(),
-							email.trim(),
-							await bcrypt.hash(password.trim(), 12),
-						]);
+						const [result] = await pool.query(sql, [name.trim(), email.trim(), await bcrypt.hash(password.trim(), 12)]);
 
 						if (result && result.affectedRows !== 0) {
 							return res.status(201).json({
@@ -164,7 +160,9 @@ const updateUserById = async (req, res, next) => {
 	const passwordStatus = validatePassword(password);
 
 	if (!nameStatus.error && !emailStatus.error && !passwordStatus.error) {
-		if (userData.role === 'admin' && userId) {
+		if (!userId) {
+			return res.status(400).json({ message: 'No user id.', status: 400 });
+		} else if (userData.role === 'admin') {
 			try {
 				const sql = 'SELECT * FROM users WHERE id = ?';
 				const [[result]] = await pool.query(sql, userId);
@@ -174,12 +172,7 @@ const updateUserById = async (req, res, next) => {
 				} else {
 					try {
 						const sql = 'UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?';
-						const [result] = await pool.query(sql, [
-							name.trim(),
-							email.trim(),
-							await bcrypt.hash(password.trim(), 12),
-							userId,
-						]);
+						const [result] = await pool.query(sql, [name.trim(), email.trim(), await bcrypt.hash(password.trim(), 12), userId]);
 
 						if (result && result.affectedRows !== 0) {
 							return res.status(200).json({
@@ -196,8 +189,6 @@ const updateUserById = async (req, res, next) => {
 			} catch (error) {
 				return next(error);
 			}
-		} else if (!userId) {
-			return res.status(400).json({ message: 'Please provide user ID.', status: 400 });
 		} else {
 			if (userId !== userData.id) {
 				return res.status(401).json({ message: 'Forbidden Access - Not Authenticated.', status: 401 });
@@ -248,7 +239,9 @@ const deleteUserById = async (req, res, next) => {
 	const { userId } = req.params;
 	const userData = req.userData;
 
-	if (userData.role === 'admin' && userId) {
+	if (!userId) {
+		return res.status(400).json({ message: 'No user id.', status: 400 });
+	} else if (userData.role === 'admin') {
 		try {
 			const sql = 'SELECT * FROM users WHERE id = ?';
 			const [[result]] = await pool.query(sql, [userId]);
@@ -272,8 +265,6 @@ const deleteUserById = async (req, res, next) => {
 		} catch (error) {
 			return next(error);
 		}
-	} else if (!userId) {
-		return res.status(400).json({ message: 'Please provide user ID.', status: 400 });
 	} else {
 		if (userId !== userData.id) {
 			return res.status(401).json({ message: 'Forbidden Access - Not authenticated.', status: 404 });

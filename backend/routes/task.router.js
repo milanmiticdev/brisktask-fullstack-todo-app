@@ -11,16 +11,13 @@ import authHandler from './../middlewares/auth.middleware.js';
 import authAdminHandler from './../middlewares/auth.admin.middleware.js';
 import errorHandler from './../middlewares/error.middleware.js';
 
-// Protected route, only authenticated admin has access
-router.route('/all').get(authAdminHandler, getAllTasks);
-
 // Protected routes, only authenticated users and admin have access
-router
-	.route('/:taskId')
-	.get(authHandler, getTaskById)
-	.patch(authHandler, updateTaskById)
-	.delete(authHandler, deleteTaskById);
-router.route('/').get(authHandler, getTasksByUserId).post(authHandler, createTask);
+router.route('/user/:userId').get(authHandler, getTasksByUserId);
+router.route('/create/:userId').post(authHandler, createTask);
+router.route('/:taskId').get(authHandler, getTaskById).patch(authHandler, updateTaskById).delete(authHandler, deleteTaskById);
+
+// Protected route, only authenticated admin has access
+router.route('/').get(authAdminHandler, getAllTasks);
 
 router.use(errorHandler);
 

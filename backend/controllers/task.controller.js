@@ -1,52 +1,339 @@
 // Database pool
 import pool from './../config/database.js';
 
-const getAllTasks = async (req, res, next) => {
-	try {
-		const sql = 'SELECT * FROM tasks';
-		const [result] = await pool.query(sql);
+// Custom Error
+import ApiError from './../utils/ApiError.js';
 
-		if (result && result.length > 0) {
-			return res.status(200).json({
-				tasks: result.map(task => {
-					return {
-						id: task.id,
-						name: task.name,
-						userId: task.user_id,
-						createdAt: task.created_at,
-						updatedAt: task.updated_at,
-					};
-				}),
-				message: 'Tasks found.',
-				status: 200,
-			});
-		} else {
-			throw new ApiError(404, 'Task list empty.');
+// Validation functions
+import validation from './../utils/validation.js';
+const { validateName } = validation;
+
+const getAllTasks = async (req, res, next) => {
+	const userData = req.userData;
+
+	if (userData.role === 'admin') {
+		try {
+			const sql = 'SELECT * FROM tasks';
+			const [result] = await pool.query(sql);
+
+			if (result && result.length > 0) {
+				return res.status(200).json({
+					tasks: result.map(task => {
+						return {
+							id: task.id,
+							name: task.name,
+							userId: task.user_id,
+							createdAt: task.created_at,
+							updatedAt: task.updated_at,
+						};
+					}),
+					message: 'Tasks found.',
+					status: 200,
+				});
+			} else {
+				throw new ApiError(404, 'Task list empty.');
+			}
+		} catch (error) {
+			next(error);
 		}
-	} catch (error) {
-		next(error);
+		res.status(200).json({ message: 'Success' });
+	} else {
+		res.status(403).json({ message: 'Forbidden Access - Not authorized.', status: 403 });
 	}
-	res.status(200).json({ message: 'Success' });
 };
 
 const getTasksByUserId = async (req, res, next) => {
-	res.status(200).json({ message: 'Success' });
+	const { userId } = req.params;
+	const userData = req.userData;
+
+	if (!userId) {
+		res.status(400).json({ message: 'No user id.', status: 400 });
+	} else if (userData.role === 'admin') {
+		try {
+			const sql = 'SELECT * FROM tasks WHERE user_id = ?';
+			const [result] = await pool.query(sql, [userId]);
+
+			if (result && result.length > 0) {
+				res.status(200).json({
+					tasks: result.map(task => ({
+						id: result.id,
+						name: result.name,
+						userId: result.user_id,
+						createdAt: result.created_at,
+						updatedAt: result.updated_at,
+					})),
+					message: 'Tasks found',
+					status: 200,
+				});
+			} else {
+				throw new ApiError(404, 'Task list empty.');
+			}
+		} catch (error) {
+			next(error);
+		}
+		res.status(200).json({ message: 'Success' });
+	} else {
+		if (userId !== userData.id) {
+			res.status(401).json({ message: 'Forbidden Access - Not authenticated.', status: 401 });
+		} else {
+			try {
+				const sql = 'SELECT * FROM tasks WHERE user_id = ?';
+				const [result] = await pool.query(sql, [userData.id]);
+
+				if (result && result.length > 0) {
+					res.status(200).json({
+						tasks: result.map(task => ({
+							id: result.id,
+							name: result.name,
+							userId: result.user_id,
+							createdAt: result.created_at,
+							updatedAt: result.updated_at,
+						})),
+						message: 'Tasks found',
+						status: 200,
+					});
+				} else {
+					throw new ApiError(404, 'Task list empty.');
+				}
+			} catch (error) {
+				next(error);
+			}
+		}
+	}
 };
 
 const getTaskById = async (req, res, next) => {
-	res.status(200).json({ message: 'Success' });
+	const { taskId } = req.params;
+	const userData = req.userData;
+
+	if (!taskId) {
+		res.status(400).json({ message: 'No task id.', status: 400 });
+	} else if (userData.role === 'admin') {
+		try {
+			const sql = 'SELECT * FROM tasks WHERE id = ?';
+			const [[result]] = await pool.query(sql, [taskId]);
+
+			if (!result) {
+				throw new ApiError(404, 'Task not found');
+			} else {
+				return res.status(200).json({
+					message: 'Task found.',
+					task: {
+						id: result.id,
+						name: result.name,
+						userId: result.user_id,
+						createdAt: result.created_at,
+						updatedAt: result.updated_at,
+					},
+					status: 200,
+				});
+			}
+		} catch (error) {
+			return next(error);
+		}
+	} else {
+		try {
+			const sql = 'SELECT * FROM tasks WHERE id = ?';
+			const [[result]] = await pool.query(sql, [taskId]);
+
+			if (!result) {
+				throw new ApiError(404, 'Task not found');
+			} else if (result.user_id !== userData.id) {
+				throw new ApiError(401, 'Forbidden Access - Not authenticated.');
+			} else {
+				return res.status(200).json({
+					message: 'Task found.',
+					task: {
+						id: result.id,
+						name: result.name,
+						userId: result.user_id,
+						createdAt: result.created_at,
+						updatedAt: result.updated_at,
+					},
+					status: 200,
+				});
+			}
+		} catch (error) {
+			return next(error);
+		}
+	}
 };
 
 const createTask = async (req, res, next) => {
-	res.status(200).json({ message: 'Success' });
+	const { name } = req.body;
+	const { userId } = req.params;
+	const userData = req.userData;
+	const nameState = validateName(name);
+
+	if (!nameState.error) {
+		if (!userId) {
+			return res.status(400).json({ message: 'No user id.', status: 400 });
+		} else if (userData.role === 'admin') {
+			try {
+				const sql = 'INSERT INTO tasks (name, user_id) VALUES(?, ?)';
+				const [result] = await pool.query(sql, [name.trim(), userId]);
+
+				if (result && result.affectedRows !== 0) {
+					return res.status(201).json({ message: 'Task created.', status: 201 });
+				} else {
+					throw new ApiError(500, 'Something went wrong.');
+				}
+			} catch (error) {
+				return next(error);
+			}
+		} else {
+			if (userId !== userData.id) {
+				return res.status(401).json({ message: 'Forbidden Access - Not authenticated', status: 401 });
+			} else {
+				try {
+					const sql = 'INSERT INTO tasks (name, user_id) VALUES(?, ?)';
+					const [result] = await pool.query(sql, [name.trim(), userData.id]);
+
+					if (result && result.affectedRows !== 0) {
+						return res.status(201).json({ message: 'Task created.', status: 201 });
+					} else {
+						throw new ApiError(500, 'Something went wrong.');
+					}
+				} catch (error) {
+					return next(error);
+				}
+			}
+		}
+	} else {
+		return res.status(400).json({
+			message: 'Invalid input',
+			state: { nameState },
+			status: 400,
+		});
+	}
 };
 
 const updateTaskById = async (req, res, next) => {
-	res.status(200).json({ message: 'Success' });
+	const { taskId } = req.params;
+	const { name } = req.body;
+	const userData = req.userData;
+	const nameState = validateName(name);
+
+	if (!nameState.error) {
+		if (!taskId) {
+			return res.status(400).json({ message: 'No task id.', status: 400 });
+		} else if (userData.role === 'admin') {
+			try {
+				const sql = 'SELECT * FROM tasks WHERE id = ?';
+				const [[result]] = await pool.query(sql, [taskId]);
+
+				if (!result) {
+					throw new ApiError(404, 'Task not found.');
+				} else {
+					try {
+						const sql = 'UPDATE tasks SET name = ? WHERE id = ?';
+						const [result] = await pool.query(sql, [name.trim(), taskId]);
+
+						if (result && result.affectedRows !== 0) {
+							return res.status(200).json({ message: 'Task updated.', status: 200 });
+						} else {
+							throw new ApiError(500, 'Something went wrong.');
+						}
+					} catch (error) {
+						return next(error);
+					}
+				}
+			} catch (error) {
+				return next(error);
+			}
+		} else {
+			try {
+				const sql = 'SELECT * FROM tasks WHERE id = ?';
+				const [[result]] = await pool.query(sql, [taskId]);
+
+				if (!result) {
+					throw new ApiError(404, 'Task not found.');
+				} else if (result.user_id !== userData.id) {
+					throw new ApiError(401, 'Forbidden Access - Not authenticated.');
+				} else {
+					try {
+						const sql = 'UPDATE tasks SET name = ? WHERE id = ? AND user_id = ?';
+						const [result] = await pool.query(sql, [name.trim(), taskId, userData.id]);
+
+						if (result && result.affectedRows !== 0) {
+							return res.status(200).json({ message: 'Task updated.', status: 200 });
+						} else {
+							throw new ApiError(500, 'Something went wrong.');
+						}
+					} catch (error) {
+						return next(error);
+					}
+				}
+			} catch (error) {
+				return next(error);
+			}
+		}
+	} else {
+		return res.status(400).json({
+			message: 'Invalid input',
+			state: { nameState },
+			status: 400,
+		});
+	}
 };
 
 const deleteTaskById = async (req, res, next) => {
-	res.status(200).json({ message: 'Success' });
+	const { taskId } = req.params;
+	const userData = req.userData;
+
+	if (!taskId) {
+		return res.status(400).json({ message: 'No task id.', status: 400 });
+	} else if (userData.role === 'admin') {
+		try {
+			const sql = 'SELECT * FROM tasks WHERE id = ?';
+			const [[result]] = await pool.query(sql, [taskId]);
+
+			if (!result) {
+				throw new ApiError(404, 'Task not found.');
+			} else {
+				try {
+					const sql = 'DELETE FROM tasks WHERE id = ?';
+					const [result] = await pool.query(sql, [taskId]);
+
+					if (result && result.affectedRows !== 0) {
+						return res.status(204).end();
+					} else {
+						throw new ApiError(500, 'Something went wrong.');
+					}
+				} catch (error) {
+					return next(error);
+				}
+			}
+		} catch (error) {
+			return next(error);
+		}
+	} else {
+		try {
+			const sql = 'SELECT * FROM tasks WHERE id = ?';
+			const [[result]] = await pool.query(sql, [taskId]);
+
+			if (!result) {
+				throw new ApiError(404, 'Task not found.');
+			} else if (result.user_id !== userData.id) {
+				throw new ApiError(401, 'Forbidden Access - Not authenticated.');
+			} else {
+				try {
+					const sql = 'DELETE FROM tasks WHERE id = ? AND user_id = ?';
+					const [result] = await pool.query(sql, [taskId, userData.id]);
+
+					if (result && result.affectedRows !== 0) {
+						return res.status(204).end();
+					} else {
+						throw new ApiError(500, 'Something went wrong.');
+					}
+				} catch (error) {
+					return next(error);
+				}
+			}
+		} catch (error) {
+			return next(error);
+		}
+	}
 };
 
 const controller = { getAllTasks, getTasksByUserId, getTaskById, createTask, updateTaskById, deleteTaskById };
