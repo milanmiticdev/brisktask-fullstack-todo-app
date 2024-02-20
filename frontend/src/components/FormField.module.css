@@ -1,0 +1,20 @@
+.formField {
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.inputField {
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.span {
+	height: 2rem;
+	width: 100%;
+}

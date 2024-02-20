@@ -1,0 +1,34 @@
+.formWrapper {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: flex-start;
+	align-items: center;
+	padding: 3.5rem;
+	gap: 3.5rem;
+}
+
+.formToggle {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 1.5rem;
+}
+
+.formButton {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	font-size: 1.5rem;
+	font-weight: bold;
+	cursor: ponter;
+	padding: 0.5rem 1.5rem;
+	border: none;
+	border-radius: 0.5rem;
+	color: #f8fafc;
+	background-color: #3772ff;
+	box-shadow: 0.1rem 0.1rem 0.5rem #334155;
+}

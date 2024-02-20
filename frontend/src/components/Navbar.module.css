@@ -1,0 +1,74 @@
+.navbar {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+}
+
+.list {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 1.5rem;
+}
+
+.listItem {
+	font-size: 1.5rem;
+	font-weight: bold;
+	color: #f8fafc;
+	text-decoration: none;
+	list-style: none;
+	cursor: ponter;
+}
+
+.listItem:hover {
+	color: #e01a4f;
+}
+
+.auth {
+	font-size: 1.5rem;
+	font-weight: bold;
+	text-decoration: none;
+	list-style: none;
+	cursor: ponter;
+	border-radius: 0.5rem;
+	padding: 0.5rem 1.25rem;
+	color: #3772ff;
+	background-color: #f0f9ff;
+}
+
+.auth:hover {
+	color: #f8fafc;
+	background-color: #e01a4f;
+}
+
+@media screen and (min-width: 400px) {
+	.list {
+		gap: 2rem;
+	}
+	.listItem {
+		font-size: 1.75rem;
+	}
+	.auth {
+		font-size: 1.75rem;
+	}
+}
+
+@media screen and (min-width: 500px) {
+	.list {
+		gap: 2.25rem;
+	}
+	.listItem {
+		font-size: 2rem;
+	}
+	.auth {
+		font-size: 2rem;
+	}
+}
+
+@media screen and (min-width: 1000px) {
+	.list {
+		gap: 3.5rem;
+	}
+}
