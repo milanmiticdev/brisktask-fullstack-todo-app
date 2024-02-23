@@ -25,7 +25,7 @@ Frontend is deployed on Netlify: https://brisktask.netlify.app
 
 ### .env SETUP
 
--   In your root folder create .env file with the following parameters:
+-   In the root folder create .env file with the following parameters:
 
     -   `DATABASE_PORT` = Port number that your MySQL database is running on
     -   `DATABASE_HOST` = Your database host, default is `127.0.0.1`
