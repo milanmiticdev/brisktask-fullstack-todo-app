@@ -39,7 +39,7 @@ const Task = ({ task }) => {
 		<article className={styles.task}>
 			<p className={styles.taskText}>{task.name}</p>
 			<div className={styles.taskButtons}>
-				<Link to={`/update/${task.id}`}>
+				<Link to={`/update-task/${task.id}`}>
 					<button className={`${styles.taskActionBtn} ${styles.editBtn}`}>
 						<FontAwesomeIcon icon={faPenToSquare} />
 					</button>

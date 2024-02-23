@@ -59,7 +59,7 @@ const NavBar = () => {
 						</li>
 						<li>
 							<NavLink
-								to="/create"
+								to="/create-task"
 								className={({ isActive }) => (isActive ? `${styles.listItem} ${styles.active}` : `${styles.listItem}`)}
 							>
 								CREATE

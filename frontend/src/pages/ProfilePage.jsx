@@ -7,11 +7,19 @@ import { useNavigate } from 'react-router-dom';
 // Context
 import AuthContext from './../contexts/AuthContext.js';
 
+// Utils
+import UTCtoLocal from './../utils/UTCtoLocal.js';
+
+// Styles
+import styles from './ProfilePage.module.css';
+
 const ProfilePage = () => {
 	const [user, setUser] = useState({});
 	const { userId, token, logout } = useContext(AuthContext);
 
 	const navigate = useNavigate();
+
+	const local = UTCtoLocal(user.createdAt);
 
 	const handleLogout = () => {
 		logout();
@@ -41,14 +49,24 @@ const ProfilePage = () => {
 	}, [userId, token]);
 
 	return (
-		<section>
+		<section className={styles.profile}>
 			{user && (
-				<div>
-					<p>Profile</p>
-					<p>user ID: {user.id}</p>
-					<p>email: {user.email}</p>
-					<p>role: {user.role}</p>
-					<button onClick={handleLogout}>LOGOUT</button>
+				<div className={styles.info}>
+					<p>
+						<span>NAME:</span> {user.name}
+					</p>
+					<p>
+						<span>EMAIL:</span> {user.email}
+					</p>
+					<p>
+						<span>ROLE:</span> {user.role}
+					</p>
+					<p>
+						<span>REGISTERED:</span> {`${local.date} ${local.time}`}
+					</p>
+					<button className={styles.logout} onClick={handleLogout}>
+						LOGOUT
+					</button>
 				</div>
 			)}
 		</section>

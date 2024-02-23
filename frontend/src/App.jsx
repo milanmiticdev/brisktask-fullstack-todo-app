@@ -76,8 +76,8 @@ const App = () => {
 					<Routes>
 						<Route path="/" element={<AppSharedLayout />}>
 							<Route path="/tasks/all" element={<AllTasksPage />} />
-							<Route path="/update/:taskId" element={<UpdateTaskPage />} />
-							<Route path="/create" element={<CreateTaskPage />} />
+							<Route path="/update-task/:taskId" element={<UpdateTaskPage />} />
+							<Route path="/create-task" element={<CreateTaskPage />} />
 							<Route path="/dashboard" element={<AdminDashboardPage />} />
 							<Route path="/profile" element={<ProfilePage />} />
 							<Route index element={<HomePage />} />
@@ -87,8 +87,8 @@ const App = () => {
 					<Routes>
 						<Route path="/" element={<AppSharedLayout />}>
 							<Route path="/tasks" element={<TasksPage />} />
-							<Route path="/update/:taskId" element={<UpdateTaskPage />} />
-							<Route path="/create" element={<CreateTaskPage />} />
+							<Route path="/update-task/:taskId" element={<UpdateTaskPage />} />
+							<Route path="/create-task" element={<CreateTaskPage />} />
 							<Route path="/profile" element={<ProfilePage />} />
 							<Route index element={<HomePage />} />
 						</Route>

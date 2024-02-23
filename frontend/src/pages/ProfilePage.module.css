@@ -1,0 +1,70 @@
+.profile {
+	width: 100%;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	padding: 2rem;
+}
+
+.info {
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: flex-start;
+	padding: 2rem;
+	gap: 2rem;
+	font-size: 1.35rem;
+	border-radius: 1rem;
+	color: #f8fafc;
+	background-color: #3772ff;
+}
+
+span {
+	font-weight: bold;
+	color: #fb923c;
+}
+
+.logout {
+	align-self: center;
+	font-size: 1.5rem;
+	font-weight: bold;
+	cursor: ponter;
+	padding: 0.5rem 1rem;
+	border: none;
+	border-radius: 0.5rem;
+	color: #f8fafc;
+	background-color: #10b981;
+}
+
+.logout:hover {
+	opacity: 0.7;
+	cursor: pointer;
+}
+
+@media screen and (min-width: 500px) {
+	.info {
+		gap: 2.5rem;
+		width: 45rem;
+		padding: 2.5rem;
+		font-size: 1.55rem;
+	}
+	.logout {
+		padding: 0.75rem 1.25rem;
+		font-size: 1.75rem;
+	}
+}
+
+@media screen and (min-width: 700px) {
+	.info {
+		gap: 3rem;
+		width: 65rem;
+		padding: 3rem;
+		font-size: 1.75rem;
+	}
+	.logout {
+		padding: 1rem 1.5rem;
+		font-size: 2rem;
+	}
+}
