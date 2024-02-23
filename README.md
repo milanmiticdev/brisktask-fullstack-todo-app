@@ -22,7 +22,6 @@ Frontend is deployed on Netlify: https://brisktask.netlify.app
 -   On your local MySQL server create new database
 -   Navigate to `/backend/config/tables` where you will find SQL commands to recreate the tables needed
 -   Add those tables in the new databse you just created
--
 
 ### .env SETUP
 
