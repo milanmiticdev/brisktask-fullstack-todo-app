@@ -15,11 +15,14 @@ Frontend is deployed on Netlify: https://brisktask.netlify.app
 
 ## Installation and Setup
 
+-   You can clone this repository if you would like to check out app functionalities
+
 ### DATABASE SETUP
 
 -   On your local MySQL server create new database
 -   Navigate to `/backend/config/tables` where you will find SQL commands to recreate the tables needed
 -   Add those tables in the new databse you just created
+-
 
 ### .env SETUP
 
@@ -37,9 +40,7 @@ Frontend is deployed on Netlify: https://brisktask.netlify.app
 
 ### FRONTEND AND BACKEND SETUP
 
-This app was created using Vite: https://vitejs.dev
-
--   Clone repository
+-   Frontend was created using Vite: https://vitejs.dev
 -   Inside the root folder run: `npm install`
 -   Navigate to `/frontend` folder and run: `npm install`
 -   To start backend server navigate to the `/backend` folder and run: `npm start`
