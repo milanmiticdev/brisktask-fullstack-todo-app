@@ -1,6 +1,6 @@
-# BriskTask - React TypeScript Todo App
+# BriskTask - Fullstack Todo App
 
-Responsive ToDo app made with React, Node and MySQL
+Responsive Todo app made with React, Node and MySQL.
 
 Frontend is deployed on Netlify: https://brisktask.netlify.app
 
