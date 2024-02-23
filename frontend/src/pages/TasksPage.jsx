@@ -36,7 +36,7 @@ const reducer = (state, action) => {
 const TasksPage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
-	const { token } = useContext(AuthContext);
+	const { userId, token } = useContext(AuthContext);
 
 	useEffect(() => {
 		const getTasks = async () => {
@@ -44,7 +44,7 @@ const TasksPage = () => {
 				dispatch({ type: 'loading-check', payload: true });
 				dispatch({ type: 'message-change', payload: 'Loading...' });
 
-				const response = await fetch(`http://localhost:5174/api/v1/tasks`, {
+				const response = await fetch(`http://localhost:5174/api/v1/tasks/user/${userId}`, {
 					method: 'GET',
 					body: null,
 					headers: {
@@ -70,10 +70,9 @@ const TasksPage = () => {
 			}
 		};
 		getTasks();
-	}, [token]);
+	}, [userId, token]);
 	return (
 		<section>
-			<br />
 			{state.loading && <Message message={state.message} />}
 			{!state.loading && state.error && <Message message={state.message} />}
 			{!state.loading && !state.error && <Message message={state.message} />}

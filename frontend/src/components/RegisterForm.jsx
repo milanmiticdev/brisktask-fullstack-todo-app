@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 
 // Components
 import FormField from './FormField.jsx';
-import Message from './Message.jsx';
 
 // Utils
 import validation from './../utils/validation.js';
@@ -54,7 +53,6 @@ const reducer = (state, action) => {
 
 const RegisterForm = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
-	const [finalMessage, setFinalMessage] = useState('');
 
 	const { login } = useContext(AuthContext);
 
@@ -76,17 +74,13 @@ const RegisterForm = () => {
 					body: JSON.stringify(user),
 				});
 				const data = await response.json();
-				console.log(data);
 
 				if (data.status === 201) {
 					login(data.user.id, data.user.role, data.token);
-					setFinalMessage(data.message);
 					navigate('/');
-				} else {
-					setFinalMessage(data.message);
 				}
 			} catch {
-				setFinalMessage('Something went wrong.');
+				console.log('Something went wrong.');
 			}
 		}
 	};
@@ -126,7 +120,6 @@ const RegisterForm = () => {
 				onDispatch={dispatch}
 				message={state.passwordStatus.message}
 			/>
-			<Message message={finalMessage} />
 			<button type="submit" className={styles.formSubmit}>
 				REGISTER
 			</button>

@@ -1,32 +1,32 @@
 const validateName = name => {
-	if (name !== undefined && name !== null && name.trim() !== '') {
+	if (name && name.trim().length > 0) {
 		return {
 			error: false,
 			message: '',
 		};
 	} else {
 		return {
-			error: true,
+			error: false,
 			message: `Name can't be empty.`,
 		};
 	}
 };
 
 const validateEmail = email => {
-	if (email !== undefined && email !== null && email.trim() !== '') {
-		const emailRegex =
-			/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	if (email && email.trim().length > 0) {
+		// Regular expression = email must be in the valid format
+		const regex =
+			/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-		// Check if the email is in the valid format
-		if (!emailRegex.test(email.trim())) {
-			return {
-				error: true,
-				message: 'Not a valid email address.',
-			};
-		} else {
+		if (regex.test(email.trim())) {
 			return {
 				error: false,
 				message: '',
+			};
+		} else {
+			return {
+				error: true,
+				message: 'Not a valid email address.',
 			};
 		}
 	} else {
@@ -38,7 +38,7 @@ const validateEmail = email => {
 };
 
 const validatePassword = password => {
-	if (password !== undefined && password !== null && password.trim() !== '') {
+	if (password && password.trim().length > 0) {
 		return {
 			error: false,
 			message: '',
@@ -49,6 +49,31 @@ const validatePassword = password => {
 			message: `Password can't be empty.`,
 		};
 	}
+
+	/*
+        OPTIONAL: Implementing password regex
+
+        Regular Expression =
+            Length 8-255 characters
+            At least one lowercase letter
+            At least one uppercase letter
+            At least one digit 
+            At least one special character
+
+        const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,255}$/;
+
+        if (regex.test(password.trim())) {
+			return {
+				error: false,
+				message: 'Valid password.',
+			};
+		} else {
+			return {
+				error: true,
+				message: 'Password length must be 8-255 characters. Must have at least one lowercase letter, one uppercase letter, one digit and one special character.',
+			};
+		}
+    */
 };
 
 const validateUserInput = state => {

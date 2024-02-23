@@ -5,8 +5,8 @@ import config from './config/config.js';
 const { serverHostname, serverPort } = config;
 
 import authRouter from './routes/auth.router.js';
-import taskRouter from './routes/task.router.js';
 import userRouter from './routes/user.router.js';
+import taskRouter from './routes/task.router.js';
 
 const app = express();
 

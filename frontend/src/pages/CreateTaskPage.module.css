@@ -1,18 +1,13 @@
-.formField {
-	width: 100%;
+.form {
+	margin: 0 auto;
+	height: 100%;
+	max-width: 50rem;
 	display: flex;
 	flex-flow: column wrap;
-	justify-content: flex-start;
+	justify-content: center;
 	align-items: center;
 	gap: 1rem;
-}
-
-.inputBlock {
-	width: 100%;
-	display: flex;
-	flex-flow: column wrap;
-	justify-content: flex-start;
-	gap: 1rem;
+	padding: 6rem 3rem;
 }
 
 .label {
@@ -21,66 +16,75 @@
 	color: #3772ff;
 }
 
-.inputField {
+.input {
 	width: 100%;
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-	gap: 1rem;
 	padding: 0.5rem 1rem;
 	font-size: 1.5rem;
 	font-weight: bold;
 	border-radius: 0.5rem;
+	border: none;
+	outline: none;
 	color: #3772ff;
 	background-color: #f8fafc;
 	box-shadow: 0.1rem 0.1rem 0.9rem #3772ff;
 }
 
-.input {
-	width: 100%;
-	border: none;
-	outline: none;
-	color: #3772ff;
-	background-color: #f8fafc;
-}
-
-.icon {
-	height: 100%;
+.createBtn {
 	display: flex;
-	flex-direction: row;
+	flex-flow: row wrap;
 	justify-content: center;
 	align-items: center;
-	font-size: 2rem;
+	font-size: 1.75rem;
+	font-weight: bold;
+	cursor: ponter;
+	padding: 0.5rem 2rem;
+	border: none;
+	border-radius: 0.5rem;
+	color: #f8fafc;
+	background-color: #14b8a6;
+	box-shadow: 0.1rem 0.1rem 0.5rem #334155;
 }
 
-.icon:hover {
-	opacity: 0.75;
+.createBtn:hover {
+	opacity: 0.7;
 	cursor: pointer;
 }
 
 @media screen and (min-width: 400px) {
+	.form {
+		gap: 1.5rem;
+	}
 	.label {
 		font-size: 1.75rem;
 	}
-	.inputField {
+	.input {
 		font-size: 1.75rem;
 		padding: 0.75rem 1rem;
 	}
-	.icon {
-		font-size: 2.35rem;
+	.span {
+		font-size: 1.75rem;
+	}
+	.createBtn {
+		font-size: 2rem;
 	}
 }
 
 @media screen and (min-width: 500px) {
+	.form {
+		gap: 2rem;
+	}
 	.label {
 		font-size: 2rem;
 	}
-	.inputField {
+	.input {
 		font-size: 2rem;
 		padding: 1rem;
 	}
-	.icon {
-		font-size: 2.7rem;
+	.span {
+		height: 3rem;
+		font-size: 2rem;
+	}
+	.createBtn {
+		font-size: 2.25rem;
 	}
 }

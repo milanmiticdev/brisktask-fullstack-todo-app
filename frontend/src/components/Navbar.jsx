@@ -51,6 +51,7 @@ const NavBar = () => {
 						<NavLink to="/profile" className={styles.listItem}>
 							<li>PROFILE</li>
 						</NavLink>
+						<button onClick={handleLogout}>LOGOUT</button>
 					</ul>
 				</>
 			) : (

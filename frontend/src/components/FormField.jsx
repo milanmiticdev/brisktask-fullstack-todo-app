@@ -1,6 +1,9 @@
 // React
 import { useState, useReducer, useEffect } from 'react';
 
+// Components
+import Message from './Message.jsx';
+
 // Font Awesome Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -75,9 +78,7 @@ const FormField = ({ htmlFor, type, id, name, fieldChange, statusChange, onValid
 					)}
 				</div>
 			</div>
-			<div className={styles.span}>
-				<span>{message}</span>
-			</div>
+			<Message message={message} />
 		</div>
 	);
 };

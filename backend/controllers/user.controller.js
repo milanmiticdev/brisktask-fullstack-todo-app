@@ -50,7 +50,7 @@ const getUserById = async (req, res, next) => {
 	} else if (userData.role === 'admin') {
 		try {
 			const sql = 'SELECT * FROM users WHERE id = ?';
-			const [[result]] = await pool.query(sql, userId);
+			const [[result]] = await pool.query(sql, Number(userId));
 
 			if (result) {
 				return res.status(200).json({
@@ -72,7 +72,7 @@ const getUserById = async (req, res, next) => {
 			return next(error);
 		}
 	} else {
-		if (userId !== userData.id) {
+		if (Number(userId) !== userData.id) {
 			return res.status(401).json({ message: 'Forbidden Access - Not Authenticated.', status: 401 });
 		} else {
 			try {
@@ -165,14 +165,19 @@ const updateUserById = async (req, res, next) => {
 		} else if (userData.role === 'admin') {
 			try {
 				const sql = 'SELECT * FROM users WHERE id = ?';
-				const [[result]] = await pool.query(sql, userId);
+				const [[result]] = await pool.query(sql, Number(userId));
 
 				if (!result) {
 					throw new ApiError(404, 'User does not exist.');
 				} else {
 					try {
 						const sql = 'UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?';
-						const [result] = await pool.query(sql, [name.trim(), email.trim(), await bcrypt.hash(password.trim(), 12), userId]);
+						const [result] = await pool.query(sql, [
+							name.trim(),
+							email.trim(),
+							await bcrypt.hash(password.trim(), 12),
+							Number(userId),
+						]);
 
 						if (result && result.affectedRows !== 0) {
 							return res.status(200).json({
@@ -190,7 +195,7 @@ const updateUserById = async (req, res, next) => {
 				return next(error);
 			}
 		} else {
-			if (userId !== userData.id) {
+			if (Number(userId) !== userData.id) {
 				return res.status(401).json({ message: 'Forbidden Access - Not Authenticated.', status: 401 });
 			} else {
 				try {
@@ -244,14 +249,14 @@ const deleteUserById = async (req, res, next) => {
 	} else if (userData.role === 'admin') {
 		try {
 			const sql = 'SELECT * FROM users WHERE id = ?';
-			const [[result]] = await pool.query(sql, [userId]);
+			const [[result]] = await pool.query(sql, [Number(userId)]);
 
 			if (!result) {
 				throw new ApiError(404, 'User does not exist.');
 			} else {
 				try {
 					const sql = 'DELETE FROM users WHERE id = ?';
-					const result = await pool.query(sql, [userId]);
+					const result = await pool.query(sql, [Number(userId)]);
 
 					if (result && result.affectedRows !== 0) {
 						return res.status(204).end();
@@ -266,7 +271,7 @@ const deleteUserById = async (req, res, next) => {
 			return next(error);
 		}
 	} else {
-		if (userId !== userData.id) {
+		if (Number(userId) !== userData.id) {
 			return res.status(401).json({ message: 'Forbidden Access - Not authenticated.', status: 404 });
 		} else {
 			try {

@@ -51,16 +51,16 @@ const getTasksByUserId = async (req, res, next) => {
 	} else if (userData.role === 'admin') {
 		try {
 			const sql = 'SELECT * FROM tasks WHERE user_id = ?';
-			const [result] = await pool.query(sql, [userId]);
+			const [result] = await pool.query(sql, [Number(userId)]);
 
 			if (result && result.length > 0) {
 				res.status(200).json({
 					tasks: result.map(task => ({
-						id: result.id,
-						name: result.name,
-						userId: result.user_id,
-						createdAt: result.created_at,
-						updatedAt: result.updated_at,
+						id: task.id,
+						name: task.name,
+						userId: task.user_id,
+						createdAt: task.created_at,
+						updatedAt: task.updated_at,
 					})),
 					message: 'Tasks found',
 					status: 200,
@@ -73,7 +73,7 @@ const getTasksByUserId = async (req, res, next) => {
 		}
 		res.status(200).json({ message: 'Success' });
 	} else {
-		if (userId !== userData.id) {
+		if (Number(userId) !== userData.id) {
 			res.status(401).json({ message: 'Forbidden Access - Not authenticated.', status: 401 });
 		} else {
 			try {
@@ -83,11 +83,11 @@ const getTasksByUserId = async (req, res, next) => {
 				if (result && result.length > 0) {
 					res.status(200).json({
 						tasks: result.map(task => ({
-							id: result.id,
-							name: result.name,
-							userId: result.user_id,
-							createdAt: result.created_at,
-							updatedAt: result.updated_at,
+							id: task.id,
+							name: task.name,
+							userId: task.user_id,
+							createdAt: task.created_at,
+							updatedAt: task.updated_at,
 						})),
 						message: 'Tasks found',
 						status: 200,
@@ -111,7 +111,7 @@ const getTaskById = async (req, res, next) => {
 	} else if (userData.role === 'admin') {
 		try {
 			const sql = 'SELECT * FROM tasks WHERE id = ?';
-			const [[result]] = await pool.query(sql, [taskId]);
+			const [[result]] = await pool.query(sql, [Number(taskId)]);
 
 			if (!result) {
 				throw new ApiError(404, 'Task not found');
@@ -134,7 +134,7 @@ const getTaskById = async (req, res, next) => {
 	} else {
 		try {
 			const sql = 'SELECT * FROM tasks WHERE id = ?';
-			const [[result]] = await pool.query(sql, [taskId]);
+			const [[result]] = await pool.query(sql, [Number(taskId)]);
 
 			if (!result) {
 				throw new ApiError(404, 'Task not found');
@@ -171,7 +171,7 @@ const createTask = async (req, res, next) => {
 		} else if (userData.role === 'admin') {
 			try {
 				const sql = 'INSERT INTO tasks (name, user_id) VALUES(?, ?)';
-				const [result] = await pool.query(sql, [name.trim(), userId]);
+				const [result] = await pool.query(sql, [name.trim(), Number(userId)]);
 
 				if (result && result.affectedRows !== 0) {
 					return res.status(201).json({ message: 'Task created.', status: 201 });
@@ -182,7 +182,7 @@ const createTask = async (req, res, next) => {
 				return next(error);
 			}
 		} else {
-			if (userId !== userData.id) {
+			if (Number(userId) !== userData.id) {
 				return res.status(401).json({ message: 'Forbidden Access - Not authenticated', status: 401 });
 			} else {
 				try {
@@ -220,14 +220,14 @@ const updateTaskById = async (req, res, next) => {
 		} else if (userData.role === 'admin') {
 			try {
 				const sql = 'SELECT * FROM tasks WHERE id = ?';
-				const [[result]] = await pool.query(sql, [taskId]);
+				const [[result]] = await pool.query(sql, [Number(taskId)]);
 
 				if (!result) {
 					throw new ApiError(404, 'Task not found.');
 				} else {
 					try {
 						const sql = 'UPDATE tasks SET name = ? WHERE id = ?';
-						const [result] = await pool.query(sql, [name.trim(), taskId]);
+						const [result] = await pool.query(sql, [name.trim(), Number(taskId)]);
 
 						if (result && result.affectedRows !== 0) {
 							return res.status(200).json({ message: 'Task updated.', status: 200 });
@@ -244,7 +244,7 @@ const updateTaskById = async (req, res, next) => {
 		} else {
 			try {
 				const sql = 'SELECT * FROM tasks WHERE id = ?';
-				const [[result]] = await pool.query(sql, [taskId]);
+				const [[result]] = await pool.query(sql, [Number(taskId)]);
 
 				if (!result) {
 					throw new ApiError(404, 'Task not found.');
@@ -253,7 +253,7 @@ const updateTaskById = async (req, res, next) => {
 				} else {
 					try {
 						const sql = 'UPDATE tasks SET name = ? WHERE id = ? AND user_id = ?';
-						const [result] = await pool.query(sql, [name.trim(), taskId, userData.id]);
+						const [result] = await pool.query(sql, [name.trim(), Number(taskId), userData.id]);
 
 						if (result && result.affectedRows !== 0) {
 							return res.status(200).json({ message: 'Task updated.', status: 200 });
@@ -286,14 +286,14 @@ const deleteTaskById = async (req, res, next) => {
 	} else if (userData.role === 'admin') {
 		try {
 			const sql = 'SELECT * FROM tasks WHERE id = ?';
-			const [[result]] = await pool.query(sql, [taskId]);
+			const [[result]] = await pool.query(sql, [Number(taskId)]);
 
 			if (!result) {
 				throw new ApiError(404, 'Task not found.');
 			} else {
 				try {
 					const sql = 'DELETE FROM tasks WHERE id = ?';
-					const [result] = await pool.query(sql, [taskId]);
+					const [result] = await pool.query(sql, [Number(taskId)]);
 
 					if (result && result.affectedRows !== 0) {
 						return res.status(204).end();
@@ -310,7 +310,7 @@ const deleteTaskById = async (req, res, next) => {
 	} else {
 		try {
 			const sql = 'SELECT * FROM tasks WHERE id = ?';
-			const [[result]] = await pool.query(sql, [taskId]);
+			const [[result]] = await pool.query(sql, [Number(taskId)]);
 
 			if (!result) {
 				throw new ApiError(404, 'Task not found.');
@@ -319,7 +319,7 @@ const deleteTaskById = async (req, res, next) => {
 			} else {
 				try {
 					const sql = 'DELETE FROM tasks WHERE id = ? AND user_id = ?';
-					const [result] = await pool.query(sql, [taskId, userData.id]);
+					const [result] = await pool.query(sql, [Number(taskId), userData.id]);
 
 					if (result && result.affectedRows !== 0) {
 						return res.status(204).end();

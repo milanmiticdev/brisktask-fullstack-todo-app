@@ -1,5 +1,11 @@
+import styles from './../components/Message.module.css';
+
 const Message = ({ message }) => {
-	return <p>{message}</p>;
+	return (
+		<div className={styles.span}>
+			<span>{message}</span>
+		</div>
+	);
 };
 
 export default Message;
