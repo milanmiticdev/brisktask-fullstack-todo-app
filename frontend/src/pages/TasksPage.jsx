@@ -72,10 +72,9 @@ const TasksPage = () => {
 		getTasks();
 	}, [userId, token]);
 	return (
-		<section>
+		<section className={styles.tasks}>
 			{state.loading && <Message message={state.message} />}
 			{!state.loading && state.error && <Message message={state.message} />}
-			{!state.loading && !state.error && <Message message={state.message} />}
 			{!state.loading &&
 				!state.error &&
 				state.tasks &&

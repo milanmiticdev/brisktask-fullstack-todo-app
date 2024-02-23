@@ -7,6 +7,11 @@ import AuthContext from './../contexts/AuthContext.js';
 // React Router
 import { Link, useNavigate } from 'react-router-dom';
 
+// FontAwesome Icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+
 // Styles
 import styles from './Task.module.css';
 
@@ -31,19 +36,19 @@ const Task = ({ task }) => {
 	};
 
 	return (
-		<div className="task">
-			<p>Task ID: {task.id}</p>
-			<p>Task Name: {task.name}</p>
-			<Link to={`/tasks/${task.id}`}>
-				<button className="btn read">Read</button>
-			</Link>
-			<Link to={`/tasks/update/${task.id}`}>
-				<button className="btn update">Update</button>
-			</Link>
-			<button className="btn delete" onClick={deleteTask}>
-				Delete
-			</button>
-		</div>
+		<article className={styles.task}>
+			<p className={styles.taskText}>{task.name}</p>
+			<div className={styles.taskButtons}>
+				<Link to={`/tasks/update/${task.id}`}>
+					<button className={`${styles.taskActionBtn} ${styles.editBtn}`}>
+						<FontAwesomeIcon icon={faPenToSquare} />
+					</button>
+				</Link>
+				<button className={`${styles.taskActionBtn} ${styles.deleteBtn}`} onClick={deleteTask}>
+					<FontAwesomeIcon icon={faTrash} />
+				</button>
+			</div>
+		</article>
 	);
 };
 

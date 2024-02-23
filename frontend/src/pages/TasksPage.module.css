@@ -1,15 +1,9 @@
-.btn {
-	border: none;
-	border-radius: 5px;
-	padding: 6px;
-	margin-right: 10px;
-	cursor: pointer;
-}
-
-.btn:hover {
-	opacity: 0.7;
-}
-
-.create {
-	background-color: cadetblue;
+.tasks {
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	padding-top: 3rem;
+	gap: 3rem;
 }
