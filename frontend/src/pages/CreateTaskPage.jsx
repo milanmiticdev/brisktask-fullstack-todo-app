@@ -42,10 +42,8 @@ const CreateTaskPage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
 	const { userId, token } = useContext(AuthContext);
-	console.log(userId);
-	const navigate = useNavigate();
-
 	const { validateName } = validation;
+	const navigate = useNavigate();
 
 	const handleSubmit = async e => {
 		e.preventDefault();

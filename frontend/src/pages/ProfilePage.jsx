@@ -1,12 +1,22 @@
 // React
 import { useState, useEffect, useContext } from 'react';
 
+// React Router
+import { useNavigate } from 'react-router-dom';
+
 // Context
 import AuthContext from './../contexts/AuthContext.js';
 
 const ProfilePage = () => {
 	const [user, setUser] = useState({});
-	const { userId, token } = useContext(AuthContext);
+	const { userId, token, logout } = useContext(AuthContext);
+
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		logout();
+		navigate('/');
+	};
 
 	useEffect(() => {
 		const getUser = async () => {
@@ -38,6 +48,7 @@ const ProfilePage = () => {
 					<p>user ID: {user.id}</p>
 					<p>email: {user.email}</p>
 					<p>role: {user.role}</p>
+					<button onClick={handleLogout}>LOGOUT</button>
 				</div>
 			)}
 		</section>

@@ -1,5 +1,5 @@
 // React
-import { useState, useEffect, useContext } from 'react';
+import { useReducer, useEffect, useContext } from 'react';
 
 // Context
 import AuthContext from './../contexts/AuthContext.js';
@@ -10,17 +10,43 @@ import { useParams, useNavigate } from 'react-router-dom';
 // Components
 import Message from './../components/Message.jsx';
 
+// Utils
+import validation from './../utils/validation.js';
+
+// Styles
+import styles from './UpdateTaskPage.module.css';
+
+// Initial reducer state
+const initialState = {
+	value: '',
+	status: {
+		error: true,
+		message: '',
+	},
+};
+
+// Reducer function
+const reducer = (state, action) => {
+	switch (action.type) {
+		case 'value-change':
+			return { ...state, value: action.payload };
+		case 'status-change':
+			return { ...state, status: action.payload };
+	}
+};
+
 const UpdateTaskPage = () => {
-	const [taskName, setTaskName] = useState('');
-	const [message, setMessage] = useState('');
+	const [state, dispatch] = useReducer(reducer, initialState);
+
 	const { taskId } = useParams();
 	const { token } = useContext(AuthContext);
+	const { validateName } = validation;
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		const getTask = async () => {
 			try {
-				const response = await fetch(`http://localhost:5174/api/v1/tasks/${taskId}`, {
+				const response = await fetch(`http://localhost:5174/api/v1/tasks/${Number(taskId)}`, {
 					method: 'GET',
 					body: null,
 					headers: {
@@ -30,13 +56,10 @@ const UpdateTaskPage = () => {
 				const data = await response.json();
 
 				if (data.status === 200) {
-					setTaskName(data.task.name);
-					setMessage(data.message);
-				} else {
-					setMessage(data.message);
+					dispatch({ type: 'value-change', payload: data.task.name });
 				}
 			} catch {
-				setMessage('Something went wrong.');
+				console.log('Something went wrong.');
 			}
 		};
 		getTask();
@@ -47,7 +70,7 @@ const UpdateTaskPage = () => {
 
 		try {
 			const updatedTask = {
-				name: taskName,
+				name: state.value,
 			};
 
 			const response = await fetch(`http://localhost:5174/api/v1/tasks/${taskId}`, {
@@ -61,34 +84,34 @@ const UpdateTaskPage = () => {
 			const data = await response.json();
 
 			if (data.status === 200) {
-				setMessage(data.message);
 				navigate('/tasks');
-			} else {
-				setMessage(data.message);
 			}
 		} catch {
-			setMessage('Something went wrong.');
+			console.log('Something went wrong.');
 		}
 	};
 
 	return (
-		<div>
-			<br />
-			{taskName && taskName.length > 0 ? (
-				<form onSubmit={updateTask}>
-					<label htmlFor="task_name">Update task with ID: {taskId}</label>
-					<br />
-					<br />
-					<input type="text" id="task_name" value={taskName} onChange={e => setTaskName(e.target.value)} />
-					<br />
-					<br />
-					<Message message={message} />
-					<button type="submit">Update</button>
-				</form>
-			) : (
-				<Message message={message} />
-			)}
-		</div>
+		<form onSubmit={updateTask} className={styles.form}>
+			<label htmlFor="update_name" className={styles.label}>
+				UPDATE TASK
+			</label>
+			<input
+				className={styles.input}
+				id="update_name"
+				name="update_name"
+				type="text"
+				value={state.value}
+				onChange={e => {
+					dispatch({ type: 'value-change', payload: e.target.value });
+					dispatch({ type: 'status-change', payload: validateName(e.target.value) });
+				}}
+			/>
+			<Message message={state.status.message} />
+			<button className={styles.createBtn} type="submit">
+				UPDATE
+			</button>
+		</form>
 	);
 };
 

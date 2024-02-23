@@ -39,13 +39,13 @@ const Task = ({ task }) => {
 		<article className={styles.task}>
 			<p className={styles.taskText}>{task.name}</p>
 			<div className={styles.taskButtons}>
-				<Link to={`/tasks/update/${task.id}`}>
+				<Link to={`/update/${task.id}`}>
 					<button className={`${styles.taskActionBtn} ${styles.editBtn}`}>
 						<FontAwesomeIcon icon={faPenToSquare} />
 					</button>
 				</Link>
-				<button className={`${styles.taskActionBtn} ${styles.deleteBtn}`} onClick={deleteTask}>
-					<FontAwesomeIcon icon={faTrash} />
+				<button className={`${styles.taskActionBtn} ${styles.deleteBtn}`}>
+					<FontAwesomeIcon icon={faTrash} onClick={deleteTask} />
 				</button>
 			</div>
 		</article>

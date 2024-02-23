@@ -8,7 +8,6 @@ import AuthContext from './contexts/AuthContext.js';
 // Pages
 import AppSharedLayout from './pages/AppSharedLayout.jsx';
 import HomePage from './pages/HomePage.jsx';
-import SingleTaskPage from './pages/SingleTaskPage.jsx';
 import AllTasksPage from './pages/AllTasksPage.jsx';
 import TasksPage from './pages/TasksPage.jsx';
 import CreateTaskPage from './pages/CreateTaskPage.jsx';
@@ -76,10 +75,9 @@ const App = () => {
 				{token && userRole === 'admin' ? (
 					<Routes>
 						<Route path="/" element={<AppSharedLayout />}>
-							<Route path="/tasks/update/:taskId" element={<UpdateTaskPage />} />
 							<Route path="/tasks/all" element={<AllTasksPage />} />
-							<Route path="/tasks/create" element={<CreateTaskPage />} />
-							<Route path="/tasks/:taskId" element={<SingleTaskPage />} />
+							<Route path="/update/:taskId" element={<UpdateTaskPage />} />
+							<Route path="/create" element={<CreateTaskPage />} />
 							<Route path="/dashboard" element={<AdminDashboardPage />} />
 							<Route path="/profile" element={<ProfilePage />} />
 							<Route index element={<HomePage />} />
@@ -88,10 +86,9 @@ const App = () => {
 				) : token && userRole === 'user' ? (
 					<Routes>
 						<Route path="/" element={<AppSharedLayout />}>
-							<Route path="/tasks/update/:taskId" element={<UpdateTaskPage />} />
-							<Route path="/tasks/create" element={<CreateTaskPage />} />
-							<Route path="/tasks/:taskId" element={<SingleTaskPage />} />
 							<Route path="/tasks" element={<TasksPage />} />
+							<Route path="/update/:taskId" element={<UpdateTaskPage />} />
+							<Route path="/create" element={<CreateTaskPage />} />
 							<Route path="/profile" element={<ProfilePage />} />
 							<Route index element={<HomePage />} />
 						</Route>
