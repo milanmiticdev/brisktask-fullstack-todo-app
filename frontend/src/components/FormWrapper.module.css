@@ -1,11 +1,12 @@
 .formWrapper {
 	height: 100%;
-	width: 100%;
+	max-width: 50rem;
+	margin: 0 auto;
 	display: flex;
 	flex-flow: column wrap;
 	justify-content: flex-start;
 	align-items: center;
-	padding: 3.5rem;
+	padding: 3rem;
 	gap: 3.5rem;
 }
 
@@ -14,21 +15,55 @@
 	flex-flow: row wrap;
 	justify-content: center;
 	align-items: center;
-	gap: 1.5rem;
+	box-shadow: 0.1rem 0.1rem 0.5rem #334155;
+	border: none;
+	border-radius: 0.75rem;
+	background-color: #fafafa;
 }
 
-.formButton {
+.toggleTab {
 	display: flex;
 	flex-flow: row wrap;
 	justify-content: center;
 	align-items: center;
 	font-size: 1.5rem;
 	font-weight: bold;
-	cursor: ponter;
-	padding: 0.5rem 1.5rem;
+	padding: 1rem 2rem;
 	border: none;
-	border-radius: 0.5rem;
-	color: #f8fafc;
+	color: #3772ff;
+	background-color: #f0f9ff;
+}
+
+.toggleTabLeft {
+	border-top-left-radius: 0.75rem;
+	border-bottom-left-radius: 0.75rem;
+}
+
+.toggleTabRight {
+	border-top-right-radius: 0.75rem;
+	border-bottom-right-radius: 0.75rem;
+}
+
+.activeTab {
+	color: #f0f9ff;
 	background-color: #3772ff;
-	box-shadow: 0.1rem 0.1rem 0.5rem #334155;
+}
+
+.toggleTab:hover {
+	cursor: pointer;
+}
+
+@media screen and (min-width: 400px) {
+	.toggleTab {
+		font-size: 1.75rem;
+	}
+}
+
+@media screen and (min-width: 500px) {
+	.formWrapper {
+		height: calc(100vh - 8.5rem);
+	}
+	.toggleTab {
+		font-size: 2rem;
+	}
 }

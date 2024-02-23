@@ -14,12 +14,18 @@ const Form = () => {
 	return (
 		<section className={styles.formWrapper}>
 			<div className={styles.formToggle}>
-				<button onClick={() => setIsLogging(true)} className={styles.formButton}>
+				<div
+					onClick={() => setIsLogging(true)}
+					className={`${styles.toggleTab} ${styles.toggleTabLeft} ${isLogging && styles.activeTab}`}
+				>
 					LOGIN
-				</button>
-				<button onClick={() => setIsLogging(false)} className={styles.formButton}>
+				</div>
+				<div
+					onClick={() => setIsLogging(false)}
+					className={`${styles.toggleTab} ${styles.toggleTabRight} ${!isLogging && styles.activeTab}`}
+				>
 					REGISTER
-				</button>
+				</div>
 			</div>
 
 			{isLogging ? <LoginForm /> : <RegisterForm />}

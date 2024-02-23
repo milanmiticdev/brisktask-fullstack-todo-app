@@ -20,12 +20,12 @@ const getAllUsers = async (req, res, next) => {
 			if (result && result.length > 0) {
 				return res.status(200).json({
 					users: result.map(user => ({
-						id: result.id,
-						name: result.name,
-						email: result.email,
-						role: result.role,
-						createdAt: result.created_at,
-						updatedAt: result.updated_at,
+						id: user.id,
+						name: user.name,
+						email: user.email,
+						role: user.role,
+						createdAt: user.created_at,
+						updatedAt: user.updated_at,
 					})),
 					message: 'Users fetched.',
 					status: 200,
@@ -56,12 +56,12 @@ const getUserById = async (req, res, next) => {
 				return res.status(200).json({
 					message: 'User found.',
 					user: {
-						id: user.id,
-						name: user.name,
-						userEmail: user.email,
-						userRole: user.role,
-						createdAt: task.created_at,
-						updatedAt: task.updated_at,
+						id: result.id,
+						name: result.name,
+						email: result.email,
+						role: result.role,
+						createdAt: result.created_at,
+						updatedAt: result.updated_at,
 					},
 					status: 200,
 				});

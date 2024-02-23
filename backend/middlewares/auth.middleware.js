@@ -1,3 +1,6 @@
+// jsonwebtoken
+import jwt from 'jsonwebtoken';
+
 // Config
 import config from './../config/config.js';
 const { jwtSecret } = config;
@@ -23,6 +26,7 @@ const middleware = (req, res, next) => {
 					email: decodedToken.userEmail,
 					role: decodedToken.userRole,
 				};
+
 				return next();
 			}
 		} catch (error) {

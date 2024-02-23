@@ -1,3 +1,6 @@
+// jsonwebtoken
+import jwt from 'jsonwebtoken';
+
 // Config
 import config from './../config/config.js';
 const { jwtSecret } = config;

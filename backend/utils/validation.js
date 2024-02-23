@@ -7,7 +7,7 @@ const validateName = name => {
 	} else {
 		return {
 			error: false,
-			message: 'Name field must not be empty.',
+			message: `Name can't be empty.`,
 		};
 	}
 };
@@ -32,24 +32,37 @@ const validateEmail = email => {
 	} else {
 		return {
 			error: true,
-			message: 'Email field must not be empty.',
+			message: `Email can't be empty.`,
 		};
 	}
 };
 
 const validatePassword = password => {
 	if (password && password.trim().length > 0) {
-		/*
-            Regular Expression =
-                Length 8-255 characters
-                At least one lowercase letter
-                At least one uppercase letter
-                At least one digit 
-                At least one special character
-        */
-		const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,255}$/;
+		return {
+			error: false,
+			message: 'Valid password.',
+		};
+	} else {
+		return {
+			error: true,
+			message: `Password can't be empty.`,
+		};
+	}
 
-		if (regex.test(password.trim())) {
+	/*
+        OPTIONAL: Implementing password regex
+
+        Regular Expression =
+            Length 8-255 characters
+            At least one lowercase letter
+            At least one uppercase letter
+            At least one digit 
+            At least one special character
+
+        const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,255}$/;
+
+        if (regex.test(password.trim())) {
 			return {
 				error: false,
 				message: 'Valid password.',
@@ -57,16 +70,10 @@ const validatePassword = password => {
 		} else {
 			return {
 				error: true,
-				message:
-					'Password length must be 8-255 characters. Must have at least one lowercase letter, one uppercase letter, one digit and one special character.',
+				message: 'Password length must be 8-255 characters. Must have at least one lowercase letter, one uppercase letter, one digit and one special character.',
 			};
 		}
-	} else {
-		return {
-			error: true,
-			message: 'Password field must not be empty.',
-		};
-	}
+    */
 };
 
 const validation = { validateName, validateEmail, validatePassword };

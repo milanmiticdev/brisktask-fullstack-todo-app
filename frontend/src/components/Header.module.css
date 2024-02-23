@@ -10,12 +10,6 @@
 
 @media screen and (min-width: 500px) {
 	.header {
-		height: 7.5rem;
-	}
-}
-
-@media screen and (min-width: 600px) {
-	.header {
 		height: 8.5rem;
 	}
 }

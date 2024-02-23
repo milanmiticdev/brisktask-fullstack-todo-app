@@ -7,7 +7,7 @@ const validateName = name => {
 	} else {
 		return {
 			error: true,
-			message: 'Name field must not be empty.',
+			message: `Name can't be empty.`,
 		};
 	}
 };
@@ -32,7 +32,7 @@ const validateEmail = email => {
 	} else {
 		return {
 			error: true,
-			message: 'Email field must not be empty.',
+			message: `Email can't be empty.`,
 		};
 	}
 };
@@ -46,7 +46,7 @@ const validatePassword = password => {
 	} else {
 		return {
 			error: true,
-			message: 'Password field must not be empty.',
+			message: `Password can't be empty.`,
 		};
 	}
 };

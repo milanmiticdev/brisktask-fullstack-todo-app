@@ -2,3 +2,9 @@
 	height: calc(100vh - 7rem);
 	width: 100%;
 }
+
+@media screen and (min-width: 500px) {
+	.main {
+		height: calc(100vh - 8.5rem);
+	}
+}
