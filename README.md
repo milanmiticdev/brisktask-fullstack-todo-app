@@ -35,7 +35,7 @@ Frontend is deployed on Netlify: https://brisktask.netlify.app
     -   `SERVER_HOSTNAME` = You can put the default `http://localhost` for the server hostname
     -   `SERVER_PORT` = Port number you want to run your local server on
     -   `JWT_SECRET` = JSON Web Token secret key, can be any string you want
-    -   `JWT_TOKEN_EXPIRES` = Set token expiration time, for example `24h` means that token expires in 1 day
+    -   `JWT_TOKEN_EXPIRES` = Set token expiration time, for example `1h` means that token expires in 1 day
 
 ### FRONTEND AND BACKEND SETUP
 

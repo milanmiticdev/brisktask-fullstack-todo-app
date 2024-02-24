@@ -1,0 +1,92 @@
+.modal {
+	position: fixed;
+	z-index: 100;
+	inset: 0;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	background-color: rgba(209, 213, 219, 0.9);
+}
+
+.modalContent {
+	min-height: 24rem;
+	min-width: 24rem;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 3rem;
+	padding: 2rem;
+	border-radius: 1rem;
+	color: #3772ff;
+	background-color: #f8fafc;
+	box-shadow: 0.1rem 0.1rem 1rem #3772ff;
+}
+
+.closeBtn {
+	align-self: flex-end;
+	height: 2.5rem;
+	width: 2.5rem;
+	border: none;
+	border-radius: 0.5rem;
+	cursor: pointer;
+	font-size: 1.5rem;
+	font-weight: bold;
+	color: #f8fafc;
+	background-color: #3772ff;
+	box-shadow: 0.1rem 0.1rem 0.5rem #334155;
+}
+
+.closeBtn:hover {
+	opacity: 0.75;
+}
+
+.icon {
+	height: 8rem;
+	width: 8rem;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	font-size: 5rem;
+	font-weight: bold;
+	border-width: 0.5rem;
+	border-style: solid;
+}
+
+.error {
+	border-color: #e01a4f;
+	color: #e01a4f;
+}
+.success {
+	border-color: #10b981;
+	color: #10b981;
+}
+.message {
+	font-size: 1.75rem;
+	font-weight: bold;
+}
+
+@media screen and (min-width: 700px) {
+	.modalContent {
+		min-height: 36rem;
+		min-width: 36rem;
+		gap: 3.5rem;
+	}
+	.icon {
+		height: 16rem;
+		width: 16rem;
+		font-size: 9.5rem;
+		border-width: 0.8rem;
+	}
+	.closeBtn {
+		height: 4rem;
+		width: 4rem;
+		font-size: 2.5rem;
+	}
+	.message {
+		font-size: 2.25rem;
+	}
+}

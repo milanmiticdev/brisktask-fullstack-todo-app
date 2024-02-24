@@ -1,11 +1,12 @@
 // React
-import { useReducer, useEffect, useContext } from 'react';
+import { useState, useReducer, useEffect, useContext } from 'react';
 
 // Context
 import AuthContext from './../contexts/AuthContext.js';
 
 // Components
 import Task from './../components/Task.jsx';
+import Modal from './../components/Modal.jsx';
 import Message from './../components/Message.jsx';
 
 // Styles
@@ -35,6 +36,11 @@ const reducer = (state, action) => {
 
 const TasksPage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
+	const [modal, setModal] = useState({
+		isOpen: false,
+		error: false,
+		message: '',
+	});
 
 	const { userId, token } = useContext(AuthContext);
 
@@ -79,7 +85,8 @@ const TasksPage = () => {
 				!state.error &&
 				state.tasks &&
 				state.tasks.length > 0 &&
-				state.tasks.map(task => <Task key={task.id} task={task} />)}
+				state.tasks.map(task => <Task key={task.id} task={task} setModal={setModal} />)}
+			{modal.isOpen && <Modal modal={modal} setModal={setModal} />}
 		</section>
 	);
 };

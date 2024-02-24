@@ -1,5 +1,5 @@
 // React
-import { useReducer, useEffect, useContext } from 'react';
+import { useState, useReducer, useEffect, useContext } from 'react';
 
 // Context
 import AuthContext from './../contexts/AuthContext.js';
@@ -8,6 +8,7 @@ import AuthContext from './../contexts/AuthContext.js';
 import { useParams, useNavigate } from 'react-router-dom';
 
 // Components
+import Modal from './../components/Modal.jsx';
 import Message from './../components/Message.jsx';
 
 // Utils
@@ -37,6 +38,11 @@ const reducer = (state, action) => {
 
 const UpdateTaskPage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
+	const [modal, setModal] = useState({
+		isOpen: false,
+		error: true,
+		message: '',
+	});
 
 	const { taskId } = useParams();
 	const { token } = useContext(AuthContext);
@@ -57,9 +63,19 @@ const UpdateTaskPage = () => {
 
 				if (data.status === 200) {
 					dispatch({ type: 'value-change', payload: data.task.name });
+				} else {
+					setModal({
+						isOpen: true,
+						error: true,
+						message: data.message,
+					});
 				}
 			} catch {
-				console.log('Something went wrong.');
+				setModal({
+					isOpen: true,
+					error: true,
+					message: 'Something went wrong.',
+				});
 			}
 		};
 		getTask();
@@ -85,14 +101,25 @@ const UpdateTaskPage = () => {
 
 			if (data.status === 200) {
 				navigate('/tasks');
-			}
+			} else {
+                setModal({
+					isOpen: true,
+					error: true,
+					message: data.message,
+				});
+            }
 		} catch {
-			console.log('Something went wrong.');
+			setModal({
+				isOpen: true,
+				error: true,
+				message: 'Something went wrong.',
+			});
 		}
 	};
 
 	return (
 		<form onSubmit={updateTask} className={styles.form}>
+			{modal.isOpen && <Modal modal={modal} setModal={setModal} />}
 			<label htmlFor="update_name" className={styles.label}>
 				UPDATE TASK
 			</label>

@@ -163,9 +163,9 @@ const createTask = async (req, res, next) => {
 	const { name } = req.body;
 	const { userId } = req.params;
 	const userData = req.userData;
-	const nameState = validateName(name);
+	const nameStatus = validateName(name);
 
-	if (!nameState.error) {
+	if (!nameStatus.error) {
 		if (!userId) {
 			return res.status(400).json({ message: 'No user id.', status: 400 });
 		} else if (userData.role === 'admin') {
@@ -201,8 +201,8 @@ const createTask = async (req, res, next) => {
 		}
 	} else {
 		return res.status(400).json({
-			message: 'Invalid input',
-			state: { nameState },
+			message: 'Invalid input.',
+			state: { nameStatus },
 			status: 400,
 		});
 	}
@@ -212,9 +212,9 @@ const updateTaskById = async (req, res, next) => {
 	const { taskId } = req.params;
 	const { name } = req.body;
 	const userData = req.userData;
-	const nameState = validateName(name);
+	const nameStatus = validateName(name);
 
-	if (!nameState.error) {
+	if (!nameStatus.error) {
 		if (!taskId) {
 			return res.status(400).json({ message: 'No task id.', status: 400 });
 		} else if (userData.role === 'admin') {
@@ -270,8 +270,8 @@ const updateTaskById = async (req, res, next) => {
 		}
 	} else {
 		return res.status(400).json({
-			message: 'Invalid input',
-			state: { nameState },
+			message: 'Invalid input.',
+			state: { nameStatus },
 			status: 400,
 		});
 	}

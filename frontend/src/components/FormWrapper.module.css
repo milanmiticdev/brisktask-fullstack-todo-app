@@ -15,10 +15,10 @@
 	flex-flow: row wrap;
 	justify-content: center;
 	align-items: center;
-	box-shadow: 0.1rem 0.1rem 0.5rem #334155;
 	border: none;
 	border-radius: 0.75rem;
 	background-color: #fafafa;
+	box-shadow: 0.1rem 0.1rem 0.5rem #334155;
 }
 
 .toggleTab {

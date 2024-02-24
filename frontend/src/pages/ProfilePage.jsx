@@ -53,16 +53,16 @@ const ProfilePage = () => {
 			{user && (
 				<div className={styles.info}>
 					<p>
-						<span>NAME:</span> {user.name}
+						<span className={styles.span}>NAME:</span> {user.name}
 					</p>
 					<p>
-						<span>EMAIL:</span> {user.email}
+						<span className={styles.span}>EMAIL:</span> {user.email}
 					</p>
 					<p>
-						<span>ROLE:</span> {user.role}
+						<span className={styles.span}>ROLE:</span> {user.role}
 					</p>
 					<p>
-						<span>REGISTERED:</span> {`${local.date} ${local.time}`}
+						<span className={styles.span}>REGISTERED:</span> {`${local.date} ${local.time}`}
 					</p>
 					<button className={styles.logout} onClick={handleLogout}>
 						LOGOUT

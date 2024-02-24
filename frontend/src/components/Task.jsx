@@ -15,24 +15,39 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 // Styles
 import styles from './Task.module.css';
 
-const Task = ({ task }) => {
+const Task = ({ task, setModal }) => {
 	const navigate = useNavigate();
 
 	const { token } = useContext(AuthContext);
 
 	const deleteTask = async () => {
 		try {
-			await fetch(`http://localhost:5174/api/v1/tasks/${task.id}`, {
+			const response = await fetch(`http://localhost:5174/api/v1/tasks/${task.id}`, {
 				method: 'DELETE',
 				body: null,
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
 			});
+
+			if (response.status === 204) {
+				navigate(0);
+			} else {
+				const data = await response.json();
+				setModal({
+					isOpen: true,
+					error: true,
+					message: data.message,
+				});
+			}
 		} catch {
-			console.log('Something went wrong.');
+			setModal({
+				isOpen: true,
+				error: true,
+				message: 'Something went wrong.',
+			});
 		}
-		navigate(0);
+		// navigate(0);
 	};
 
 	return (

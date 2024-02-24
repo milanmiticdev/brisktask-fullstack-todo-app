@@ -30,13 +30,9 @@ const login = async (req, res, next) => {
 
 			if (result && (await bcrypt.compare(password.trim(), result.password))) {
 				// Creating a token
-				const token = jwt.sign(
-					{ userId: result.id, userEmail: result.email, userRole: result.role },
-					jwtSecret,
-					{
-						expiresIn: jwtExpires,
-					}
-				);
+				const token = jwt.sign({ userId: result.id, userEmail: result.email, userRole: result.role }, jwtSecret, {
+					expiresIn: jwtExpires,
+				});
 
 				return res.status(201).json({
 					token,
@@ -52,7 +48,7 @@ const login = async (req, res, next) => {
 		}
 	} else {
 		return res.status(400).json({
-			message: 'Invalid inputs',
+			message: 'Invalid inputs.',
 			state: { emailState, passwordState },
 			status: 400,
 		});
@@ -77,21 +73,13 @@ const register = async (req, res, next) => {
 			} else {
 				try {
 					const sql = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
-					const [result] = await pool.query(sql, [
-						name.trim(),
-						email.trim(),
-						await bcrypt.hash(password.trim(), 12),
-					]);
+					const [result] = await pool.query(sql, [name.trim(), email.trim(), await bcrypt.hash(password.trim(), 12)]);
 
 					if (result && result.affectedRows !== 0) {
 						// Creating a token
-						const token = jwt.sign(
-							{ userId: result.insertId, userEmail: email.trim(), userRole: 'user' },
-							jwtSecret,
-							{
-								expiresIn: jwtExpires,
-							}
-						);
+						const token = jwt.sign({ userId: result.insertId, userEmail: email.trim(), userRole: 'user' }, jwtSecret, {
+							expiresIn: jwtExpires,
+						});
 
 						return res.status(201).json({
 							token,
@@ -111,7 +99,7 @@ const register = async (req, res, next) => {
 		}
 	} else {
 		return res.status(400).json({
-			message: 'Invalid inputs',
+			message: 'Invalid inputs.',
 			state: { nameState, emailState, passwordState },
 			status: 400,
 		});

@@ -106,11 +106,11 @@ const createUser = async (req, res, next) => {
 	const { name, email, password } = req.body;
 	const userData = req.userData;
 
-	const nameState = validateName(name);
-	const emailState = validateEmail(email);
-	const passwordState = validatePassword(password);
+	const nameStatus = validateName(name);
+	const emailStatus = validateEmail(email);
+	const passwordStatus = validatePassword(password);
 
-	if (!nameState.error && !emailState.error && !passwordState.error) {
+	if (!nameStatus.error && !emailStatus.error && !passwordStatus.error) {
 		if (userData.role === 'admin') {
 			try {
 				const sql = 'SELECT * FROM users WHERE email = ?';
@@ -143,8 +143,8 @@ const createUser = async (req, res, next) => {
 		}
 	} else {
 		return res.status(400).json({
-			message: 'Invalid inputs',
-			state: { nameState, emailState, passwordState },
+			message: 'Invalid inputs.',
+			state: { nameStatus, emailStatus, passwordStatus },
 			status: 400,
 		});
 	}
@@ -233,8 +233,8 @@ const updateUserById = async (req, res, next) => {
 		}
 	} else {
 		return res.status(400).json({
-			message: 'Invalid inputs',
-			state: { nameState, emailState, passwordState },
+			message: 'Invalid inputs.',
+			state: { nameStatus, emailStatus, passwordStatus },
 			status: 400,
 		});
 	}

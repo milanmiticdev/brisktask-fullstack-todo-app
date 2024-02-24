@@ -1,5 +1,5 @@
 // React
-import { useReducer, useContext } from 'react';
+import { useState, useReducer, useContext } from 'react';
 
 // Contenxt
 import AuthContext from './../contexts/AuthContext.js';
@@ -8,6 +8,7 @@ import AuthContext from './../contexts/AuthContext.js';
 import { useNavigate } from 'react-router-dom';
 
 // Components
+import Modal from './../components/Modal.jsx';
 import Message from './../components/Message.jsx';
 
 // Utils
@@ -40,6 +41,11 @@ const reducer = (state, action) => {
 
 const CreateTaskPage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
+	const [modal, setModal] = useState({
+		isOpen: false,
+		error: true,
+		message: '',
+	});
 
 	const { userId, token } = useContext(AuthContext);
 	const { validateName } = validation;
@@ -62,18 +68,28 @@ const CreateTaskPage = () => {
 				body: JSON.stringify(task),
 			});
 			const data = await response.json();
-			console.log(data);
 
 			if (data.status === 201) {
 				navigate('/tasks');
+			} else {
+				setModal({
+					isOpen: true,
+					error: true,
+					message: data.message,
+				});
 			}
 		} catch {
-			console.log('Something went wrong.');
+			setModal({
+				isOpen: true,
+				error: true,
+				message: 'Something went wrong.',
+			});
 		}
 	};
 
 	return (
 		<form onSubmit={handleSubmit} className={styles.form}>
+			{modal.isOpen && <Modal modal={modal} setModal={setModal} />}
 			<label htmlFor="new-task" className={styles.label}>
 				NEW TASK
 			</label>

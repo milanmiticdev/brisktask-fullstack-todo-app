@@ -1,5 +1,5 @@
 // React
-import { useState, useReducer, useContext } from 'react';
+import { useReducer, useContext } from 'react';
 
 // Context
 import AuthContext from './../contexts/AuthContext.js';
@@ -51,7 +51,7 @@ const reducer = (state, action) => {
 	}
 };
 
-const RegisterForm = () => {
+const RegisterForm = ({ setModal }) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
 	const { login } = useContext(AuthContext);
@@ -62,26 +62,38 @@ const RegisterForm = () => {
 	const handleRegistration = async e => {
 		e.preventDefault();
 
-		const user = validateUserInput(state);
+		const user = {
+			name: state.name,
+			email: state.email,
+			password: state.password,
+		};
 
-		if (user !== null) {
-			try {
-				const response = await fetch('http://localhost:5174/api/v1/auth/register', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(user),
+		try {
+			const response = await fetch('http://localhost:5174/api/v1/auth/register', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(user),
+			});
+			const data = await response.json();
+
+			if (data.status === 201) {
+				login(data.user.id, data.user.role, data.token);
+				navigate('/');
+			} else {
+				setModal({
+					isOpen: true,
+					error: true,
+					message: data.message,
 				});
-				const data = await response.json();
-
-				if (data.status === 201) {
-					login(data.user.id, data.user.role, data.token);
-					navigate('/');
-				}
-			} catch {
-				console.log('Something went wrong.');
 			}
+		} catch {
+			setModal({
+				isOpen: true,
+				error: true,
+				message: 'Something went wrong.',
+			});
 		}
 	};
 

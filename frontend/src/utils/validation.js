@@ -6,7 +6,7 @@ const validateName = name => {
 		};
 	} else {
 		return {
-			error: false,
+			error: true,
 			message: `Name can't be empty.`,
 		};
 	}

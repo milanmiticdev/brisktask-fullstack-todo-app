@@ -28,7 +28,7 @@ const App = () => {
 		setUserId(id);
 		setUserRole(role);
 		setToken(token);
-		const tokenExpirationDate = expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60);
+		const tokenExpirationDate = expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60 * 24);
 		setTokenExpirationDate(tokenExpirationDate);
 		localStorage.setItem(
 			'userData',

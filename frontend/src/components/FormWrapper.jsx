@@ -4,12 +4,18 @@ import { useState } from 'react';
 // Components
 import LoginForm from './LoginForm.jsx';
 import RegisterForm from './RegisterForm.jsx';
+import Modal from './Modal.jsx';
 
 // Styles
 import styles from './FormWrapper.module.css';
 
 const Form = () => {
 	const [isLogging, setIsLogging] = useState(true);
+	const [modal, setModal] = useState({
+		isOpen: false,
+		error: false,
+		message: '',
+	});
 
 	return (
 		<section className={styles.formWrapper}>
@@ -28,7 +34,8 @@ const Form = () => {
 				</div>
 			</div>
 
-			{isLogging ? <LoginForm /> : <RegisterForm />}
+			{modal.isOpen && <Modal modal={modal} setModal={setModal} />}
+			{isLogging ? <LoginForm setModal={setModal} /> : <RegisterForm setModal={setModal} />}
 		</section>
 	);
 };
