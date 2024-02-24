@@ -7,6 +7,7 @@ import AuthContext from './../contexts/AuthContext.js';
 // Components
 import Task from './../components/Task.jsx';
 import Modal from './../components/Modal.jsx';
+import Spinner from '../components/Spinner.jsx';
 import Message from './../components/Message.jsx';
 
 // Styles
@@ -78,8 +79,8 @@ const TasksPage = () => {
 		getTasks();
 	}, [userId, token]);
 	return (
-		<section className={styles.tasks}>
-			{state.loading && <Message message={state.message} />}
+		<section className={state.loading || state.error ? `${styles.status}` : `${styles.tasks}`}>
+			{state.loading && <Spinner text="Loading" />}
 			{!state.loading && state.error && <Message message={state.message} />}
 			{!state.loading &&
 				!state.error &&

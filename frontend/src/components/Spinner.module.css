@@ -1,0 +1,55 @@
+.spinner {
+	height: 12rem;
+	width: 12rem;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	font-size: 2rem;
+	font-weight: bold;
+	overflow: hidden;
+	color: #3772ff;
+	position: relative;
+}
+
+.spinnerSector {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	border-radius: 50%;
+	border: 0.5rem solid transparent;
+	animation: rotate 0.85s ease-in-out infinite;
+}
+
+.spinnerSectorTop {
+	border-top-color: #3772ff;
+}
+
+.spinnerSectorBottom {
+	border-bottom-color: #3772ff;
+}
+
+@keyframes rotate {
+	0% {
+		transform: rotate(0);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+@media screen and (min-width: 650px) {
+	.spinner {
+		height: 16rem;
+		width: 16rem;
+		font-size: 2.5rem;
+	}
+}
+
+@media screen and (min-width: 1000px) {
+	.spinner {
+		height: 20rem;
+		width: 20rem;
+		font-size: 3rem;
+	}
+}

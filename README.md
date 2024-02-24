@@ -56,3 +56,6 @@ Frontend is deployed on Netlify: https://brisktask.netlify.app
 ## License
 
 MIT License. See `LICENSE.txt` for more information.
+
+Background image used in the app:
+https://pixabay.com/illustrations/notes-pen-desk-flat-coffee-task-6399119/

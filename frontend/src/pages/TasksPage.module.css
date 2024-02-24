@@ -1,9 +1,28 @@
 .tasks {
+	height: calc(100vh - 7rem);
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: flex-start;
+	align-items: center;
+	padding-top: 3rem;
+	gap: 3rem;
+}
+
+.status {
+	height: calc(100vh - 7rem);
 	width: 100%;
 	display: flex;
 	flex-flow: column wrap;
 	justify-content: center;
 	align-items: center;
-	padding-top: 3rem;
-	gap: 3rem;
+}
+
+@media screen and (min-width: 500px) {
+	.tasks {
+		height: calc(100vh - 8.5rem);
+	}
+	.status {
+		height: calc(100vh - 8.5rem);
+	}
 }
