@@ -27,10 +27,10 @@ Frontend is deployed on Netlify: https://brisktask.netlify.app
 
 -   In the root folder create .env file with the following parameters:
 
-    -   `DATABASE_PORT` = Port number that your MySQL database is running on
-    -   `DATABASE_HOST` = Your database host, default is `127.0.0.1`
-    -   `DATABASE_USER` = Your database user name, default is `root`
-    -   `DATABASE_PASSWORD` = Password for your database
+    -   `DATABASE_PORT` = Port number that your MySQL server is running on
+    -   `DATABASE_HOST` = Your MySQL host, default is `127.0.0.1`
+    -   `DATABASE_USER` = Your MySQL user name, default is `root`
+    -   `DATABASE_PASSWORD` = Password for your local MySQL access
     -   `DATABASE_NAME` = Name of the database you created during database setup above
     -   `SERVER_HOSTNAME` = You can put the default `http://localhost` for the server hostname
     -   `SERVER_PORT` = Port number you want to run your local server on
@@ -42,7 +42,7 @@ Frontend is deployed on Netlify: https://brisktask.netlify.app
 -   Frontend was created using Vite: https://vitejs.dev
 -   Inside the root folder run: `npm install`
 -   Navigate to `/frontend` folder and run: `npm install`
--   To start backend server navigate to the `/backend` folder and run: `npm start`
+-   To start backend server navigate to the root folder and run: `npm start`
 -   To start frontend react server navigate to the `/frontend` folder and run: `npm run dev`
 -   Open http://localhost:5173 to view the app in the browser
 
