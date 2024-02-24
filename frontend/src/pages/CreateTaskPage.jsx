@@ -1,5 +1,5 @@
 // React
-import { useState, useReducer, useContext } from 'react';
+import { useReducer, useContext } from 'react';
 
 // Contenxt
 import AuthContext from './../contexts/AuthContext.js';
@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 // Components
 import Modal from './../components/Modal.jsx';
+import Spinner from './../components/Spinner.jsx';
 import Message from './../components/Message.jsx';
 
 // Utils
@@ -25,6 +26,13 @@ const initialState = {
 		error: true,
 		message: '',
 	},
+	loading: false,
+	spinnerText: '',
+	modal: {
+		isOpen: false,
+		error: true,
+		message: '',
+	},
 };
 
 // Reducer function
@@ -36,25 +44,29 @@ const reducer = (state, action) => {
 			return { ...state, initialEmptyState: action.payload };
 		case 'status-change':
 			return { ...state, status: action.payload };
+		case 'loading-check':
+			return { ...state, loading: action.payload };
+		case 'spinner-text-change':
+			return { ...state, spinnerText: action.payload };
+		case 'modal-change':
+			return { ...state, modal: action.payload };
 	}
 };
 
 const CreateTaskPage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
-	const [modal, setModal] = useState({
-		isOpen: false,
-		error: true,
-		message: '',
-	});
 
 	const { userId, token } = useContext(AuthContext);
 	const { validateName } = validation;
 	const navigate = useNavigate();
 
-	const handleSubmit = async e => {
+	const createTask = async e => {
 		e.preventDefault();
 
 		try {
+			dispatch({ type: 'loading-check', payload: true });
+			dispatch({ type: 'spinner-text-change', payload: 'Creating' });
+
 			const task = {
 				name: state.value,
 			};
@@ -72,44 +84,45 @@ const CreateTaskPage = () => {
 			if (data.status === 201) {
 				navigate('/tasks');
 			} else {
-				setModal({
-					isOpen: true,
-					error: true,
-					message: data.message,
-				});
+				dispatch({ type: 'spinner-text-change', payload: '' });
+				dispatch({ type: 'loading-check', payload: false });
+				dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
 			}
 		} catch {
-			setModal({
-				isOpen: true,
-				error: true,
-				message: 'Something went wrong.',
-			});
+			dispatch({ type: 'spinner-text-change', payload: '' });
+			dispatch({ type: 'loading-check', payload: false });
+			dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
 		}
 	};
 
 	return (
-		<form onSubmit={handleSubmit} className={styles.form}>
-			{modal.isOpen && <Modal modal={modal} setModal={setModal} />}
-			<label htmlFor="new-task" className={styles.label}>
-				NEW TASK
-			</label>
-			<input
-				className={styles.input}
-				id="new-task"
-				name="new-task"
-				type="text"
-				value={state.value}
-				onChange={e => {
-					dispatch({ type: 'value-change', payload: e.target.value });
-					dispatch({ type: 'status-change', payload: validateName(e.target.value) });
-					dispatch({ type: 'initial-empty-state-change', payload: false });
-				}}
-			/>
-			<Message message={state.status.message} />
-			<button className={styles.createBtn} type="submit">
-				CREATE
-			</button>
-		</form>
+		<section className={state.loading ? `${styles.loading}` : `${styles.createTaskPage}`}>
+			{state.loading && <Spinner text={state.spinnerText} />}
+			{!state.loading && (
+				<form onSubmit={createTask} className={styles.form}>
+					<label htmlFor="create-task" className={styles.label}>
+						CREATE TASK
+					</label>
+					<input
+						className={styles.input}
+						id="create-task"
+						name="create-task"
+						type="text"
+						value={state.value}
+						onChange={e => {
+							dispatch({ type: 'initial-empty-state-change', payload: false });
+							dispatch({ type: 'value-change', payload: e.target.value });
+							dispatch({ type: 'status-change', payload: validateName(e.target.value) });
+						}}
+					/>
+					<Message message={state.status.message} />
+					<button className={styles.createBtn} type="submit">
+						CREATE
+					</button>
+				</form>
+			)}
+			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
+		</section>
 	);
 };
 

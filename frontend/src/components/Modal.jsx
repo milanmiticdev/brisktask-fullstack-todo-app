@@ -6,9 +6,9 @@ import { faX } from '@fortawesome/free-solid-svg-icons';
 // Styles
 import styles from './Modal.module.css';
 
-const Modal = ({ modal, setModal }) => {
+const Modal = ({ modal, dispatch }) => {
 	const handleClick = () => {
-		setModal({ isOpen: false, error: false, message: '' });
+		dispatch({ type: 'modal-change', payload: { isOpen: false, error: false, message: '' } });
 	};
 
 	return (

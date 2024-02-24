@@ -1,10 +1,21 @@
 .profile {
+	height: calc(100vh - 7rem);
 	width: 100%;
 	display: flex;
-	flex-flow: row wrap;
-	justify-content: center;
+	flex-flow: column wrap;
+	justify-content: flex-start;
 	align-items: center;
 	padding: 2rem;
+}
+
+.loading {
+	height: calc(100vh - 7rem);
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
 }
 
 .info {
@@ -44,6 +55,12 @@
 }
 
 @media screen and (min-width: 500px) {
+	.profile {
+		height: calc(100vh - 8.5rem);
+	}
+	.loading {
+		height: calc(100vh - 8.5rem);
+	}
 	.info {
 		gap: 2.5rem;
 		width: 45rem;

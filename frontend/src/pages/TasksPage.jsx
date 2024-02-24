@@ -1,5 +1,5 @@
 // React
-import { useState, useReducer, useEffect, useContext } from 'react';
+import { useReducer, useEffect, useContext } from 'react';
 
 // Context
 import AuthContext from './../contexts/AuthContext.js';
@@ -19,6 +19,12 @@ const initialState = {
 	loading: false,
 	error: false,
 	message: '',
+	spinnerText: '',
+	modal: {
+		isOpen: false,
+		error: false,
+		message: '',
+	},
 };
 
 // Reducr function
@@ -32,16 +38,15 @@ const reducer = (state, action) => {
 			return { ...state, error: action.payload };
 		case 'message-change':
 			return { ...state, message: action.payload };
+		case 'spinner-text-change':
+			return { ...state, spinnerText: action.payload };
+		case 'modal-change':
+			return { ...state, message: action.payload };
 	}
 };
 
 const TasksPage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
-	const [modal, setModal] = useState({
-		isOpen: false,
-		error: false,
-		message: '',
-	});
 
 	const { userId, token } = useContext(AuthContext);
 
@@ -49,7 +54,8 @@ const TasksPage = () => {
 		const getTasks = async () => {
 			try {
 				dispatch({ type: 'loading-check', payload: true });
-				dispatch({ type: 'message-change', payload: 'Loading...' });
+				dispatch({ type: 'message-change', payload: '' });
+				dispatch({ type: 'spinner-text-change', payload: 'Loading' });
 
 				const response = await fetch(`http://localhost:5174/api/v1/tasks/user/${userId}`, {
 					method: 'GET',
@@ -60,34 +66,38 @@ const TasksPage = () => {
 				});
 				const data = await response.json();
 
-				if (data.tasks && data.tasks.length > 0) {
+				if (data.status === 200) {
 					dispatch({ type: 'tasks-fetched', payload: data.tasks });
 					dispatch({ type: 'message-change', payload: '' });
+					dispatch({ type: 'spinner-text-change', payload: '' });
+					dispatch({ type: 'error-check', payload: false });
 					dispatch({ type: 'loading-check', payload: false });
 				} else {
-					dispatch({ type: 'tasks-fetched', payload: data.tasks });
 					dispatch({ type: 'message-change', payload: data.message });
+					dispatch({ type: 'spinner-text-change', payload: '' });
+					dispatch({ type: 'error-check', payload: false });
 					dispatch({ type: 'loading-check', payload: false });
 				}
-				dispatch({ type: 'error-check', payload: false });
 			} catch {
+				dispatch({ type: 'message-change', payload: 'Something went wrong.' });
+				dispatch({ type: 'spinner-text-change', payload: '' });
 				dispatch({ type: 'error-check', payload: true });
-				dispatch({ type: 'message-change', payload: 'Could not fetch tasks.' });
 				dispatch({ type: 'loading-check', payload: false });
 			}
 		};
 		getTasks();
 	}, [userId, token]);
+
 	return (
-		<section className={state.loading || state.error ? `${styles.status}` : `${styles.tasks}`}>
-			{state.loading && <Spinner text="Loading" />}
+		<section className={state.loading ? `${styles.loading}` : `${styles.tasks}`}>
+			{state.loading && <Spinner text={state.spinnerText} />}
 			{!state.loading && state.error && <Message message={state.message} />}
 			{!state.loading &&
 				!state.error &&
 				state.tasks &&
 				state.tasks.length > 0 &&
-				state.tasks.map(task => <Task key={task.id} task={task} setModal={setModal} />)}
-			{modal.isOpen && <Modal modal={modal} setModal={setModal} />}
+				state.tasks.map(task => <Task key={task.id} task={task} dispatch={dispatch} />)}
+			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
 		</section>
 	);
 };
