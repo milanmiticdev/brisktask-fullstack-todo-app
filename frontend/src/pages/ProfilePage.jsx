@@ -8,8 +8,9 @@ import { useNavigate } from 'react-router-dom';
 import AuthContext from './../contexts/AuthContext.js';
 
 // Components
+import Modal from './../components/Modal.jsx';
+import Spinner from './../components/Spinner.jsx';
 import Message from '../components/Message.jsx';
-import Spinner from '../components/Spinner.jsx';
 
 // Utils
 import UTCtoLocal from './../utils/UTCtoLocal.js';
@@ -20,13 +21,18 @@ import styles from './ProfilePage.module.css';
 // Initial reducer state
 const initialState = {
 	user: {},
-	name: '',
-	email: '',
+	inputName: '',
+	inputEmail: '',
 	loading: false,
 	error: false,
 	isEditing: false,
 	message: '',
 	spinnerText: '',
+	modal: {
+		isOpen: false,
+		error: true,
+		message: '',
+	},
 };
 
 // Reducr function
@@ -35,9 +41,9 @@ const reducer = (state, action) => {
 		case 'user-fetched':
 			return { ...state, user: action.payload };
 		case 'name-change':
-			return { ...state, name: action.payload };
+			return { ...state, inputName: action.payload };
 		case 'email-change':
-			return { ...state, email: action.payload };
+			return { ...state, inputEmail: action.payload };
 		case 'loading-check':
 			return { ...state, loading: action.payload };
 		case 'error-check':
@@ -53,16 +59,9 @@ const reducer = (state, action) => {
 
 const ProfilePage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
-	const { userId, token, logout } = useContext(AuthContext);
+	const { userId, userRole, token, login } = useContext(AuthContext);
 
 	const navigate = useNavigate();
-
-	const local = UTCtoLocal(state.user.createdAt);
-
-	const handleLogout = () => {
-		logout();
-		navigate('/');
-	};
 
 	const handleEditBtn = () => {
 		dispatch({ type: 'is-editing', payload: true });
@@ -72,10 +71,6 @@ const ProfilePage = () => {
 		dispatch({ type: 'is-editing', payload: false });
 		dispatch({ type: 'name-change', payload: state.user.name });
 		dispatch({ type: 'email-change', payload: state.user.email });
-	};
-
-	const updateUser = () => {
-		console.log('Updating user.');
 	};
 
 	useEffect(() => {
@@ -118,26 +113,69 @@ const ProfilePage = () => {
 		getUser();
 	}, [userId, token]);
 
+	const updateUser = async e => {
+		e.preventDefault();
+
+		if (state.user.name === state.inputName && state.user.email === state.inputEmail) {
+			dispatch({ type: 'is-editing', payload: false });
+		} else {
+			const updatedUser = {
+				name: state.inputName,
+				email: state.inputEmail,
+			};
+
+			try {
+				dispatch({ type: 'loading-check', payload: true });
+				dispatch({ type: 'spinner-text-change', payload: 'Updating' });
+
+				const response = await fetch(`http://localhost:5174/api/v1/users/${userId}`, {
+					method: 'PATCH',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify(updatedUser),
+				});
+				const data = await response.json();
+
+				if (data.status === 200) {
+					// If the email doesn't change there is no need to recreate token and login again
+					if (state.user.email === state.inputEmail) {
+						navigate(0);
+					} else {
+						dispatch({ type: 'loading-check', payload: true });
+						dispatch({ type: 'spinner-text-change', payload: 'Logging' });
+						login(userId, userRole, data.token);
+						navigate(0);
+					}
+				} else {
+					dispatch({ type: 'spinner-text-change', payload: '' });
+					dispatch({ type: 'loading-check', payload: false });
+					dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
+				}
+			} catch {
+				dispatch({ type: 'spinner-text-change', payload: '' });
+				dispatch({ type: 'loading-check', payload: false });
+				dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
+			}
+		}
+	};
+
 	return (
 		<section className={state.loading ? `${styles.loading}` : `${styles.profile}`}>
 			{state.loading && <Spinner text={state.spinnerText} />}
 			{!state.loading && state.error && <Message message={state.message} />}
 			{!state.loading && !state.error && state.user && (
 				<div className={styles.info}>
-					<div className={styles.btns}>
-						<button className={`${styles.btn} ${styles.edit}`} onClick={handleEditBtn}>
-							EDIT
-						</button>
-						<button className={`${styles.btn} ${styles.logout}`} onClick={handleLogout}>
-							LOGOUT
-						</button>
-					</div>
+					<button className={`${styles.btn} ${styles.edit}`} onClick={handleEditBtn}>
+						EDIT
+					</button>
 					<form onSubmit={updateUser} className={styles.form}>
 						<div className={styles.block}>
 							<label className={styles.label}>NAME</label>
 							<input
 								className={state.isEditing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
-								value={state.name}
+								value={state.inputName}
 								onChange={e => {
 									dispatch({ type: 'name-change', payload: e.target.value });
 								}}
@@ -148,7 +186,7 @@ const ProfilePage = () => {
 							<label className={styles.label}>EMAIL</label>
 							<input
 								className={state.isEditing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
-								value={state.email}
+								value={state.inputEmail}
 								onChange={e => {
 									dispatch({ type: 'email-change', payload: e.target.value });
 								}}
@@ -163,7 +201,7 @@ const ProfilePage = () => {
 							<label className={styles.label}>CREATED</label>
 							<input
 								className={`${styles.input} ${styles.inputReadOnly}`}
-								value={`${local.date} ${local.time}`}
+								value={`${UTCtoLocal(state.user.createdAt).date} ${UTCtoLocal(state.user.createdAt).time}`}
 								readOnly={true}
 							/>
 						</div>
@@ -180,6 +218,7 @@ const ProfilePage = () => {
 					</form>
 				</div>
 			)}
+			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
 		</section>
 	);
 };

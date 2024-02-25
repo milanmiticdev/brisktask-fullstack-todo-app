@@ -48,7 +48,7 @@
 }
 
 .icon:hover {
-	opacity: 0.75;
+	color: #34d399;
 }
 
 @media screen and (min-width: 400px) {

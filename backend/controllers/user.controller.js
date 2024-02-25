@@ -1,3 +1,6 @@
+// jsonwebtoken
+import jwt from 'jsonwebtoken';
+
 // Database pool
 import pool from './../config/database.js';
 
@@ -7,6 +10,10 @@ import ApiError from './../utils/ApiError.js';
 // Validation functions
 import validation from './../utils/validation.js';
 const { validateName, validateEmail, validatePassword } = validation;
+
+// Config
+import config from './../config/config.js';
+const { jwtSecret, jwtExpires } = config;
 
 const getAllUsers = async (req, res, next) => {
 	const userData = req.userData;
@@ -66,7 +73,7 @@ const getUserById = async (req, res, next) => {
 					status: 200,
 				});
 			} else {
-				throw new HttpError(404, 'User does not exist.');
+				throw new HttpError(404, `User doesn't exist.`);
 			}
 		} catch (error) {
 			return next(error);
@@ -80,7 +87,7 @@ const getUserById = async (req, res, next) => {
 				const [[result]] = await pool.query(sql, [userData.id]);
 
 				if (!result) {
-					throw new ApiError(404, 'User does not exist.');
+					throw new ApiError(404, `User doesn't exist.`);
 				} else {
 					return res.status(200).json({
 						message: 'User found.',
@@ -144,22 +151,21 @@ const createUser = async (req, res, next) => {
 	} else {
 		return res.status(400).json({
 			message: 'Invalid inputs.',
-			state: { nameStatus, emailStatus, passwordStatus },
+			status: { nameStatus, emailStatus, passwordStatus },
 			status: 400,
 		});
 	}
 };
 
 const updateUserById = async (req, res, next) => {
-	const { name, email, password } = req.body;
+	const { name, email } = req.body;
 	const { userId } = req.params;
 	const userData = req.userData;
 
 	const nameStatus = validateName(name);
 	const emailStatus = validateEmail(email);
-	const passwordStatus = validatePassword(password);
 
-	if (!nameStatus.error && !emailStatus.error && !passwordStatus.error) {
+	if (!nameStatus.error && !emailStatus.error) {
 		if (!userId) {
 			return res.status(400).json({ message: 'No user id.', status: 400 });
 		} else if (userData.role === 'admin') {
@@ -168,16 +174,11 @@ const updateUserById = async (req, res, next) => {
 				const [[result]] = await pool.query(sql, Number(userId));
 
 				if (!result) {
-					throw new ApiError(404, 'User does not exist.');
+					throw new ApiError(404, `User doesn't exist.`);
 				} else {
 					try {
-						const sql = 'UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?';
-						const [result] = await pool.query(sql, [
-							name.trim(),
-							email.trim(),
-							await bcrypt.hash(password.trim(), 12),
-							Number(userId),
-						]);
+						const sql = 'UPDATE users SET name = ?, email = ? WHERE id = ?';
+						const [result] = await pool.query(sql, [name.trim(), email.trim(), Number(userId)]);
 
 						if (result && result.affectedRows !== 0) {
 							return res.status(200).json({
@@ -203,27 +204,51 @@ const updateUserById = async (req, res, next) => {
 					const [[result]] = await pool.query(sql, userData.id);
 
 					if (!result) {
-						throw new ApiError(404, 'User does not exist.');
+						throw new ApiError(404, `User doesn't exist.`);
 					} else {
-						try {
-							const sql = 'UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?';
-							const [result] = await pool.query(sql, [
-								name.trim(),
-								email.trim(),
-								await bcrypt.hash(password.trim(), 12),
-								userData.id,
-							]);
+						// If the email doesn't change there is no need to recreate a token
+						if (result.email === email.trim()) {
+							try {
+								const sql = 'UPDATE users SET name = ? WHERE id = ?';
+								const [result] = await pool.query(sql, [name.trim(), userData.id]);
 
-							if (result && result.affectedRows !== 0) {
-								return res.status(200).json({
-									message: 'User updated.',
-									status: 200,
-								});
-							} else {
-								throw new ApiError(500, 'Something went wrong.');
+								if (result && result.affectedRows !== 0) {
+									return res.status(200).json({
+										message: 'User updated.',
+										status: 200,
+									});
+								} else {
+									throw new ApiError(500, 'Something went wrong.');
+								}
+							} catch (error) {
+								return next(error);
 							}
-						} catch (error) {
-							return next(error);
+						} else {
+							try {
+								const sql = 'UPDATE users SET name = ?, email = ? WHERE id = ?';
+								const [result] = await pool.query(sql, [name.trim(), email.trim(), userData.id]);
+
+								if (result && result.affectedRows !== 0) {
+									// Creating a token
+									const token = jwt.sign(
+										{ userId: userData.id, userEmail: email.trim(), userRole: userData.role },
+										jwtSecret,
+										{
+											expiresIn: jwtExpires,
+										}
+									);
+
+									return res.status(200).json({
+										token,
+										message: 'User updated.',
+										status: 200,
+									});
+								} else {
+									throw new ApiError(500, 'Something went wrong.');
+								}
+							} catch (error) {
+								return next(error);
+							}
 						}
 					}
 				} catch (error) {
@@ -234,7 +259,7 @@ const updateUserById = async (req, res, next) => {
 	} else {
 		return res.status(400).json({
 			message: 'Invalid inputs.',
-			state: { nameStatus, emailStatus, passwordStatus },
+			status: { nameStatus, emailStatus },
 			status: 400,
 		});
 	}
@@ -252,7 +277,7 @@ const deleteUserById = async (req, res, next) => {
 			const [[result]] = await pool.query(sql, [Number(userId)]);
 
 			if (!result) {
-				throw new ApiError(404, 'User does not exist.');
+				throw new ApiError(404, `User doesn't exist.`);
 			} else {
 				try {
 					const sql = 'DELETE FROM users WHERE id = ?';
@@ -279,7 +304,7 @@ const deleteUserById = async (req, res, next) => {
 				const [[result]] = await pool.query(sql, [userData.id]);
 
 				if (!result) {
-					throw new ApiError(404, 'User does not exist.');
+					throw new ApiError(404, `User doesn't exist.`);
 				} else {
 					try {
 						const sql = 'DELETE FROM users WHERE id = ?';
