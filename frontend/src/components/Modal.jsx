@@ -7,14 +7,14 @@ import { faX } from '@fortawesome/free-solid-svg-icons';
 import styles from './Modal.module.css';
 
 const Modal = ({ modal, dispatch }) => {
-	const handleClick = () => {
+	const handleCloseModal = () => {
 		dispatch({ type: 'modal-change', payload: { isOpen: false, error: false, message: '' } });
 	};
 
 	return (
 		<div className={styles.modal}>
 			<div className={styles.modalContent}>
-				<button onClick={handleClick} className={styles.closeBtn}>
+				<button onClick={handleCloseModal} className={styles.closeBtn}>
 					X
 				</button>
 				<div className={modal.error ? `${styles.icon} ${styles.error}` : `${styles.icon} ${styles.success}`}>

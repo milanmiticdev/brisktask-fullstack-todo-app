@@ -1,6 +1,6 @@
 .formWrapper {
-	height: 100%;
-	max-width: 50rem;
+	height: calc(100vh - 7rem);
+	width: 100%;
 	margin: 0 auto;
 	display: flex;
 	flex-flow: column wrap;
@@ -8,6 +8,16 @@
 	align-items: center;
 	padding: 3rem;
 	gap: 3.5rem;
+}
+
+.loading {
+	height: calc(100vh - 7rem);
+	width: 100%;
+	margin: 0 auto;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
 }
 
 .formToggle {
@@ -18,7 +28,6 @@
 	border: none;
 	border-radius: 0.75rem;
 	background-color: #fafafa;
-	box-shadow: 0.1rem 0.1rem 0.5rem #334155;
 }
 
 .toggleTab {
@@ -32,6 +41,7 @@
 	border: none;
 	color: #3772ff;
 	background-color: #f0f9ff;
+	box-shadow: 0.1rem 0.1rem 0.5rem #334155;
 }
 
 .toggleTabLeft {
@@ -63,7 +73,17 @@
 	.formWrapper {
 		height: calc(100vh - 8.5rem);
 	}
+	.loading {
+		height: calc(100vh - 8.5rem);
+	}
 	.toggleTab {
 		font-size: 2rem;
+	}
+}
+
+@media screen and (min-width: 600px) {
+	.formWrapper {
+		width: 54rem;
+		padding: 3rem 0;
 	}
 }

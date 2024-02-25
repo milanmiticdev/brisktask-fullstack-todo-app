@@ -143,8 +143,6 @@ const ProfilePage = () => {
 					if (state.user.email === state.inputEmail) {
 						navigate(0);
 					} else {
-						dispatch({ type: 'loading-check', payload: true });
-						dispatch({ type: 'spinner-text-change', payload: 'Logging' });
 						login(userId, userRole, data.token);
 						navigate(0);
 					}

@@ -51,7 +51,7 @@ const reducer = (state, action) => {
 	}
 };
 
-const RegisterForm = ({ setModal }) => {
+const RegisterForm = ({ formWrapperDispatch }) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
 	const { login } = useContext(AuthContext);
@@ -69,6 +69,9 @@ const RegisterForm = ({ setModal }) => {
 		};
 
 		try {
+			formWrapperDispatch({ type: 'loading-check', payload: true });
+			formWrapperDispatch({ type: 'spinner-text-change', payload: 'Register' });
+
 			const response = await fetch('http://localhost:5174/api/v1/auth/register', {
 				method: 'POST',
 				headers: {
@@ -82,18 +85,14 @@ const RegisterForm = ({ setModal }) => {
 				login(data.user.id, data.user.role, data.token);
 				navigate('/');
 			} else {
-				setModal({
-					isOpen: true,
-					error: true,
-					message: data.message,
-				});
+				formWrapperDispatch({ type: 'spinner-text-change', payload: '' });
+				formWrapperDispatch({ type: 'loading-check', payload: false });
+				formWrapperDispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
 			}
 		} catch {
-			setModal({
-				isOpen: true,
-				error: true,
-				message: 'Something went wrong.',
-			});
+			formWrapperDispatch({ type: 'spinner-text-change', payload: '' });
+			formWrapperDispatch({ type: 'loading-check', payload: false });
+			formWrapperDispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
 		}
 	};
 

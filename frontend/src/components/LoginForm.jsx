@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 // Components
 import FormField from './FormField.jsx';
+import Spinner from './Spinner.jsx';
 
 // Utils
 import validation from '../utils/validation.js';
@@ -39,10 +40,14 @@ const reducer = (state, action) => {
 			return { ...state, password: action.payload };
 		case 'password-status-change':
 			return { ...state, passwordStatus: action.payload };
+		case 'loading-check':
+			return { ...state, loading: action.payload };
+		case 'spinner-text-change':
+			return { ...state, spinnerText: action.payload };
 	}
 };
 
-const LoginForm = ({ setModal }) => {
+const LoginForm = ({ formWrapperDispatch }) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
 	const { login } = useContext(AuthContext);
@@ -59,6 +64,9 @@ const LoginForm = ({ setModal }) => {
 		};
 
 		try {
+			formWrapperDispatch({ type: 'loading-check', payload: true });
+			formWrapperDispatch({ type: 'spinner-text-change', payload: 'Login' });
+
 			const response = await fetch('http://localhost:5174/api/v1/auth/login', {
 				method: 'POST',
 				headers: {
@@ -72,18 +80,14 @@ const LoginForm = ({ setModal }) => {
 				login(data.user.id, data.user.role, data.token);
 				navigate('/');
 			} else {
-				setModal({
-					isOpen: true,
-					error: true,
-					message: data.message,
-				});
+				formWrapperDispatch({ type: 'spinner-text-change', payload: '' });
+				formWrapperDispatch({ type: 'loading-check', payload: false });
+				formWrapperDispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
 			}
 		} catch {
-			setModal({
-				isOpen: true,
-				error: true,
-				message: 'Something went wrong.',
-			});
+			formWrapperDispatch({ type: 'spinner-text-change', payload: '' });
+			formWrapperDispatch({ type: 'loading-check', payload: false });
+			formWrapperDispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
 		}
 	};
 
