@@ -1,6 +1,6 @@
 .navbar {
 	display: flex;
-	flex-flow: row wrap;
+	flex-flow: column wrap;
 	justify-content: center;
 	align-items: center;
 }
@@ -10,7 +10,7 @@
 	flex-flow: row wrap;
 	justify-content: center;
 	align-items: center;
-	gap: 1.5rem;
+	gap: 2rem;
 	text-decoration: none;
 	list-style: none;
 }
@@ -33,27 +33,45 @@
 	color: #34d399;
 }
 
+.avatar {
+	position: relative;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+}
+
+.icon {
+	color: #f8fafc;
+	cursor: pointer;
+	font-size: 1.75rem;
+}
+
+.icon:hover {
+	opacity: 0.75;
+}
+
 @media screen and (min-width: 400px) {
 	.list {
-		gap: 2rem;
+		gap: 2.5rem;
 	}
 	.listItem {
 		font-size: 1.75rem;
 	}
-	.auth {
-		font-size: 1.75rem;
+	.icon {
+		font-size: 2rem;
 	}
 }
 
 @media screen and (min-width: 500px) {
 	.list {
-		gap: 2.25rem;
+		gap: 3rem;
 	}
 	.listItem {
 		font-size: 2rem;
 	}
-	.auth {
-		font-size: 2rem;
+	.icon {
+		font-size: 2.25rem;
 	}
 }
 

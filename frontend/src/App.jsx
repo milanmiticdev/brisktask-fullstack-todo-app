@@ -62,15 +62,7 @@ const App = () => {
 	}, [token, logout, tokenExpirationDate]);
 
 	return (
-		<AuthContext.Provider
-			value={{
-				userId: userId,
-				userRole: userRole,
-				token: token,
-				login: login,
-				logout: logout,
-			}}
-		>
+		<AuthContext.Provider value={{ userId, userRole, token, login, logout }}>
 			<BrowserRouter>
 				{token && userRole === 'admin' ? (
 					<Routes>
