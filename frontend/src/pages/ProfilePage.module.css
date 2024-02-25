@@ -23,35 +23,101 @@
 	display: flex;
 	flex-flow: column wrap;
 	justify-content: center;
-	align-items: flex-start;
-	padding: 2rem;
+	align-items: center;
 	gap: 2rem;
 	font-size: 1.35rem;
-	border-radius: 1rem;
+}
+
+.submitBtns {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 2.5rem;
+}
+
+.btns {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 2.5rem;
+}
+
+.btn {
+	font-size: 1.5rem;
+	font-weight: bold;
+	cursor: pointer;
+	padding: 0.5rem 1rem;
+	border: none;
+	border-radius: 0.5rem;
+}
+
+.edit {
 	color: #f8fafc;
 	background-color: #3772ff;
 }
 
-.span {
-	font-weight: bold;
-	color: #fb923c;
+.logout {
+	color: #f8fafc;
+	background-color: #3772ff;
 }
 
-.logout {
-	align-self: center;
-	font-size: 1.5rem;
-	font-weight: bold;
-	cursor: ponter;
-	padding: 0.5rem 1rem;
-	border: none;
-	border-radius: 0.5rem;
+.save {
 	color: #f8fafc;
 	background-color: #10b981;
 }
 
-.logout:hover {
+.cancel {
+	color: #f8fafc;
+	background-color: #e01a4f;
+}
+
+.btn:hover {
 	opacity: 0.7;
-	cursor: pointer;
+}
+
+.form {
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 0.85rem;
+}
+
+.block {
+	width: 100%;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 4%;
+}
+
+.label {
+	width: 26%;
+	font-size: 1.5rem;
+	font-weight: bold;
+	text-align: right;
+	color: #10b981;
+	text-align: center;
+}
+
+.input {
+	width: 70%;
+	padding: 0.5rem 1rem;
+	outline: none;
+	border: none;
+	border-radius: 0.5rem;
+	font-size: 1.5rem;
+	font-weight: bold;
+	color: #3772ff;
+	background-color: #f8fafc;
+	box-shadow: 0.1rem 0.1rem 0.9rem #3772ff;
+}
+.inputReadOnly {
+	box-shadow: none;
 }
 
 @media screen and (min-width: 500px) {
@@ -67,7 +133,7 @@
 		padding: 2.5rem;
 		font-size: 1.55rem;
 	}
-	.logout {
+	.btn {
 		padding: 0.75rem 1.25rem;
 		font-size: 1.75rem;
 	}
@@ -80,7 +146,7 @@
 		padding: 3rem;
 		font-size: 1.75rem;
 	}
-	.logout {
+	.btn {
 		padding: 1rem 1.5rem;
 		font-size: 2rem;
 	}

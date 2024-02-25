@@ -151,6 +151,8 @@ const UpdateTaskPage = () => {
 						id="update_task"
 						name="update_task"
 						type="text"
+						autoFocus={true}
+						readOnly={true}
 						value={state.value}
 						onChange={e => {
 							dispatch({ type: 'value-change', payload: e.target.value });

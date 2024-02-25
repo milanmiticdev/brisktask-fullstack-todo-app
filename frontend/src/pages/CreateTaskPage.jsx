@@ -108,6 +108,7 @@ const CreateTaskPage = () => {
 						id="create-task"
 						name="create-task"
 						type="text"
+						autoFocus
 						value={state.value}
 						onChange={e => {
 							dispatch({ type: 'initial-empty-state-change', payload: false });

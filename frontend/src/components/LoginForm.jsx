@@ -48,7 +48,7 @@ const LoginForm = ({ setModal }) => {
 	const { login } = useContext(AuthContext);
 
 	const navigate = useNavigate();
-	const { validateEmail, validatePassword, validateUserInput } = validation;
+	const { validateEmail, validatePassword } = validation;
 
 	const handleLogin = async e => {
 		e.preventDefault();

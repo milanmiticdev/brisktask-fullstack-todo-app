@@ -57,7 +57,7 @@ const RegisterForm = ({ setModal }) => {
 	const { login } = useContext(AuthContext);
 
 	const navigate = useNavigate();
-	const { validateName, validateEmail, validatePassword, validateUserInput } = validation;
+	const { validateName, validateEmail, validatePassword } = validation;
 
 	const handleRegistration = async e => {
 		e.preventDefault();

@@ -8,8 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import AuthContext from './../contexts/AuthContext.js';
 
 // Components
-import Spinner from '../components/Spinner.jsx';
 import Message from '../components/Message.jsx';
+import Spinner from '../components/Spinner.jsx';
 
 // Utils
 import UTCtoLocal from './../utils/UTCtoLocal.js';
@@ -20,8 +20,11 @@ import styles from './ProfilePage.module.css';
 // Initial reducer state
 const initialState = {
 	user: {},
+	name: '',
+	email: '',
 	loading: false,
 	error: false,
+	isEditing: false,
 	message: '',
 	spinnerText: '',
 };
@@ -31,10 +34,16 @@ const reducer = (state, action) => {
 	switch (action.type) {
 		case 'user-fetched':
 			return { ...state, user: action.payload };
+		case 'name-change':
+			return { ...state, name: action.payload };
+		case 'email-change':
+			return { ...state, email: action.payload };
 		case 'loading-check':
 			return { ...state, loading: action.payload };
 		case 'error-check':
 			return { ...state, error: action.payload };
+		case 'is-editing':
+			return { ...state, isEditing: action.payload };
 		case 'message-change':
 			return { ...state, message: action.payload };
 		case 'spinner-text-change':
@@ -55,6 +64,20 @@ const ProfilePage = () => {
 		navigate('/');
 	};
 
+	const handleEditBtn = () => {
+		dispatch({ type: 'is-editing', payload: true });
+	};
+
+	const handleCancelBtn = () => {
+		dispatch({ type: 'is-editing', payload: false });
+		dispatch({ type: 'name-change', payload: state.user.name });
+		dispatch({ type: 'email-change', payload: state.user.email });
+	};
+
+	const updateUser = () => {
+		console.log('Updating user.');
+	};
+
 	useEffect(() => {
 		const getUser = async () => {
 			try {
@@ -73,6 +96,8 @@ const ProfilePage = () => {
 
 				if (data.status === 200) {
 					dispatch({ type: 'user-fetched', payload: data.user });
+					dispatch({ type: 'name-change', payload: data.user.name });
+					dispatch({ type: 'email-change', payload: data.user.email });
 					dispatch({ type: 'message-change', payload: '' });
 					dispatch({ type: 'spinner-text-change', payload: '' });
 					dispatch({ type: 'error-check', payload: false });
@@ -99,21 +124,60 @@ const ProfilePage = () => {
 			{!state.loading && state.error && <Message message={state.message} />}
 			{!state.loading && !state.error && state.user && (
 				<div className={styles.info}>
-					<p>
-						<span className={styles.span}>NAME:</span> {state.user.name}
-					</p>
-					<p>
-						<span className={styles.span}>EMAIL:</span> {state.user.email}
-					</p>
-					<p>
-						<span className={styles.span}>ROLE:</span> {state.user.role}
-					</p>
-					<p>
-						<span className={styles.span}>REGISTERED:</span> {`${local.date} ${local.time}`}
-					</p>
-					<button className={styles.logout} onClick={handleLogout}>
-						LOGOUT
-					</button>
+					<div className={styles.btns}>
+						<button className={`${styles.btn} ${styles.edit}`} onClick={handleEditBtn}>
+							EDIT
+						</button>
+						<button className={`${styles.btn} ${styles.logout}`} onClick={handleLogout}>
+							LOGOUT
+						</button>
+					</div>
+					<form onSubmit={updateUser} className={styles.form}>
+						<div className={styles.block}>
+							<label className={styles.label}>NAME</label>
+							<input
+								className={state.isEditing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
+								value={state.name}
+								onChange={e => {
+									dispatch({ type: 'name-change', payload: e.target.value });
+								}}
+								readOnly={state.isEditing ? false : true}
+							/>
+						</div>
+						<div className={styles.block}>
+							<label className={styles.label}>EMAIL</label>
+							<input
+								className={state.isEditing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
+								value={state.email}
+								onChange={e => {
+									dispatch({ type: 'email-change', payload: e.target.value });
+								}}
+								readOnly={state.isEditing ? false : true}
+							/>
+						</div>
+						<div className={styles.block}>
+							<label className={styles.label}>ROLE</label>
+							<input className={`${styles.input} ${styles.inputReadOnly}`} value={state.user.role} readOnly={true} />
+						</div>
+						<div className={styles.block}>
+							<label className={styles.label}>CREATED</label>
+							<input
+								className={`${styles.input} ${styles.inputReadOnly}`}
+								value={`${local.date} ${local.time}`}
+								readOnly={true}
+							/>
+						</div>
+						{state.isEditing && (
+							<div className={styles.submitBtns}>
+								<button type="submit" className={`${styles.btn} ${styles.save}`}>
+									SAVE
+								</button>
+								<button className={`${styles.btn} ${styles.cancel}`} onClick={handleCancelBtn}>
+									CANCEL
+								</button>
+							</div>
+						)}
+					</form>
 				</div>
 			)}
 		</section>
