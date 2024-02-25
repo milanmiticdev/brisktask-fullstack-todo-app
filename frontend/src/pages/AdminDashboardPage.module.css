@@ -1,26 +1,19 @@
-.formWrapper {
-	height: calc(100vh - 7rem);
+.dashboardPage {
+	min-height: calc(100vh - 7rem);
 	width: 100%;
-	margin: 0 auto;
 	display: flex;
 	flex-flow: column wrap;
 	justify-content: flex-start;
 	align-items: center;
-	padding: 3rem;
-	gap: 3.5rem;
+	gap: 2rem;
+	padding: 2rem;
 }
 
-.loading {
-	height: calc(100vh - 7rem);
+.operations {
 	width: 100%;
-	margin: 0 auto;
-	display: flex;
-	flex-flow: row wrap;
-	justify-content: center;
-	align-items: center;
 }
 
-.formToggle {
+.operationsToggle {
 	display: flex;
 	flex-flow: row wrap;
 	justify-content: center;
@@ -59,27 +52,13 @@
 	background-color: #3772ff;
 }
 
-@media screen and (min-width: 400px) {
-	.toggleTab {
-		font-size: 1.75rem;
-	}
+.result {
+	width: 100%;
 }
 
 @media screen and (min-width: 500px) {
-	.formWrapper {
-		height: calc(100vh - 8.5rem);
-	}
-	.loading {
-		height: calc(100vh - 8.5rem);
-	}
-	.toggleTab {
-		font-size: 2rem;
-	}
-}
-
-@media screen and (min-width: 600px) {
-	.formWrapper {
-		width: 54rem;
-		padding: 3rem 0;
+	.dashboardPage {
+		min-height: calc(100vh - 8.5rem);
+		width: 100%;
 	}
 }

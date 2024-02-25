@@ -1,45 +1,37 @@
-// React
-import { useState, useEffect, useContext } from 'react';
+//React
+import { useState } from 'react';
 
-// Context
-import AuthContext from './../contexts/AuthContext.js';
+// Components
+import AdminOperationsUsers from './../components/AdminOperationsUsers.jsx';
+import AdminOperationsTasks from './../components/AdminOperationsTasks.jsx';
+
+// Styles
+import styles from './AdminDashboardPage.module.css';
 
 const AdminDashboardPage = () => {
-	const [user, setUser] = useState({});
-	const { userId, token } = useContext(AuthContext);
-
-	useEffect(() => {
-		const getUser = async () => {
-			if (token && userId) {
-				try {
-					const response = await fetch(`http://localhost:5174/api/v1/users/${userId}`, {
-						method: 'GET',
-						body: null,
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					});
-					const data = await response.json();
-					setUser(data.user);
-				} catch {
-					console.log('Something went wrong.');
-				}
-			}
-		};
-		getUser();
-	}, [userId, token]);
+	const [activeTab, setActiveTab] = useState('users');
 
 	return (
-		<section>
-			{user && (
-				<div>
-					<p>Dashboard</p>
-					<p>user ID: {user.id}</p>
-					<p>email: {user.email}</p>
-					<p>role: {user.role}</p>
+		<main className={styles.dashboardPage}>
+			<section className={styles.operations}>
+				<div className={styles.operationsToggle}>
+					<div
+						onClick={() => setActiveTab('users')}
+						className={`${styles.toggleTab} ${styles.toggleTabLeft} ${activeTab === 'users' && styles.activeTab}`}
+					>
+						USERS
+					</div>
+					<div
+						onClick={() => setActiveTab('tasks')}
+						className={`${styles.toggleTab} ${styles.toggleTabRight} ${activeTab === 'tasks' && styles.activeTab}`}
+					>
+						TASKS
+					</div>
 				</div>
-			)}
-		</section>
+				{activeTab === 'users' ? <AdminOperationsUsers /> : <AdminOperationsTasks />}
+			</section>
+			<section className={styles.result}>Result</section>
+		</main>
 	);
 };
 

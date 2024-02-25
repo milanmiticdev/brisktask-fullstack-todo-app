@@ -71,7 +71,6 @@ const App = () => {
 							<Route path="/update-task/:taskId" element={<UpdateTaskPage />} />
 							<Route path="/create-task" element={<CreateTaskPage />} />
 							<Route path="/dashboard" element={<AdminDashboardPage />} />
-							<Route path="/profile" element={<ProfilePage />} />
 							<Route index element={<HomePage />} />
 						</Route>
 					</Routes>

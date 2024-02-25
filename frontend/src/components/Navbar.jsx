@@ -5,7 +5,7 @@ import { useState, useContext } from 'react';
 import AuthContext from '../contexts/AuthContext.js';
 
 // React Router
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 // Components
 import Dropdown from './Dropdown.jsx';
@@ -13,13 +13,22 @@ import Dropdown from './Dropdown.jsx';
 // FontAwesome Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 
 // Styles
 import styles from './Navbar.module.css';
 
 const NavBar = () => {
 	const [showDropdown, setShowDropdown] = useState(false);
-	const { userRole, token } = useContext(AuthContext);
+	const { userRole, token, logout } = useContext(AuthContext);
+
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		setShowDropdown(false);
+		logout();
+		navigate('/');
+	};
 
 	return (
 		<nav className={styles.navbar}>
@@ -38,10 +47,7 @@ const NavBar = () => {
 						>
 							<li>DASHBOARD</li>
 						</NavLink>
-						<div className={styles.avatar}>
-							<FontAwesomeIcon icon={faUser} onClick={() => setShowDropdown(true)} className={styles.icon} />
-							{showDropdown && <Dropdown setShowDropdown={setShowDropdown} />}
-						</div>
+						<FontAwesomeIcon icon={faRightFromBracket} onClick={handleLogout} className={styles.listItem} />
 					</ul>
 				</>
 			) : token && userRole === 'user' ? (
