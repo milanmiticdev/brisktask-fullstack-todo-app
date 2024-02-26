@@ -31,4 +31,4 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/tasks', taskRouter);
 
-app.listen(serverPort, () => console.log(`Server started on ${serverHostname}:${serverPort}`));
+app.listen(serverPort);
