@@ -1,5 +1,5 @@
 // React
-import { useState, useReducer, useEffect } from 'react';
+import { useReducer, useEffect } from 'react';
 
 // Components
 import Message from './Message.jsx';
@@ -22,6 +22,7 @@ const initialState = {
 		error: true,
 		message: '',
 	},
+	passwordVisibility: false,
 };
 
 // Reducer function
@@ -33,15 +34,16 @@ const reducer = (state, action) => {
 			return { ...state, initialEmptyState: action.payload };
 		case 'status-change':
 			return { ...state, status: action.payload };
+		case 'password-visibility-change':
+			return { ...state, passwordVisibility: action.payload };
 	}
 };
 
 const FormField = ({ htmlFor, type, id, name, fieldChangeType, statusChangeType, onValidate, onDispatch, message }) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
-	const [passwordVisibility, setPasswordVisibility] = useState(false);
 
 	const handlePasswordVisibility = () => {
-		setPasswordVisibility(!passwordVisibility);
+		dispatch({ type: 'password-visibility-change', payload: !state.passwordVisibility });
 	};
 
 	useEffect(() => {
@@ -60,7 +62,7 @@ const FormField = ({ htmlFor, type, id, name, fieldChangeType, statusChangeType,
 				<div className={styles.inputField}>
 					<input
 						className={styles.input}
-						type={passwordVisibility ? 'text' : type}
+						type={state.passwordVisibility ? 'text' : type}
 						id={id}
 						name={name}
 						value={state.value}
@@ -72,7 +74,7 @@ const FormField = ({ htmlFor, type, id, name, fieldChangeType, statusChangeType,
 					/>
 					{type === 'password' && (
 						<div className={styles.icon}>
-							{passwordVisibility ? (
+							{state.passwordVisibility ? (
 								<FontAwesomeIcon icon={faEyeSlash} onClick={handlePasswordVisibility} />
 							) : (
 								<FontAwesomeIcon icon={faEye} onClick={handlePasswordVisibility} />

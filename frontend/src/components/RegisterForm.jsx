@@ -129,7 +129,7 @@ const RegisterForm = ({ formWrapperDispatch }) => {
 				id="password"
 				name="password"
 				fieldChangeType="password-field-change"
-				statusChangType="password-status-change"
+				statusChangeType="password-status-change"
 				onValidate={validatePassword}
 				onDispatch={dispatch}
 				message={state.passwordStatus.message}
