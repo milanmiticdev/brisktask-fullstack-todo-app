@@ -6,6 +6,9 @@ import { faX } from '@fortawesome/free-solid-svg-icons';
 // Styles
 import styles from './Modal.module.css';
 
+// PropTypes
+import PropTypes from 'prop-types';
+
 const Modal = ({ modal, dispatch }) => {
 	const handleCloseModal = () => {
 		dispatch({ type: 'modal-change', payload: { isOpen: false, error: false, message: '' } });
@@ -27,3 +30,8 @@ const Modal = ({ modal, dispatch }) => {
 };
 
 export default Modal;
+
+Modal.propTypes = {
+	modal: PropTypes.object,
+	dispatch: PropTypes.func,
+};

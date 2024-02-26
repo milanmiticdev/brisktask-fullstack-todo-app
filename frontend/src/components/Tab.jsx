@@ -1,6 +1,9 @@
 // Styles
 import styles from './Tab.module.css';
 
+// PropTypes
+import PropTypes from 'prop-types';
+
 const Tab = ({ activeTab, dispatch, type, payload, position, text }) => {
 	return (
 		<div
@@ -13,3 +16,12 @@ const Tab = ({ activeTab, dispatch, type, payload, position, text }) => {
 };
 
 export default Tab;
+
+Tab.propTypes = {
+	activeTab: PropTypes.string,
+	dispatch: PropTypes.func,
+	type: PropTypes.string,
+	payload: PropTypes.string,
+	position: PropTypes.string,
+	text: PropTypes.string,
+};

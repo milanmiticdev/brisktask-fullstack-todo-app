@@ -11,6 +11,9 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 // Styles
 import styles from './FormField.module.css';
 
+// PropTypes
+import PropTypes from 'prop-types';
+
 // Initial reducer state
 const initialState = {
 	value: '',
@@ -33,7 +36,7 @@ const reducer = (state, action) => {
 	}
 };
 
-const FormField = ({ htmlFor, type, id, name, fieldChange, statusChange, onValidate, onDispatch, message }) => {
+const FormField = ({ htmlFor, type, id, name, fieldChangeType, statusChangeType, onValidate, onDispatch, message }) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 	const [passwordVisibility, setPasswordVisibility] = useState(false);
 
@@ -42,11 +45,11 @@ const FormField = ({ htmlFor, type, id, name, fieldChange, statusChange, onValid
 	};
 
 	useEffect(() => {
-		onDispatch({ type: fieldChange, payload: state.value });
+		onDispatch({ type: fieldChangeType, payload: state.value });
 		if (!state.initialEmptyState) {
-			onDispatch({ type: statusChange, payload: state.status });
+			onDispatch({ type: statusChangeType, payload: state.status });
 		}
-	}, [state.value, state.status, state.initialEmptyState, onDispatch, fieldChange, statusChange]);
+	}, [state.value, state.status, state.initialEmptyState, onDispatch, fieldChangeType, statusChangeType]);
 
 	return (
 		<div className={styles.formField}>
@@ -84,3 +87,15 @@ const FormField = ({ htmlFor, type, id, name, fieldChange, statusChange, onValid
 };
 
 export default FormField;
+
+FormField.propTypes = {
+	htmlFor: PropTypes.string,
+	type: PropTypes.string,
+	id: PropTypes.string,
+	name: PropTypes.string,
+	fieldChangeType: PropTypes.string,
+	statusChangeType: PropTypes.string,
+	onValidate: PropTypes.func,
+	onDispatch: PropTypes.func,
+	message: PropTypes.string,
+};

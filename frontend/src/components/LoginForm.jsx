@@ -9,13 +9,15 @@ import { useNavigate } from 'react-router-dom';
 
 // Components
 import FormField from './FormField.jsx';
-import Spinner from './Spinner.jsx';
 
 // Utils
 import validation from '../utils/validation.js';
 
 // Styles
 import styles from './LoginForm.module.css';
+
+// PropTypes
+import PropTypes from 'prop-types';
 
 const initialState = {
 	email: '',
@@ -98,8 +100,8 @@ const LoginForm = ({ formWrapperDispatch }) => {
 				type="text"
 				id="email"
 				name="email"
-				fieldChange="email-field-change"
-				statusChange="email-status-change"
+				fieldChangeType="email-field-change"
+				statusChangeType="email-status-change"
 				onValidate={validateEmail}
 				onDispatch={dispatch}
 				message={state.emailStatus.message}
@@ -109,8 +111,8 @@ const LoginForm = ({ formWrapperDispatch }) => {
 				type="password"
 				id="password"
 				name="password"
-				fieldChange="password-field-change"
-				statusChange="password-status-change"
+				fieldChangeType="password-field-change"
+				statusChangeType="password-status-change"
 				onValidate={validatePassword}
 				onDispatch={dispatch}
 				message={state.passwordStatus.message}
@@ -123,3 +125,7 @@ const LoginForm = ({ formWrapperDispatch }) => {
 };
 
 export default LoginForm;
+
+LoginForm.propTypes = {
+	formWrapperDispatch: PropTypes.func,
+};

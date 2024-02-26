@@ -1,4 +1,8 @@
+// Styles
 import styles from './../components/Message.module.css';
+
+// PropTypes
+import PropTypes from 'prop-types';
 
 const Message = ({ message }) => {
 	return (
@@ -9,3 +13,7 @@ const Message = ({ message }) => {
 };
 
 export default Message;
+
+Message.propTypes = {
+	message: PropTypes.string,
+};

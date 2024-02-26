@@ -14,6 +14,9 @@ import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 // Styles
 import styles from './Dropdown.module.css';
 
+// PropTypes
+import PropTypes from 'prop-types';
+
 const Dropdown = ({ setShowDropdown }) => {
 	const dropdownRef = useRef(null);
 
@@ -57,3 +60,7 @@ const Dropdown = ({ setShowDropdown }) => {
 };
 
 export default Dropdown;
+
+Dropdown.propTypes = {
+	setShowDropdown: PropTypes.func,
+};

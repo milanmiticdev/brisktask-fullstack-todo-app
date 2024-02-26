@@ -1,4 +1,8 @@
+// Styles
 import styles from './Spinner.module.css';
+
+// PropTypes
+import PropTypes from 'prop-types';
 
 const Spinner = ({ text }) => {
 	return (
@@ -11,3 +15,7 @@ const Spinner = ({ text }) => {
 };
 
 export default Spinner;
+
+Spinner.propTypes = {
+	text: PropTypes.string,
+};

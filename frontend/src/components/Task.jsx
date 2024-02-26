@@ -15,6 +15,9 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 // Styles
 import styles from './Task.module.css';
 
+// PropTypes
+import PropTypes from 'prop-types';
+
 const Task = ({ task, dispatch }) => {
 	const navigate = useNavigate();
 
@@ -67,3 +70,8 @@ const Task = ({ task, dispatch }) => {
 };
 
 export default Task;
+
+Task.propTypes = {
+	task: PropTypes.object,
+	dispatch: PropTypes.func,
+};

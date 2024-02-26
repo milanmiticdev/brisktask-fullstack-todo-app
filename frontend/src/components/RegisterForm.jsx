@@ -16,6 +16,9 @@ import validation from './../utils/validation.js';
 // Styles
 import styles from './RegisterForm.module.css';
 
+// PropTypes
+import PropTypes from 'prop-types';
+
 const initialState = {
 	name: '',
 	nameStatus: {
@@ -103,8 +106,8 @@ const RegisterForm = ({ formWrapperDispatch }) => {
 				type="text"
 				id="name"
 				name="name"
-				fieldChange="name-field-change"
-				statusChange="name-status-change"
+				fieldChangeType="name-field-change"
+				statusChangeType="name-status-change"
 				onValidate={validateName}
 				onDispatch={dispatch}
 				message={state.nameStatus.message}
@@ -114,8 +117,8 @@ const RegisterForm = ({ formWrapperDispatch }) => {
 				type="text"
 				id="email"
 				name="email"
-				fieldChange="email-field-change"
-				statusChange="email-status-change"
+				fieldChangeType="email-field-change"
+				statusChangeType="email-status-change"
 				onValidate={validateEmail}
 				onDispatch={dispatch}
 				message={state.emailStatus.message}
@@ -125,8 +128,8 @@ const RegisterForm = ({ formWrapperDispatch }) => {
 				type="password"
 				id="password"
 				name="password"
-				fieldChange="password-field-change"
-				statusChange="password-status-change"
+				fieldChangeType="password-field-change"
+				statusChangType="password-status-change"
 				onValidate={validatePassword}
 				onDispatch={dispatch}
 				message={state.passwordStatus.message}
@@ -139,3 +142,7 @@ const RegisterForm = ({ formWrapperDispatch }) => {
 };
 
 export default RegisterForm;
+
+RegisterForm.propTypes = {
+	formWrapperDispatch: PropTypes.func,
+};
