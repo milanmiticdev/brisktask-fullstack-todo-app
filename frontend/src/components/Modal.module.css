@@ -20,7 +20,7 @@
 	padding: 2rem;
 	border-radius: 1rem;
 	color: #3772ff;
-	background-color: #f8fafc;
+	background-color: #fafafa;
 	box-shadow: 0.1rem 0.1rem 1rem #3772ff;
 }
 
@@ -33,7 +33,7 @@
 	cursor: pointer;
 	font-size: 1.5rem;
 	font-weight: bold;
-	color: #f8fafc;
+	color: #fafafa;
 	background-color: #3772ff;
 	box-shadow: 0.1rem 0.1rem 0.5rem #334155;
 }
@@ -57,13 +57,15 @@
 }
 
 .error {
-	border-color: #e01a4f;
-	color: #e01a4f;
+	border-color: #ff3772;
+	color: #ff3772;
 }
+
 .success {
 	border-color: #10b981;
 	color: #10b981;
 }
+
 .message {
 	font-size: 1.75rem;
 	font-weight: bold;

@@ -5,7 +5,7 @@
 	flex-flow: row wrap;
 	justify-content: center;
 	align-items: center;
-	background-color: #f0f9ff;
+	background-color: #fafafa;
 	box-shadow: 0.1rem 0.1rem 0.5rem #3772ff;
 }
 
@@ -41,11 +41,11 @@
 }
 
 .editBtn {
-	color: #10b981;
+	color: #1e449e;
 }
 
 .deleteBtn {
-	color: #e01a4f;
+	color: #ff3772;
 }
 
 @media screen and (min-width: 400px) {

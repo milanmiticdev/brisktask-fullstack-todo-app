@@ -160,7 +160,7 @@ const UpdateTaskPage = () => {
 						}}
 					/>
 					<Message message={state.status.message} />
-					<button className={styles.createBtn} type="submit">
+					<button className={styles.updateBtn} type="submit">
 						UPDATE
 					</button>
 				</form>

@@ -13,45 +13,6 @@
 	width: 100%;
 }
 
-.operationsToggle {
-	display: flex;
-	flex-flow: row wrap;
-	justify-content: center;
-	align-items: center;
-	border: none;
-	background-color: #fafafa;
-}
-
-.toggleTab {
-	display: flex;
-	flex-flow: row wrap;
-	justify-content: center;
-	align-items: center;
-	font-size: 1.5rem;
-	font-weight: bold;
-	padding: 1rem 2rem;
-	cursor: pointer;
-	border: none;
-	color: #3772ff;
-	background-color: #f0f9ff;
-	box-shadow: 0.1rem 0.1rem 0.5rem #334155;
-}
-
-.toggleTabLeft {
-	border-top-left-radius: 0.75rem;
-	border-bottom-left-radius: 0.75rem;
-}
-
-.toggleTabRight {
-	border-top-right-radius: 0.75rem;
-	border-bottom-right-radius: 0.75rem;
-}
-
-.activeTab {
-	color: #f0f9ff;
-	background-color: #3772ff;
-}
-
 .result {
 	width: 100%;
 }

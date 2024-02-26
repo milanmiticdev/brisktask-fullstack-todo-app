@@ -2,6 +2,8 @@
 import { useReducer } from 'react';
 
 // Components
+import TabsToggle from './TabsToggle.jsx';
+import Tab from './Tab.jsx';
 import LoginForm from './LoginForm.jsx';
 import RegisterForm from './RegisterForm.jsx';
 import Spinner from './Spinner.jsx';
@@ -11,7 +13,7 @@ import Modal from './Modal.jsx';
 import styles from './FormWrapper.module.css';
 
 const initialState = {
-	toggleLogin: true,
+	activeTab: 'login',
 	loading: false,
 	spinnerText: '',
 	modal: {
@@ -23,8 +25,8 @@ const initialState = {
 
 const reducer = (state, action) => {
 	switch (action.type) {
-		case 'toggle-login':
-			return { ...state, toggleLogin: action.payload };
+		case 'active-tab-change':
+			return { ...state, activeTab: action.payload };
 		case 'loading-check':
 			return { ...state, loading: action.payload };
 		case 'spinner-text-change':
@@ -41,23 +43,31 @@ const Form = () => {
 		<section className={state.loading ? `${styles.loading}` : `${styles.formWrapper}`}>
 			{state.loading && <Spinner text={state.spinnerText} />}
 			{!state.loading && (
-				<div className={styles.formToggle}>
-					<div
-						onClick={() => dispatch({ type: 'toggle-login', payload: true })}
-						className={`${styles.toggleTab} ${styles.toggleTabLeft} ${state.toggleLogin && styles.activeTab}`}
-					>
-						LOGIN
-					</div>
-					<div
-						onClick={() => dispatch({ type: 'toggle-login', payload: false })}
-						className={`${styles.toggleTab} ${styles.toggleTabRight} ${!state.toggleLogin && styles.activeTab}`}
-					>
-						REGISTER
-					</div>
-				</div>
+				<TabsToggle>
+					<Tab
+						activeTab={state.activeTab}
+						dispatch={dispatch}
+						type="active-tab-change"
+						payload="login"
+						position="left"
+						text="LOGIN"
+					/>
+					<Tab
+						activeTab={state.activeTab}
+						dispatch={dispatch}
+						type="active-tab-change"
+						payload="register"
+						position="right"
+						text="REGISTER"
+					/>
+				</TabsToggle>
 			)}
 			{!state.loading &&
-				(state.toggleLogin ? <LoginForm formWrapperDispatch={dispatch} /> : <RegisterForm formWrapperDispatch={dispatch} />)}
+				(state.activeTab === 'login' ? (
+					<LoginForm formWrapperDispatch={dispatch} />
+				) : (
+					<RegisterForm formWrapperDispatch={dispatch} />
+				))}
 			{!state.loading && state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
 		</section>
 	);

@@ -30,7 +30,7 @@
 .label {
 	font-size: 1.5rem;
 	font-weight: bold;
-	color: #10b981;
+	color: #1e449e;
 }
 
 .input {
@@ -42,7 +42,7 @@
 	border: none;
 	outline: none;
 	color: #3772ff;
-	background-color: #f8fafc;
+	background-color: #fafafa;
 	box-shadow: 0.1rem 0.1rem 0.9rem #3772ff;
 }
 
@@ -58,7 +58,7 @@
 	border: none;
 	border-radius: 0.5rem;
 	color: #f8fafc;
-	background-color: #10b981;
+	background-color: #1e449e;
 	box-shadow: 0.1rem 0.1rem 0.5rem #334155;
 }
 

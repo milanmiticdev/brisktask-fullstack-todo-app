@@ -31,7 +31,7 @@
 .label {
 	font-size: 1.5rem;
 	font-weight: bold;
-	color: #10b981;
+	color: #1e449e;
 }
 
 .input {
@@ -43,11 +43,11 @@
 	border: none;
 	outline: none;
 	color: #3772ff;
-	background-color: #f8fafc;
+	background-color: #fafafa;
 	box-shadow: 0.1rem 0.1rem 0.9rem #3772ff;
 }
 
-.createBtn {
+.updateBtn {
 	display: flex;
 	flex-flow: row wrap;
 	justify-content: center;
@@ -58,12 +58,12 @@
 	padding: 0.5rem 2rem;
 	border: none;
 	border-radius: 0.5rem;
-	color: #f8fafc;
-	background-color: #10b981;
+	color: #fafafa;
+	background-color: #1e449e;
 	box-shadow: 0.1rem 0.1rem 0.5rem #334155;
 }
 
-.createBtn:hover {
+.updateBtn:hover {
 	opacity: 0.7;
 	cursor: pointer;
 }
