@@ -1,5 +1,5 @@
 // React
-import { useState, useEffect, useCallback } from 'react';
+import { useReducer, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // Context
@@ -16,20 +16,38 @@ import AuthPage from './pages/AuthPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 import AdminDashboardPage from './pages/AdminDashboardPage.jsx';
 
+const initialState = {
+	userId: null,
+	userRole: null,
+	token: null,
+	tokenExpirationDate: null,
+};
+
+// Reducer function
+const reducer = (state, action) => {
+	switch (action.type) {
+		case 'user-id-change':
+			return { ...state, userId: action.payload };
+		case 'user-role-change':
+			return { ...state, userRole: action.payload };
+		case 'token-change':
+			return { ...state, token: action.payload };
+		case 'token-expiration-date-change':
+			return { ...state, tokenExpirationDate: action.payload };
+	}
+};
+
 let logoutTimer;
 
 const App = () => {
-	const [userId, setUserId] = useState(null);
-	const [userRole, setUserRole] = useState(null);
-	const [token, setToken] = useState(null);
-	const [tokenExpirationDate, setTokenExpirationDate] = useState(null);
+	const [state, dispatch] = useReducer(reducer, initialState);
 
 	const login = useCallback((id, role, token, expirationDate) => {
-		setUserId(id);
-		setUserRole(role);
-		setToken(token);
+		dispatch({ type: 'user-id-change', payload: id });
+		dispatch({ type: 'user-role-change', payload: role });
+		dispatch({ type: 'token-change', payload: token });
 		const tokenExpirationDate = expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60 * 24);
-		setTokenExpirationDate(tokenExpirationDate);
+		dispatch({ type: 'token-expiration-date-change', payload: expirationDate });
 		localStorage.setItem(
 			'userData',
 			JSON.stringify({ userId: id, userRole: role, token: token, expiration: tokenExpirationDate.toISOString() })
@@ -37,10 +55,10 @@ const App = () => {
 	}, []);
 
 	const logout = useCallback(() => {
-		setToken(null);
-		setTokenExpirationDate(null);
-		setUserId(null);
-		setUserRole(null);
+		dispatch({ type: 'token-change', payload: null });
+		dispatch({ type: 'token-expiration-date-change', payload: null });
+		dispatch({ type: 'user-id-change', payload: null });
+		dispatch({ type: 'user-role-change', payload: null });
 		localStorage.removeItem('userData');
 	}, []);
 
@@ -53,18 +71,18 @@ const App = () => {
 	}, [login]);
 
 	useEffect(() => {
-		if (token && tokenExpirationDate) {
-			const remainingTime = tokenExpirationDate.getTime() - new Date().getTime();
+		if (state.token && state.tokenExpirationDate) {
+			const remainingTime = state.tokenExpirationDate.getTime() - new Date().getTime();
 			logoutTimer = setTimeout(logout, remainingTime);
 		} else {
 			clearTimeout(logoutTimer);
 		}
-	}, [token, logout, tokenExpirationDate]);
+	}, [state.token, state.tokenExpirationDate, logout]);
 
 	return (
-		<AuthContext.Provider value={{ userId, userRole, token, login, logout }}>
+		<AuthContext.Provider value={{ userId: state.userId, userRole: state.userRole, token: state.token, login, logout }}>
 			<BrowserRouter>
-				{token && userRole === 'admin' ? (
+				{state.token && state.userRole === 'admin' ? (
 					<Routes>
 						<Route path="/" element={<AppSharedLayout />}>
 							<Route path="/tasks/all" element={<AllTasksPage />} />
@@ -74,7 +92,7 @@ const App = () => {
 							<Route index element={<HomePage />} />
 						</Route>
 					</Routes>
-				) : token && userRole === 'user' ? (
+				) : state.token && state.userRole === 'user' ? (
 					<Routes>
 						<Route path="/" element={<AppSharedLayout />}>
 							<Route path="/tasks" element={<TasksPage />} />
