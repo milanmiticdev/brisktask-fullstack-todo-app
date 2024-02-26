@@ -23,18 +23,18 @@
 	align-items: center;
 	gap: 0.5rem;
 	font-weight: bold;
-	color: #fafafa;
+	color: #ffffff;
 	text-decoration: none;
 	list-style: none;
 	cursor: pointer;
 }
 
 .listItem:hover {
-	color: #1e449e;
+	color: #5f8eff;
 }
 
 .active {
-	color: #1e449e;
+	color: #5f8eff;
 }
 
 .avatar {
@@ -46,13 +46,13 @@
 }
 
 .icon {
-	color: #fafafa;
+	color: #ffffff;
 	cursor: pointer;
 	font-size: 1.75rem;
 }
 
 .icon:hover {
-	color: #1e449e;
+	color: #5f8eff;
 }
 
 @media screen and (min-width: 400px) {

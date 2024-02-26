@@ -51,7 +51,7 @@
 	font-size: 1.5rem;
 	font-weight: bold;
 	text-align: right;
-	color: #1e449e;
+	color: #2c2c2c;
 	text-align: left;
 }
 
@@ -63,9 +63,9 @@
 	border-radius: 0.5rem;
 	font-size: 1.45rem;
 	font-weight: bold;
-	color: #3772ff;
-	background-color: #fafafa;
-	box-shadow: 0.1rem 0.1rem 0.9rem #3772ff;
+	color: #6b6b6b;
+	background-color: #ffffff;
+	box-shadow: 0.1rem 0.1rem 0.9rem #2c2c2c;
 }
 .inputReadOnly {
 	box-shadow: none;
@@ -90,24 +90,24 @@
 }
 
 .btn:hover {
-	opacity: 0.7;
+	opacity: 0.85;
 }
 
 .edit {
 	align-self: flex-end;
-	color: #fafafa;
-	background-color: #3772ff;
+	color: #ffffff;
+	background-color: #414141;
 }
 
 .save {
-	color: #fafafa;
+	color: #ffffff;
 	background-color: #1e449e;
-	box-shadow: 0.1rem 0.1rem 0.5rem #3772ff;
+	box-shadow: 0.1rem 0.1rem 0.5rem #2c2c2c;
 }
 
 .cancel {
 	color: #fafafa;
-	background-color: #e01a4f;
+	background-color: #ff3772;
 }
 
 @media screen and (min-width: 400px) {

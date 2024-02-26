@@ -31,7 +31,7 @@ const initialState = {
 	spinnerText: '',
 	modal: {
 		isOpen: false,
-		error: true,
+		error: false,
 		message: '',
 	},
 };

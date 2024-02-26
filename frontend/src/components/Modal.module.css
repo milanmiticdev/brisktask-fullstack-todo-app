@@ -19,9 +19,8 @@
 	gap: 3rem;
 	padding: 2rem;
 	border-radius: 1rem;
-	color: #3772ff;
-	background-color: #fafafa;
-	box-shadow: 0.1rem 0.1rem 1rem #3772ff;
+	background-color: #ffffff;
+	box-shadow: 0.1rem 0.1rem 1rem #2c2c2c;
 }
 
 .closeBtn {
@@ -33,9 +32,9 @@
 	cursor: pointer;
 	font-size: 1.5rem;
 	font-weight: bold;
-	color: #fafafa;
-	background-color: #3772ff;
-	box-shadow: 0.1rem 0.1rem 0.5rem #1e449e;
+	color: #ffffff;
+	background-color: #414141;
+	box-shadow: 0.1rem 0.1rem 0.5rem #2c2c2c;
 }
 
 .closeBtn:hover {
@@ -69,6 +68,7 @@
 .message {
 	font-size: 1.75rem;
 	font-weight: bold;
+	color: #2c2c2c;
 }
 
 @media screen and (min-width: 700px) {

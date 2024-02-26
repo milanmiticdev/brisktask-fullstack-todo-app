@@ -1,19 +1,19 @@
 .task {
 	width: 100%;
-	padding: 1rem;
+	padding: 2rem 1rem;
 	display: flex;
 	flex-flow: row wrap;
 	justify-content: center;
 	align-items: center;
-	background-color: #fafafa;
-	box-shadow: 0.1rem 0.1rem 0.5rem #3772ff;
+	background-color: #565656;
+	box-shadow: 0.1rem 0.1rem 0.5rem #2c2c2c;
 }
 
 .taskText {
 	width: 80%;
 	font-size: 1.25rem;
 	font-weight: bold;
-	color: #3772ff;
+	color: #ffffff;
 	text-align: left;
 }
 
@@ -37,11 +37,11 @@
 }
 
 .taskActionBtn:hover {
-	opacity: 0.7;
+	opacity: 0.6;
 }
 
 .editBtn {
-	color: #1e449e;
+	color: #5f8eff;
 }
 
 .deleteBtn {
@@ -56,11 +56,18 @@
 
 @media screen and (min-width: 500px) {
 	.task {
-		width: 50rem;
+		width: 45rem;
 		border-radius: 0.5rem;
 	}
 	.taskText {
 		font-size: 1.45rem;
+	}
+}
+
+@media screen and (min-width: 600px) {
+	.task {
+		width: 55rem;
+		padding: 2rem;
 	}
 }
 
@@ -88,5 +95,11 @@
 	}
 	.task-buttons {
 		justify-content: space-evenly;
+	}
+}
+
+@media screen and (min-width: 1200px) {
+	.task {
+		width: 100rem;
 	}
 }

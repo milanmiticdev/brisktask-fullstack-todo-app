@@ -16,7 +16,7 @@ const validateEmail = email => {
 	if (email && email.trim().length > 0) {
 		// Regular expression = email must be in the valid format
 		const regex =
-			/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+			/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 		if (regex.test(email.trim())) {
 			return {
@@ -76,29 +76,6 @@ const validatePassword = password => {
     */
 };
 
-const validateUserInput = state => {
-	if (!state.nameStatus) {
-		if (state.emailStatus.error || state.passwordStatus.error) {
-			return null;
-		} else {
-			return {
-				email: state.email,
-				password: state.password,
-			};
-		}
-	} else {
-		if (state.nameStatus.error || state.emailStatus.error || state.passwordStatus.error) {
-			return null;
-		} else {
-			return {
-				name: state.name,
-				email: state.email,
-				password: state.password,
-			};
-		}
-	}
-};
-
-const validation = { validateName, validateEmail, validatePassword, validateUserInput };
+const validation = { validateName, validateEmail, validatePassword };
 
 export default validation;

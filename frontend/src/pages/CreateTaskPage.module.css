@@ -30,7 +30,7 @@
 .label {
 	font-size: 1.5rem;
 	font-weight: bold;
-	color: #1e449e;
+	color: #2c2c2c;
 }
 
 .input {
@@ -41,9 +41,9 @@
 	border-radius: 0.5rem;
 	border: none;
 	outline: none;
-	color: #3772ff;
-	background-color: #fafafa;
-	box-shadow: 0.1rem 0.1rem 0.9rem #3772ff;
+	color: #6b6b6b;
+	background-color: #ffffff;
+	box-shadow: 0.1rem 0.1rem 0.9rem #2c2c2c;
 }
 
 .createBtn {
@@ -55,16 +55,16 @@
 	font-weight: bold;
 	cursor: ponter;
 	padding: 0.5rem 2rem;
+	cursor: pointer;
 	border: none;
 	border-radius: 0.5rem;
-	color: #fafafa;
+	color: #ffffff;
 	background-color: #1e449e;
-	box-shadow: 0.1rem 0.1rem 0.5rem #3772ff;
+	box-shadow: 0.1rem 0.1rem 0.5rem #2c2c2c;
 }
 
 .createBtn:hover {
-	opacity: 0.7;
-	cursor: pointer;
+	opacity: 0.85;
 }
 
 @media screen and (min-width: 400px) {

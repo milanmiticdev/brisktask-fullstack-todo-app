@@ -8,7 +8,7 @@
 	font-size: 2rem;
 	font-weight: bold;
 	overflow: hidden;
-	color: #3772ff;
+	color: #414141;
 	position: relative;
 }
 
@@ -22,11 +22,11 @@
 }
 
 .spinnerSectorTop {
-	border-top-color: #3772ff;
+	border-top-color: #414141;
 }
 
 .spinnerSectorBottom {
-	border-bottom-color: #3772ff;
+	border-bottom-color: #414141;
 }
 
 @keyframes rotate {
