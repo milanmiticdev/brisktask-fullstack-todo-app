@@ -82,7 +82,7 @@ const reducer = (state, action) => {
 
 const ProfilePage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
-	const { userId, userRole, token, login } = useContext(AuthContext);
+	const { userId, userRole, token, login, logout } = useContext(AuthContext);
 
 	const navigate = useNavigate();
 	const { validatePassword } = validation;
@@ -221,9 +221,34 @@ const ProfilePage = () => {
 		}
 	};
 
-	const deleteUser = async e => {
-		e.preventDefault();
-		console.log('delete user');
+	const deleteUser = async () => {
+		try {
+			dispatch({ type: 'loading-check', payload: true });
+			dispatch({ type: 'spinner-text-change', payload: 'Deleting' });
+
+			const response = await fetch(`http://localhost:5174/api/v1/users/${userId}`, {
+				method: 'DELETE',
+				body: null,
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (response.status === 204) {
+				logout();
+				navigate('/');
+			} else {
+				const data = await response.json();
+
+				dispatch({ type: 'spinner-text-change', payload: '' });
+				dispatch({ type: 'loading-check', payload: false });
+				dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
+			}
+		} catch {
+			dispatch({ type: 'spinner-text-change', payload: '' });
+			dispatch({ type: 'loading-check', payload: false });
+			dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
+		}
 	};
 
 	return (
