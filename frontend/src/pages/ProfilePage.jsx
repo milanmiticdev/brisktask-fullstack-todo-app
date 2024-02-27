@@ -43,7 +43,7 @@ const initialState = {
 	spinnerText: '',
 	modal: {
 		isOpen: false,
-		error: true,
+		error: false,
 		message: '',
 	},
 };
@@ -75,6 +75,8 @@ const reducer = (state, action) => {
 			return { ...state, message: action.payload };
 		case 'spinner-text-change':
 			return { ...state, spinnerText: action.payload };
+		case 'modal-change':
+			return { ...state, modal: action.payload };
 	}
 };
 
@@ -204,7 +206,9 @@ const ProfilePage = () => {
 			const data = await response.json();
 
 			if (data.status === 200) {
-				navigate(0);
+				dispatch({ type: 'spinner-text-change', payload: '' });
+				dispatch({ type: 'loading-check', payload: false });
+				dispatch({ type: 'modal-change', payload: { isOpen: true, error: false, message: data.message } });
 			} else {
 				dispatch({ type: 'spinner-text-change', payload: '' });
 				dispatch({ type: 'loading-check', payload: false });
