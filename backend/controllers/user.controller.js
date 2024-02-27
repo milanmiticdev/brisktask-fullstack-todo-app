@@ -1,4 +1,5 @@
-// jsonwebtoken
+// bcrypt and jsonwebtoken
+import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 // Database pool
@@ -80,7 +81,7 @@ const getUserById = async (req, res, next) => {
 		}
 	} else {
 		if (Number(userId) !== userData.id) {
-			return res.status(401).json({ message: 'Forbidden Access - Not Authenticated.', status: 401 });
+			return res.status(403).json({ message: 'Forbidden Access - Not Authorized.', status: 403 });
 		} else {
 			try {
 				const sql = 'SELECT * FROM users WHERE id = ?';
@@ -131,10 +132,7 @@ const createUser = async (req, res, next) => {
 						const [result] = await pool.query(sql, [name.trim(), email.trim(), await bcrypt.hash(password.trim(), 12)]);
 
 						if (result && result.affectedRows !== 0) {
-							return res.status(201).json({
-								message: 'User created.',
-								status: 201,
-							});
+							return res.status(201).json({ message: 'User created.', status: 201 });
 						} else {
 							throw new ApiError(500, 'Something went wrong.');
 						}
@@ -149,11 +147,7 @@ const createUser = async (req, res, next) => {
 			return res.status(403).json({ message: 'Forbidden Access - Not authorized.', status: 403 });
 		}
 	} else {
-		return res.status(400).json({
-			message: 'Invalid inputs.',
-			status: { nameStatus, emailStatus, passwordStatus },
-			status: 400,
-		});
+		return res.status(400).json({ message: 'Invalid inputs.', status: { nameStatus, emailStatus, passwordStatus }, status: 400 });
 	}
 };
 
@@ -181,10 +175,7 @@ const updateUserById = async (req, res, next) => {
 						const [result] = await pool.query(sql, [name.trim(), email.trim(), Number(userId)]);
 
 						if (result && result.affectedRows !== 0) {
-							return res.status(200).json({
-								message: 'User updated.',
-								status: 200,
-							});
+							return res.status(200).json({ message: 'User updated.', status: 200 });
 						} else {
 							throw new ApiError(500, 'Something went wrong.');
 						}
@@ -197,7 +188,7 @@ const updateUserById = async (req, res, next) => {
 			}
 		} else {
 			if (Number(userId) !== userData.id) {
-				return res.status(401).json({ message: 'Forbidden Access - Not Authenticated.', status: 401 });
+				return res.status(403).json({ message: 'Forbidden Access - Not Authorized.', status: 403 });
 			} else {
 				try {
 					const sql = 'SELECT * FROM users WHERE id = ?';
@@ -213,10 +204,7 @@ const updateUserById = async (req, res, next) => {
 								const [result] = await pool.query(sql, [name.trim(), userData.id]);
 
 								if (result && result.affectedRows !== 0) {
-									return res.status(200).json({
-										message: 'User updated.',
-										status: 200,
-									});
+									return res.status(200).json({ message: 'User updated.', status: 200 });
 								} else {
 									throw new ApiError(500, 'Something went wrong.');
 								}
@@ -233,16 +221,10 @@ const updateUserById = async (req, res, next) => {
 									const token = jwt.sign(
 										{ userId: userData.id, userEmail: email.trim(), userRole: userData.role },
 										jwtSecret,
-										{
-											expiresIn: jwtExpires,
-										}
+										{ expiresIn: jwtExpires }
 									);
 
-									return res.status(200).json({
-										token,
-										message: 'User updated.',
-										status: 200,
-									});
+									return res.status(200).json({ token, message: 'User updated.', status: 200 });
 								} else {
 									throw new ApiError(500, 'Something went wrong.');
 								}
@@ -257,11 +239,7 @@ const updateUserById = async (req, res, next) => {
 			}
 		}
 	} else {
-		return res.status(400).json({
-			message: 'Invalid inputs.',
-			status: { nameStatus, emailStatus },
-			status: 400,
-		});
+		return res.status(400).json({ message: 'Invalid inputs.', status: { nameStatus, emailStatus }, status: 400 });
 	}
 };
 
@@ -297,7 +275,7 @@ const deleteUserById = async (req, res, next) => {
 		}
 	} else {
 		if (Number(userId) !== userData.id) {
-			return res.status(401).json({ message: 'Forbidden Access - Not authenticated.', status: 404 });
+			return res.status(403).json({ message: 'Forbidden Access - Not authorized.', status: 403 });
 		} else {
 			try {
 				const sql = 'SELECT * FROM users WHERE id = ?';
@@ -326,12 +304,79 @@ const deleteUserById = async (req, res, next) => {
 	}
 };
 
-const controller = {
-	getAllUsers: getAllUsers,
-	getUserById: getUserById,
-	createUser: createUser,
-	updateUserById: updateUserById,
-	deleteUserById: deleteUserById,
+const changePassword = async (req, res, next) => {
+	const { password, confirmPassword } = req.body;
+	const { userId } = req.params();
+	const userData = req.userData;
+
+	const passwordStatus = validatePassword(password);
+	const confirmPasswordStatus = validatePassword(confirmPassword);
+
+	if (!passwordStatus.error && !confirmPasswordStatus.error) {
+		if (password.trim() === confirmPassword.trim()) {
+			if (!userId) {
+				return res.status(400).json({ message: 'No user id.', status: 400 });
+			} else if (userData.role === 'admin') {
+				try {
+					const sql = 'SELECT * FROM users WHERE id = ?';
+					const [[result]] = await pool.query(sql, Number(userId));
+
+					if (!result) {
+						throw new ApiError(404, `User doesn't exist.`);
+					} else {
+						try {
+							const sql = 'UPDATE users SET password = ? WHERE id = ?';
+							const [result] = await pool.query(sql, [await bcrypt.hash(password.trim(), 12), Number(userId)]);
+
+							if (result && result.affectedRows !== 0) {
+								return res.status(200).json({ message: 'Password updated.', status: 200 });
+							} else {
+								throw new ApiError(500, 'Something went wrong.');
+							}
+						} catch (error) {
+							return next(error);
+						}
+					}
+				} catch (error) {
+					return next(error);
+				}
+			} else {
+				return res.status(400).json({ message: `Passwords don't match.`, status: 400 });
+			}
+		} else {
+			if (Number(userId) !== userData.id) {
+				return res.status(403).json({ message: 'Forbidden Access - Not Authorized.', status: 403 });
+			} else {
+				try {
+					const sql = 'SELECT * FROM users WHERE id = ?';
+					const [[result]] = await pool.query(sql, userData.id);
+
+					if (!result) {
+						throw new ApiError(404, `User doesn't exist.`);
+					} else {
+						try {
+							const sql = 'UPDATE users SET password = ? WHERE id = ?';
+							const [result] = await pool.query(sql, [await bcrypt.hash(password.trim(), 12), userData.id]);
+
+							if (result && result.affectedRows !== 0) {
+								return res.status(200).json({ message: 'Password updated.', status: 200 });
+							} else {
+								throw new ApiError(500, 'Something went wrong.');
+							}
+						} catch (error) {
+							return next(error);
+						}
+					}
+				} catch (error) {
+					return next(error);
+				}
+			}
+		}
+	} else {
+		return res.status(400).json({ message: 'Invalid inputs.', status: { passwordStatuss, confirmPasswordStatus }, status: 400 });
+	}
 };
+
+const controller = { getAllUsers, getUserById, createUser, updateUserById, deleteUserById, changePassword };
 
 export default controller;

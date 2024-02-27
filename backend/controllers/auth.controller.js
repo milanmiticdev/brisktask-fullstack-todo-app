@@ -47,11 +47,7 @@ const login = async (req, res, next) => {
 			return next(error);
 		}
 	} else {
-		return res.status(400).json({
-			message: 'Invalid inputs.',
-			state: { emailState, passwordState },
-			status: 400,
-		});
+		return res.status(400).json({ message: 'Invalid inputs.', state: { emailState, passwordState }, status: 400 });
 	}
 };
 
@@ -98,11 +94,7 @@ const register = async (req, res, next) => {
 			return next(error);
 		}
 	} else {
-		return res.status(400).json({
-			message: 'Invalid inputs.',
-			state: { nameState, emailState, passwordState },
-			status: 400,
-		});
+		return res.status(400).json({ message: 'Invalid inputs.', state: { nameState, emailState, passwordState }, status: 400 });
 	}
 };
 
