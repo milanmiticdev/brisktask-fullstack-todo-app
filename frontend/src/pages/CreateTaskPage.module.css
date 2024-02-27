@@ -46,27 +46,6 @@
 	box-shadow: 0.1rem 0.1rem 0.9rem #2c2c2c;
 }
 
-.createBtn {
-	display: flex;
-	flex-flow: row wrap;
-	justify-content: center;
-	align-items: center;
-	font-size: 1.75rem;
-	font-weight: bold;
-	cursor: ponter;
-	padding: 0.5rem 2rem;
-	cursor: pointer;
-	border: none;
-	border-radius: 0.5rem;
-	color: #ffffff;
-	background-color: #1e449e;
-	box-shadow: 0.1rem 0.1rem 0.5rem #2c2c2c;
-}
-
-.createBtn:hover {
-	opacity: 0.85;
-}
-
 @media screen and (min-width: 400px) {
 	.form {
 		gap: 1.5rem;
@@ -80,9 +59,6 @@
 	}
 	.span {
 		font-size: 1.75rem;
-	}
-	.createBtn {
-		font-size: 2rem;
 	}
 }
 
@@ -107,9 +83,6 @@
 	.span {
 		height: 3rem;
 		font-size: 2rem;
-	}
-	.createBtn {
-		font-size: 2.25rem;
 	}
 }
 

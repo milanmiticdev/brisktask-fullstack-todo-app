@@ -8,7 +8,6 @@ import AuthContext from './contexts/AuthContext.js';
 // Pages
 import AppSharedLayout from './pages/AppSharedLayout.jsx';
 import HomePage from './pages/HomePage.jsx';
-import AllTasksPage from './pages/AllTasksPage.jsx';
 import TasksPage from './pages/TasksPage.jsx';
 import CreateTaskPage from './pages/CreateTaskPage.jsx';
 import UpdateTaskPage from './pages/UpdateTaskPage.jsx';
@@ -85,7 +84,6 @@ const App = () => {
 				{state.token && state.userRole === 'admin' ? (
 					<Routes>
 						<Route path="/" element={<AppSharedLayout />}>
-							<Route path="/tasks/all" element={<AllTasksPage />} />
 							<Route path="/update-task/:taskId" element={<UpdateTaskPage />} />
 							<Route path="/create-task" element={<CreateTaskPage />} />
 							<Route path="/dashboard" element={<AdminDashboardPage />} />

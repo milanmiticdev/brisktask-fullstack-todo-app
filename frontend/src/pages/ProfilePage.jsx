@@ -8,11 +8,14 @@ import { useNavigate } from 'react-router-dom';
 import AuthContext from './../contexts/AuthContext.js';
 
 // Components
+import FormField from './../components/FormField.jsx';
+import FormBtn from './../components/FormBtn.jsx';
 import Modal from './../components/Modal.jsx';
 import Spinner from './../components/Spinner.jsx';
 import Message from '../components/Message.jsx';
 
 // Utils
+import validation from '../utils/validation.js';
 import UTCtoLocal from './../utils/UTCtoLocal.js';
 
 // Styles
@@ -23,6 +26,16 @@ const initialState = {
 	user: {},
 	inputName: '',
 	inputEmail: '',
+	password: '',
+	passwordStatus: {
+		error: false,
+		message: '',
+	},
+	confirmPassword: '',
+	confirmPasswordStatus: {
+		error: false,
+		message: '',
+	},
 	loading: false,
 	error: false,
 	isEditing: false,
@@ -44,6 +57,14 @@ const reducer = (state, action) => {
 			return { ...state, inputName: action.payload };
 		case 'email-change':
 			return { ...state, inputEmail: action.payload };
+		case 'password-field-change':
+			return { ...state, password: action.payload };
+		case 'password-status-change':
+			return { ...state, passwordStatus: action.payload };
+		case 'confirm-password-field-change':
+			return { ...state, confirmPassword: action.payload };
+		case 'confirm-password-status-change':
+			return { ...state, confirmPasswordStatus: action.payload };
 		case 'loading-check':
 			return { ...state, loading: action.payload };
 		case 'error-check':
@@ -62,6 +83,7 @@ const ProfilePage = () => {
 	const { userId, userRole, token, login } = useContext(AuthContext);
 
 	const navigate = useNavigate();
+	const { validatePassword } = validation;
 
 	const handleEditBtn = () => {
 		dispatch({ type: 'is-editing', payload: true });
@@ -159,65 +181,137 @@ const ProfilePage = () => {
 		}
 	};
 
+	const changePassword = async e => {
+		e.preventDefault();
+
+		const changedPassword = {
+			password: state.password,
+			confirmPassword: state.confirmPassword,
+		};
+
+		try {
+			dispatch({ type: 'loading-check', payload: true });
+			dispatch({ type: 'spinner-text-change', payload: 'Updating' });
+
+			const response = await fetch(`http://localhost:5174/api/v1/users/change-password/${userId}`, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify(changedPassword),
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				navigate(0);
+			} else {
+				dispatch({ type: 'spinner-text-change', payload: '' });
+				dispatch({ type: 'loading-check', payload: false });
+				dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
+			}
+		} catch {
+			dispatch({ type: 'spinner-text-change', payload: '' });
+			dispatch({ type: 'loading-check', payload: false });
+			dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
+		}
+	};
+
+	const deleteUser = async e => {
+		e.preventDefault();
+		console.log('delete user');
+	};
+
 	return (
-		<section className={state.loading ? `${styles.loading}` : `${styles.profile}`}>
+		<main className={state.loading ? `${styles.loading}` : `${styles.profile}`}>
 			{state.loading && <Spinner text={state.spinnerText} />}
 			{!state.loading && state.error && <Message message={state.message} />}
 			{!state.loading && !state.error && state.user && (
-				<div className={styles.info}>
-					<button className={`${styles.btn} ${styles.edit}`} onClick={handleEditBtn}>
-						EDIT
-					</button>
-					<form onSubmit={updateUser} className={styles.form}>
-						<div className={styles.block}>
-							<label className={styles.label}>NAME</label>
-							<input
-								className={state.isEditing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
-								value={state.inputName}
-								onChange={e => {
-									dispatch({ type: 'name-change', payload: e.target.value });
-								}}
-								readOnly={state.isEditing ? false : true}
-							/>
-						</div>
-						<div className={styles.block}>
-							<label className={styles.label}>EMAIL</label>
-							<input
-								className={state.isEditing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
-								value={state.inputEmail}
-								onChange={e => {
-									dispatch({ type: 'email-change', payload: e.target.value });
-								}}
-								readOnly={state.isEditing ? false : true}
-							/>
-						</div>
-						<div className={styles.block}>
-							<label className={styles.label}>ROLE</label>
-							<input className={`${styles.input} ${styles.inputReadOnly}`} value={state.user.role} readOnly={true} />
-						</div>
-						<div className={styles.block}>
-							<label className={styles.label}>CREATED</label>
-							<input
-								className={`${styles.input} ${styles.inputReadOnly}`}
-								value={`${UTCtoLocal(state.user.createdAt).date} ${UTCtoLocal(state.user.createdAt).time}`}
-								readOnly={true}
-							/>
-						</div>
-						{state.isEditing && (
-							<div className={styles.submitBtns}>
-								<button type="submit" className={`${styles.btn} ${styles.save}`}>
-									SAVE
-								</button>
-								<button className={`${styles.btn} ${styles.cancel}`} onClick={handleCancelBtn}>
-									CANCEL
-								</button>
+				<>
+					<section className={styles.section}>
+						<h2 className={styles.heading}>PROFILE INFO</h2>
+						<form onSubmit={updateUser} className={styles.infoForm}>
+							<div className={styles.block}>
+								<label className={styles.label}>NAME</label>
+								<input
+									className={state.isEditing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
+									value={state.inputName}
+									onChange={e => {
+										dispatch({ type: 'name-change', payload: e.target.value });
+									}}
+									readOnly={state.isEditing ? false : true}
+								/>
 							</div>
-						)}
-					</form>
-				</div>
+							<div className={styles.block}>
+								<label className={styles.label}>EMAIL</label>
+								<input
+									className={state.isEditing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
+									value={state.inputEmail}
+									onChange={e => {
+										dispatch({ type: 'email-change', payload: e.target.value });
+									}}
+									readOnly={state.isEditing ? false : true}
+								/>
+							</div>
+							<div className={styles.block}>
+								<label className={styles.label}>ROLE</label>
+								<input className={`${styles.input} ${styles.inputReadOnly}`} value={state.user.role} readOnly={true} />
+							</div>
+							<div className={styles.block}>
+								<label className={styles.label}>CREATED</label>
+								<input
+									className={`${styles.input} ${styles.inputReadOnly}`}
+									value={`${UTCtoLocal(state.user.createdAt).date} ${UTCtoLocal(state.user.createdAt).time}`}
+									readOnly={true}
+								/>
+							</div>
+							<div className={styles.infoFormBtns}>
+								{!state.isEditing && <FormBtn text="EDIT" color="gray" onClick={handleEditBtn} />}
+								{state.isEditing && (
+									<>
+										<FormBtn text="SAVE" color="blue" />
+										<FormBtn text="X" color="red" onClick={handleCancelBtn} />
+									</>
+								)}
+							</div>
+						</form>
+					</section>
+					<section className={styles.section}>
+						<h2 className={styles.heading}>CHANGE PASSWORD</h2>
+						<form onSubmit={changePassword} className={styles.passwordForm}>
+							<FormField
+								htmlFor="password"
+								type="password"
+								id="password"
+								name="new password"
+								fieldChangeType="password-field-change"
+								statusChangeType="password-status-change"
+								onValidate={validatePassword}
+								onDispatch={dispatch}
+								message={state.passwordStatus.message}
+							/>
+							<FormField
+								htmlFor="confirm-password"
+								type="password"
+								id="confirm-password"
+								name="confirm password"
+								fieldChangeType="confirm-password-field-change"
+								statusChangeType="confirm-password-status-change"
+								onValidate={validatePassword}
+								onDispatch={dispatch}
+								message={state.confirmPasswordStatus.message}
+							/>
+							<FormBtn text="CHANGE" color="blue" onClick={changePassword} />
+						</form>
+					</section>
+					<section className={styles.section}>
+						<h2 className={styles.heading}>DELETE ACCOUNT</h2>
+						<FormBtn text="DELETE" color="red" onClick={deleteUser} />
+					</section>
+				</>
 			)}
 			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
-		</section>
+		</main>
 	);
 };
 

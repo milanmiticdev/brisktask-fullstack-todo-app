@@ -8,6 +8,7 @@ import AuthContext from './../contexts/AuthContext.js';
 import { useNavigate } from 'react-router-dom';
 
 // Components
+import FormBtn from './../components/FormBtn.jsx';
 import Modal from './../components/Modal.jsx';
 import Spinner from './../components/Spinner.jsx';
 import Message from './../components/Message.jsx';
@@ -117,9 +118,7 @@ const CreateTaskPage = () => {
 						}}
 					/>
 					<Message message={state.status.message} />
-					<button className={styles.createBtn} type="submit">
-						CREATE
-					</button>
+					<FormBtn text="CREATE" color="blue" />
 				</form>
 			)}
 			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}

@@ -306,7 +306,7 @@ const deleteUserById = async (req, res, next) => {
 
 const changePassword = async (req, res, next) => {
 	const { password, confirmPassword } = req.body;
-	const { userId } = req.params();
+	const { userId } = req.params;
 	const userData = req.userData;
 
 	const passwordStatus = validatePassword(password);
@@ -327,6 +327,8 @@ const changePassword = async (req, res, next) => {
 						try {
 							const sql = 'UPDATE users SET password = ? WHERE id = ?';
 							const [result] = await pool.query(sql, [await bcrypt.hash(password.trim(), 12), Number(userId)]);
+
+							console.log(result);
 
 							if (result && result.affectedRows !== 0) {
 								return res.status(200).json({ message: 'Password changed.', status: 200 });

@@ -8,6 +8,7 @@ import AuthContext from './../contexts/AuthContext.js';
 import { useParams, useNavigate } from 'react-router-dom';
 
 // Components
+import FormBtn from './../components/FormBtn.jsx';
 import Modal from './../components/Modal.jsx';
 import Spinner from './../components/Spinner.jsx';
 import Message from './../components/Message.jsx';
@@ -160,9 +161,7 @@ const UpdateTaskPage = () => {
 						}}
 					/>
 					<Message message={state.status.message} />
-					<button className={styles.updateBtn} type="submit">
-						UPDATE
-					</button>
+					<FormBtn text="UPDATE" color="blue" />
 				</form>
 			)}
 			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}

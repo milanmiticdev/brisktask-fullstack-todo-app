@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 // Components
 import FormField from './FormField.jsx';
+import FormBtn from './FormBtn.jsx';
 
 // Utils
 import validation from '../utils/validation.js';
@@ -117,9 +118,7 @@ const LoginForm = ({ formWrapperDispatch }) => {
 				onDispatch={dispatch}
 				message={state.passwordStatus.message}
 			/>
-			<button type="submit" className={styles.formSubmit}>
-				LOGIN
-			</button>
+			<FormBtn text="LOGIN" color="blue" />
 		</form>
 	);
 };
