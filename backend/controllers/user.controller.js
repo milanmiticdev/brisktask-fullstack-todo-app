@@ -329,7 +329,7 @@ const changePassword = async (req, res, next) => {
 							const [result] = await pool.query(sql, [await bcrypt.hash(password.trim(), 12), Number(userId)]);
 
 							if (result && result.affectedRows !== 0) {
-								return res.status(200).json({ message: 'Password updated.', status: 200 });
+								return res.status(200).json({ message: 'Password changed.', status: 200 });
 							} else {
 								throw new ApiError(500, 'Something went wrong.');
 							}
@@ -359,7 +359,7 @@ const changePassword = async (req, res, next) => {
 							const [result] = await pool.query(sql, [await bcrypt.hash(password.trim(), 12), userData.id]);
 
 							if (result && result.affectedRows !== 0) {
-								return res.status(200).json({ message: 'Password updated.', status: 200 });
+								return res.status(200).json({ message: 'Password changed.', status: 200 });
 							} else {
 								throw new ApiError(500, 'Something went wrong.');
 							}
@@ -373,7 +373,7 @@ const changePassword = async (req, res, next) => {
 			}
 		}
 	} else {
-		return res.status(400).json({ message: 'Invalid inputs.', status: { passwordStatuss, confirmPasswordStatus }, status: 400 });
+		return res.status(400).json({ message: 'Invalid inputs.', status: { passwordStatus, confirmPasswordStatus }, status: 400 });
 	}
 };
 
