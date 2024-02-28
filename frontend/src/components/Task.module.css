@@ -5,16 +5,17 @@
 	flex-flow: row wrap;
 	justify-content: center;
 	align-items: center;
+	gap: 6%;
 	background-color: #565656;
 	box-shadow: 0.1rem 0.1rem 0.5rem #2c2c2c;
 }
 
 .taskText {
-	width: 80%;
+	width: 74%;
 	font-size: 1.25rem;
 	font-weight: bold;
 	color: #ffffff;
-	text-align: left;
+	text-align: justify;
 }
 
 .taskButtons {
@@ -49,7 +50,14 @@
 }
 
 @media screen and (min-width: 400px) {
+	.task {
+		gap: 2%;
+	}
+	.taskText {
+		width: 78%;
+	}
 	.taskButtons {
+		width: 20%;
 		justify-content: space-around;
 	}
 }

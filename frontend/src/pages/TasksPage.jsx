@@ -75,7 +75,7 @@ const TasksPage = () => {
 				} else {
 					dispatch({ type: 'message-change', payload: data.message });
 					dispatch({ type: 'spinner-text-change', payload: '' });
-					dispatch({ type: 'error-check', payload: false });
+					dispatch({ type: 'error-check', payload: true });
 					dispatch({ type: 'loading-check', payload: false });
 				}
 			} catch {
