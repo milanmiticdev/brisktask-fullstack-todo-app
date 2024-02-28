@@ -1,0 +1,19 @@
+.row th,
+td {
+	border: 0.1rem solid #ababab;
+}
+
+.viewBtn {
+	padding: 0.3rem 0.5rem;
+	border: none;
+	border-radius: 0.2rem;
+	color: #ffffff;
+	background-color: #1e449e;
+	box-shadow: 0.1rem 0.1rem 0.5rem #2c2c2c;
+}
+
+@media screen and (min-width: 600px) {
+	.viewBtn {
+		padding: 0.5rem 1rem;
+	}
+}

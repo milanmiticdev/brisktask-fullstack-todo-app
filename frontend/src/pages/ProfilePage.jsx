@@ -253,6 +253,7 @@ const ProfilePage = () => {
 
 	return (
 		<main className={state.loading ? `${styles.loading}` : `${styles.profile}`}>
+			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
 			{state.loading && <Spinner text={state.spinnerText} />}
 			{!state.loading && state.error && <Message message={state.message} />}
 			{!state.loading && !state.error && state.user && (
@@ -339,7 +340,6 @@ const ProfilePage = () => {
 					</section>
 				</>
 			)}
-			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
 		</main>
 	);
 };
