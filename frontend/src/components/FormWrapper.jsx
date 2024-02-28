@@ -13,7 +13,7 @@ import Modal from './Modal.jsx';
 import styles from './FormWrapper.module.css';
 
 const initialState = {
-	activeTab: 'login',
+	category: 'login',
 	loading: false,
 	spinnerText: '',
 	modal: {
@@ -25,8 +25,8 @@ const initialState = {
 
 const reducer = (state, action) => {
 	switch (action.type) {
-		case 'active-tab-change':
-			return { ...state, activeTab: action.payload };
+		case 'category-change':
+			return { ...state, category: action.payload };
 		case 'loading-check':
 			return { ...state, loading: action.payload };
 		case 'spinner-text-change':
@@ -45,17 +45,17 @@ const Form = () => {
 			{!state.loading && (
 				<TabsToggle>
 					<Tab
-						activeTab={state.activeTab}
+						category={state.category}
 						dispatch={dispatch}
-						type="active-tab-change"
+						type="category-change"
 						payload="login"
 						position="left"
 						text="LOGIN"
 					/>
 					<Tab
-						activeTab={state.activeTab}
+						category={state.category}
 						dispatch={dispatch}
-						type="active-tab-change"
+						type="category-change"
 						payload="register"
 						position="right"
 						text="REGISTER"
@@ -63,7 +63,7 @@ const Form = () => {
 				</TabsToggle>
 			)}
 			{!state.loading &&
-				(state.activeTab === 'login' ? (
+				(state.category === 'login' ? (
 					<LoginForm formWrapperDispatch={dispatch} />
 				) : (
 					<RegisterForm formWrapperDispatch={dispatch} />

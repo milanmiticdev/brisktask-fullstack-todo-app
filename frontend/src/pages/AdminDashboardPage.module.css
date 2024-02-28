@@ -5,7 +5,7 @@
 	flex-flow: column wrap;
 	justify-content: flex-start;
 	align-items: center;
-	gap: 3rem;
+	gap: 1rem;
 }
 
 .loading {

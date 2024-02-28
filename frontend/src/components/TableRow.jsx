@@ -1,3 +1,6 @@
+// React Router
+import { Link } from 'react-router-dom';
+
 // Font Awesome Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
@@ -24,7 +27,9 @@ const TableRow = ({ category, parent, id, email }) => {
 					<th scope="row">{id}</th>
 					<td>{email}</td>
 					<td>
-						<button className={styles.viewBtn}>View</button>
+						<Link to={category === 'users' ? `/dashboard/users/${id}` : `/dashboard/tasks/${id}`}>
+							<button className={styles.viewBtn}>View</button>
+						</Link>
 					</td>
 				</tr>
 			)}

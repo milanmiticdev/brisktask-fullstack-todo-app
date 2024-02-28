@@ -69,13 +69,17 @@ const AdminActions = ({ category, isSelecting, dispatch }) => {
 
 	return (
 		<section className={styles.selection}>
-			<SelectBtn text="SELECT" dispatch={dispatch} />
+			{category === 'users' ? (
+				<SelectBtn text="SELECT USER ACTION" dispatch={dispatch} />
+			) : (
+				<SelectBtn text="SELECT TASK ACTION" dispatch={dispatch} />
+			)}
 			{isSelecting && (
 				<div className={styles.actions} ref={selectRef}>
 					<SelectOption text={category === 'users' ? 'GET ALL USERS' : 'GET ALL TASKS'} dispatch={dispatch} onClick={getAll} />
 					{category === 'tasks' && <SelectOption text="GET TASKS BY USER" dispatch={dispatch} />}
 					<SelectOption text={category === 'users' ? 'GET SINGLE USER' : 'GET SINGLE TASK'} dispatch={dispatch} />
-					<SelectOption text={category === 'users' ? 'CREATE USER' : 'CREATE TASK'} dispatch={dispatch} />
+					{category === 'users' && <SelectOption text="CREATE USER" dispatch={dispatch} />}
 				</div>
 			)}
 		</section>

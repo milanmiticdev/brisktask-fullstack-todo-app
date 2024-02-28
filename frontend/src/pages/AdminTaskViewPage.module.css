@@ -1,0 +1,200 @@
+.taskViewPage {
+	min-height: calc(100vh - 7rem);
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 3rem;
+	padding: 2rem;
+	text-align: center;
+}
+
+.loading {
+	min-height: calc(100vh - 7rem);
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+}
+
+.section {
+	width: 26rem;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	padding-bottom: 3rem;
+	gap: 2rem;
+	border-bottom: 0.1rem dashed #6b6b6b;
+}
+
+.section:last-child {
+	border: none;
+}
+
+.infoForm {
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 1rem;
+}
+
+.block {
+	width: 100%;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+}
+
+.label {
+	width: 26%;
+	font-size: 1.5rem;
+	font-weight: bold;
+	text-align: right;
+	color: #2c2c2c;
+	text-align: left;
+}
+
+.input {
+	width: 74%;
+	padding: 0.5rem 1rem;
+	outline: none;
+	border: none;
+	border-radius: 0.5rem;
+	font-size: 1.5rem;
+	font-weight: bold;
+	color: #6b6b6b;
+	background-color: #ffffff;
+	box-shadow: 0.1rem 0.1rem 0.9rem #2c2c2c;
+}
+.inputReadOnly {
+	box-shadow: none;
+}
+
+.infoFormBtns {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 2.5rem;
+}
+
+.heading {
+	font-size: 2rem;
+	font-weight: bold;
+	color: #5f8eff;
+}
+
+.changePassword {
+	width: 26rem;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 2rem;
+	padding-bottom: 3rem;
+	border-bottom: 0.1rem solid #6b6b6b;
+}
+
+.passwordForm {
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 1rem;
+}
+
+@media screen and (min-width: 400px) {
+	.section {
+		width: 36rem;
+	}
+	.infoForm {
+		gap: 1.25rem;
+	}
+	.passwordForm {
+		gap: 1.25rem;
+	}
+	.label {
+		font-size: 1.75rem;
+		width: 22%;
+	}
+	.input {
+		font-size: 1.75rem;
+		width: 78%;
+	}
+	.heading {
+		font-size: 2.1rem;
+	}
+}
+
+@media screen and (min-width: 500px) {
+	.taskViewPage {
+		min-height: calc(100vh - 8.5rem);
+		gap: 3.5rem;
+	}
+	.loading {
+		min-height: calc(100vh - 8.5rem);
+	}
+	.section {
+		width: 46rem;
+		gap: 2.5rem;
+		padding-bottom: 3.5rem;
+	}
+	.infoForm {
+		gap: 1.5rem;
+	}
+	.passwordForm {
+		gap: 1.5rem;
+	}
+	.block {
+		gap: 1%;
+	}
+	.label {
+		font-size: 2rem;
+		width: 19%;
+	}
+	.input {
+		font-size: 2rem;
+		width: 80%;
+	}
+	.btn {
+		font-size: 1.75rem;
+	}
+	.heading {
+		font-size: 2.2rem;
+	}
+}
+
+@media screen and (min-width: 600px) {
+	.infoForm {
+		gap: 1.75rem;
+	}
+}
+
+@media screen and (min-width: 700px) {
+	.btn {
+		font-size: 2rem;
+	}
+}
+
+@media screen and (min-width: 800px) {
+	.section {
+		gap: 3rem;
+	}
+	.infoForm {
+		gap: 2rem;
+	}
+	.btn {
+		font-size: 2rem;
+	}
+	.heading {
+		font-size: 2.4rem;
+	}
+}

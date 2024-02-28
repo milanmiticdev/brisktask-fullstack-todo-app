@@ -152,7 +152,7 @@ const createUser = async (req, res, next) => {
 };
 
 const updateUserById = async (req, res, next) => {
-	const { name, email } = req.body;
+	const { name, email, role } = req.body;
 	const { userId } = req.params;
 	const userData = req.userData;
 
@@ -171,13 +171,17 @@ const updateUserById = async (req, res, next) => {
 					throw new ApiError(404, `User doesn't exist.`);
 				} else {
 					try {
-						const sql = 'UPDATE users SET name = ?, email = ? WHERE id = ?';
-						const [result] = await pool.query(sql, [name.trim(), email.trim(), Number(userId)]);
+						if (role && (role.trim() === 'admin' || role.trim() === 'user')) {
+							const sql = 'UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?';
+							const [result] = await pool.query(sql, [name.trim(), email.trim(), role.trim(), Number(userId)]);
 
-						if (result && result.affectedRows !== 0) {
-							return res.status(200).json({ message: 'User updated.', status: 200 });
+							if (result && result.affectedRows !== 0) {
+								return res.status(200).json({ message: 'User updated.', status: 200 });
+							} else {
+								throw new ApiError(500, 'Something went wrong.');
+							}
 						} else {
-							throw new ApiError(500, 'Something went wrong.');
+							throw new ApiError(400, `Invalid user role.`);
 						}
 					} catch (error) {
 						return next(error);

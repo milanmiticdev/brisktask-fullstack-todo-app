@@ -14,6 +14,8 @@ import UpdateTaskPage from './pages/UpdateTaskPage.jsx';
 import AuthPage from './pages/AuthPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 import AdminDashboardPage from './pages/AdminDashboardPage.jsx';
+import AdminUserViewPage from './pages/AdminUserViewPage.jsx';
+import AdminTaskViewPage from './pages/AdminTaskViewPage.jsx';
 
 const initialState = {
 	userId: null,
@@ -84,8 +86,8 @@ const App = () => {
 				{state.token && state.userRole === 'admin' ? (
 					<Routes>
 						<Route path="/" element={<AppSharedLayout />}>
-							<Route path="/update-task/:taskId" element={<UpdateTaskPage />} />
-							<Route path="/create-task" element={<CreateTaskPage />} />
+							<Route path="/dashboard/users/:userId" element={<AdminUserViewPage />} />
+							<Route path="/dashboard/tasks/:taskId" element={<AdminTaskViewPage />} />
 							<Route path="/dashboard" element={<AdminDashboardPage />} />
 							<Route index element={<HomePage />} />
 						</Route>

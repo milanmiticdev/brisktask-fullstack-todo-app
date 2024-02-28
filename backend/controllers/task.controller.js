@@ -114,21 +114,21 @@ const getTaskById = async (req, res, next) => {
 			const sql = 'SELECT * FROM tasks WHERE id = ?';
 			const [[result]] = await pool.query(sql, [Number(taskId)]);
 
-			if (!result) {
-				throw new ApiError(404, 'Task not found');
-			} else {
+			if (result) {
 				return res.status(200).json({
 					message: 'Task fetched.',
 					task: {
 						id: result.id,
 						name: result.name,
 						userId: result.user_id,
-						userEmail: task.user_email,
+						userEmail: result.user_email,
 						createdAt: result.created_at,
 						updatedAt: result.updated_at,
 					},
 					status: 200,
 				});
+			} else {
+				throw new ApiError(404, 'Task not found');
 			}
 		} catch (error) {
 			return next(error);
@@ -149,6 +149,7 @@ const getTaskById = async (req, res, next) => {
 						id: result.id,
 						name: result.name,
 						userId: result.user_id,
+						userEmail: result.user_email,
 						createdAt: result.created_at,
 						updatedAt: result.updated_at,
 					},
@@ -198,6 +199,7 @@ const updateTaskById = async (req, res, next) => {
 	const { name } = req.body;
 	const userData = req.userData;
 	const nameStatus = validateName(name);
+	console.log(nameStatus);
 
 	if (!nameStatus.error) {
 		if (!taskId) {
