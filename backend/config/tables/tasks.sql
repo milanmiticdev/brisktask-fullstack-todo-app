@@ -6,5 +6,5 @@ CREATE TABLE tasks(
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_email) REFERENCES users(user_email) ON DELETE CASCADE
+    FOREIGN KEY (user_email) REFERENCES users(email) ON DELETE CASCADE
 );
