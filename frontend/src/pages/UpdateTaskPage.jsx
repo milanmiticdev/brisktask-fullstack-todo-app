@@ -99,8 +99,6 @@ const UpdateTaskPage = () => {
 						onDispatch={dispatch}
 						message={state.nameField.message}
 						fieldChange="name-field-change"
-						section=""
-						initial={state.nameField.value}
 					/>
 					<FormBtn text="UPDATE" color="blue" />
 				</Form>

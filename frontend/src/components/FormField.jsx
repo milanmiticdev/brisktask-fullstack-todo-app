@@ -1,5 +1,5 @@
 // React
-import { useRef, useReducer, useEffect } from 'react';
+import { useReducer, useEffect } from 'react';
 
 // Components
 import Message from './Message.jsx';
@@ -34,11 +34,8 @@ const reducer = (state, action) => {
 	}
 };
 
-const FormField = ({ field, type, onValidate, onDispatch, message, fieldChange, initial, section }) => {
-	const initialRef = useRef(initial);
+const FormField = ({ field, type, onValidate, onDispatch, message, fieldChange, section = '' }) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
-
-	console.log(initialRef.current);
 
 	const handlePasswordVisibility = () => {
 		dispatch({ type: 'password-visibility-change', payload: !state.passwordVisibility });
@@ -54,8 +51,8 @@ const FormField = ({ field, type, onValidate, onDispatch, message, fieldChange, 
 	}, [section]);
 
 	useEffect(() => {
-		dispatch({ type: 'field-change', payload: { value: initialRef.current, error: false, message: '' } });
-	}, [initialRef]);
+		onDispatch({ type: fieldChange, payload: { value: state.field.value, error: state.field.error, message: state.field.message } });
+	}, [state.field, fieldChange, onDispatch]);
 
 	return (
 		<div className={styles.formField}>
@@ -104,7 +101,6 @@ FormField.propTypes = {
 	onValidate: PropTypes.func,
 	onDispatch: PropTypes.func,
 	message: PropTypes.string,
-	section: PropTypes.string,
 	fieldChange: PropTypes.string,
-	initial: PropTypes.string,
+	section: PropTypes.string,
 };
