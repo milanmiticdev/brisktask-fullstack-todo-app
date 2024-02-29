@@ -75,6 +75,7 @@ const getTaskById = async (taskId, token, dispatch) => {
 
 		if (data.status === 200) {
 			dispatch({ type: 'result-fetched', payload: data.task });
+			dispatch({ type: 'name-field-change', payload: { value: data.task.name, error: false, message: '' } });
 			dispatch({ type: 'is-error', payload: false });
 			dispatch({ type: 'message-change', payload: '' });
 		} else {
@@ -124,7 +125,7 @@ const createTask = async (e, userId, token, state, dispatch, navigate) => {
 	}
 };
 
-const updateTaskById = async (e, taskId, token, userRole, navigate, dispatch, state = undefined) => {
+const updateTaskById = async (e, taskId, token, userRole, navigate, dispatch, state) => {
 	e.preventDefault();
 
 	if (userRole === 'admin' && state && state.result.name === state.nameField.value) {
@@ -135,7 +136,7 @@ const updateTaskById = async (e, taskId, token, userRole, navigate, dispatch, st
 			dispatch({ type: 'spinner-text-change', payload: 'Updating' });
 
 			const updatedTask = {
-				name: state.nameField,
+				name: state.nameField.value,
 			};
 
 			const response = await fetch(`http://localhost:5174/api/v1/tasks/${Number(taskId)}`, {

@@ -78,12 +78,8 @@ const UpdateTaskPage = () => {
 		handleGetTaskById();
 	}, [taskId, token, getTaskById]);
 
-	useEffect(() => {
-		dispatch({ type: 'name-field-change', payload: { value: state.result.name, error: false, message: '' } });
-	}, [state.result]);
-
 	const handleUpdateTaskById = async e => {
-		await updateTaskById(e, taskId, token, userRole, navigate, dispatch);
+		await updateTaskById(e, taskId, token, userRole, navigate, dispatch, state);
 	};
 
 	return (
@@ -99,6 +95,8 @@ const UpdateTaskPage = () => {
 						onDispatch={dispatch}
 						message={state.nameField.message}
 						fieldChange="name-field-change"
+						initial={state.nameField}
+						isUpdating={true}
 					/>
 					<FormBtn text="UPDATE" color="blue" />
 				</Form>

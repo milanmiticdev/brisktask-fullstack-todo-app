@@ -34,7 +34,17 @@ const reducer = (state, action) => {
 	}
 };
 
-const FormField = ({ field, type, onValidate, onDispatch, message, fieldChange, section = '' }) => {
+const FormField = ({
+	field,
+	type,
+	onValidate,
+	onDispatch,
+	message,
+	fieldChange,
+	section = '',
+	initial = { value: '', error: false, message: '' },
+	isUpdating = false,
+}) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
 	const handlePasswordVisibility = () => {
@@ -66,7 +76,7 @@ const FormField = ({ field, type, onValidate, onDispatch, message, fieldChange, 
 						type={state.passwordVisibility ? 'text' : type}
 						id={field}
 						name={field}
-						value={state.field.value}
+						value={isUpdating ? initial.value : state.field.value}
 						onChange={e => {
 							const validated = onValidate(e.target.value);
 							const change = {
@@ -74,7 +84,9 @@ const FormField = ({ field, type, onValidate, onDispatch, message, fieldChange, 
 								error: validated.error,
 								message: validated.message,
 							};
-							dispatch({ type: 'field-change', payload: change });
+							isUpdating
+								? onDispatch({ type: fieldChange, payload: change })
+								: dispatch({ type: 'field-change', payload: change });
 						}}
 					/>
 					{type === 'password' && (
@@ -103,4 +115,6 @@ FormField.propTypes = {
 	message: PropTypes.string,
 	fieldChange: PropTypes.string,
 	section: PropTypes.string,
+	initial: PropTypes.object,
+	isUpdating: PropTypes.bool,
 };
