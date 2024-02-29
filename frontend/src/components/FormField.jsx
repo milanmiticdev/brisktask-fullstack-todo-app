@@ -23,6 +23,12 @@ const FormField = ({ name, type, initial, onDispatch, fieldChange, onValidate, s
 	};
 
 	useEffect(() => {
+		if (onDispatch) {
+			onDispatch({ type: fieldChange, payload: field });
+		}
+	}, [field, fieldChange, onDispatch]);
+
+	useEffect(() => {
 		if (section) {
 			const reset = {
 				value: '',
@@ -53,14 +59,6 @@ const FormField = ({ name, type, initial, onDispatch, fieldChange, onValidate, s
 								error: readOnly ? prevState.error : onValidate(e.target.value).error,
 								message: readOnly ? prevState.message : onValidate(e.target.value).message,
 							}));
-							onDispatch({
-								type: fieldChange,
-								payload: {
-									value: readOnly ? field.value : e.target.value,
-									error: readOnly ? field.error : onValidate(e.target.value).error,
-									message: readOnly ? field.message : onValidate(e.target.value).message,
-								},
-							});
 						}}
 						readOnly={readOnly}
 						autoFocus={autoFocus}

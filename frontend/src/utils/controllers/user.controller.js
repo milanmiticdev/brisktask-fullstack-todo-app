@@ -59,10 +59,21 @@ const updateUserById = async (e, userId, userRole, token, state, dispatch, login
 	e.preventDefault();
 
 	try {
-		const updatedUser = {
-			name: state.nameField.value,
-			email: state.emailField.value,
-		};
+		let updatedUser;
+
+		if (userRole === 'user') {
+			updatedUser = {
+				name: state.nameField.value,
+				email: state.emailField.value,
+			};
+		} else {
+			updatedUser = {
+				name: state.nameField.value,
+				email: state.emailField.value,
+				role: state.roleField.value,
+			};
+		}
+
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Updating' });
 
@@ -75,10 +86,11 @@ const updateUserById = async (e, userId, userRole, token, state, dispatch, login
 			body: JSON.stringify(updatedUser),
 		});
 		const data = await response.json();
+		console.log(data);
 
 		if (data.status === 200) {
 			// If the email doesn't change there is no need to recreate token and login again
-			if (state.user.email === state.emailField.value) {
+			if (state.result.email === state.emailField.value) {
 				navigate(0);
 			} else {
 				if (userRole === 'user') {

@@ -17,7 +17,6 @@ import Spinner from './../components/Spinner.jsx';
 // Utils
 import userController from '../utils/controllers/user.controller.js';
 import validation from '../utils/validation.js';
-import UTCtoLocal from './../utils/UTCtoLocal.js';
 
 // Styles
 import styles from './ProfilePage.module.css';
@@ -123,7 +122,7 @@ const ProfilePage = () => {
 	return (
 		<main className={state.loading ? `${styles.loading}` : `${styles.profile}`}>
 			{state.loading && <Spinner text={state.spinner} />}
-			{state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
+			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && !state.error && state.result && Object.keys(state.result).length > 0 && (
 				<>
 					<section className={styles.section}>
@@ -147,14 +146,6 @@ const ProfilePage = () => {
 								onDispatch={dispatch}
 								onValidate={validateEmail}
 								readOnly={state.editing ? false : true}
-								autoFocus={false}
-							/>
-							<FormField name="role" type="text" initial={state.result.role} readOnly={true} autoFocus={false} />
-							<FormField
-								name="created"
-								type="text"
-								initial={`${UTCtoLocal(state.result.createdAt).date} ${UTCtoLocal(state.result.createdAt).time}`}
-								readOnly={true}
 								autoFocus={false}
 							/>
 							<div className={styles.formBtns}>

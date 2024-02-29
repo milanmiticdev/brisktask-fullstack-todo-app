@@ -13,7 +13,7 @@ import styles from './AdminDashboardPage.module.css';
 const initialState = {
 	result: null,
 	loading: false,
-	spinnerText: '',
+	spinner: '',
 	modal: {
 		open: false,
 		error: false,
@@ -23,11 +23,11 @@ const initialState = {
 
 const reducer = (state, action) => {
 	switch (action.type) {
-		case 'result-fetched':
+		case 'result-change':
 			return { ...state, result: action.payload };
-		case 'is-loading':
+		case 'loading-change':
 			return { ...state, loading: action.payload };
-		case 'spinner-text-change':
+		case 'spinner-change':
 			return { ...state, spinnerText: action.payload };
 		case 'modal-change':
 			return { ...state, modal: action.payload };
@@ -40,7 +40,7 @@ const AdminDashboardPage = () => {
 	return (
 		<main className={state.loading ? `${styles.loading}` : `${styles.dashboardPage}`}>
 			{state.loading && <Spinner text={state.spinnerText} />}
-			{state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
+			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && <AdminActions onDispatch={dispatch} />}
 			{!state.loading && state.result && <Table result={state.result} />}
 		</main>

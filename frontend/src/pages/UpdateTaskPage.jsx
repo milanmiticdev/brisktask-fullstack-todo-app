@@ -81,6 +81,7 @@ const UpdateTaskPage = () => {
 	return (
 		<section className={state.loading ? `${styles.loading}` : `${styles.updateTaskPage}`}>
 			{state.loading && <Spinner text={state.spinner} />}
+			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && !state.error && state.result && Object.keys(state.result).length > 0 && (
 				<Form onSubmit={handleUpdateTaskById}>
 					<FormField
@@ -96,7 +97,6 @@ const UpdateTaskPage = () => {
 					<FormBtn text="UPDATE" type="submit" color="blue" />
 				</Form>
 			)}
-			{state.modal.open && <Modal modal={state.modal} dispatch={dispatch} />}
 		</section>
 	);
 };

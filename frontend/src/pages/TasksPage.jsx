@@ -61,7 +61,7 @@ const TasksPage = () => {
 	return (
 		<section className={state.loading ? `${styles.loading}` : `${styles.tasks}`}>
 			{state.loading && <Spinner text={state.spinner} />}
-			{state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
+			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading &&
 				!state.error &&
 				state.result &&
