@@ -76,6 +76,27 @@ const validatePassword = password => {
     */
 };
 
-const validation = { validateName, validateEmail, validatePassword };
+const validateRole = role => {
+	if (role && role.trim().length > 0) {
+		if (role.trim() === 'admin' || role.trim() === 'user') {
+			return {
+				error: false,
+				message: '',
+			};
+		} else {
+			return {
+				error: true,
+				message: 'Invalid user role.',
+			};
+		}
+	} else {
+		return {
+			error: true,
+			message: `Role can't be empty.`,
+		};
+	}
+};
+
+const validation = { validateName, validateEmail, validatePassword, validateRole };
 
 export default validation;

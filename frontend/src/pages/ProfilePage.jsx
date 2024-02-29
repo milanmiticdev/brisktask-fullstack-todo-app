@@ -8,13 +8,14 @@ import { useNavigate } from 'react-router-dom';
 import AuthContext from './../contexts/AuthContext.js';
 
 // Components
+import Form from './../components/Form.jsx';
 import FormField from './../components/FormField.jsx';
 import FormBtn from './../components/FormBtn.jsx';
 import Modal from './../components/Modal.jsx';
 import Spinner from './../components/Spinner.jsx';
-import Message from '../components/Message.jsx';
 
 // Utils
+import userController from '../utils/controllers/user.controller.js';
 import validation from '../utils/validation.js';
 import UTCtoLocal from './../utils/UTCtoLocal.js';
 
@@ -23,30 +24,33 @@ import styles from './ProfilePage.module.css';
 
 // Initial reducer state
 const initialState = {
-	user: {},
-	inputEmail: '',
-	name: '',
-	nameStatus: {
+	result: {},
+	nameField: {
+		value: '',
 		error: false,
 		message: '',
 	},
-	password: '',
-	passwordStatus: {
+	emailField: {
+		value: '',
 		error: false,
 		message: '',
 	},
-	confirmPassword: '',
-	confirmPasswordStatus: {
+	passwordField: {
+		value: '',
+		error: false,
+		message: '',
+	},
+	confirmPasswordField: {
+		value: '',
 		error: false,
 		message: '',
 	},
 	loading: false,
 	error: false,
-	isEditing: false,
-	message: '',
-	spinnerText: '',
+	editing: false,
+	spinner: '',
 	modal: {
-		isOpen: false,
+		open: false,
 		error: false,
 		message: '',
 	},
@@ -55,32 +59,24 @@ const initialState = {
 // Reducr function
 const reducer = (state, action) => {
 	switch (action.type) {
-		case 'user-fetched':
-			return { ...state, user: action.payload };
+		case 'result-change':
+			return { ...state, result: action.payload };
 		case 'name-field-change':
-			return { ...state, name: action.payload };
-		case 'name-status-change':
-			return { ...state, nameStatus: action.payload };
-		case 'email-change':
-			return { ...state, inputEmail: action.payload };
+			return { ...state, nameField: action.payload };
+		case 'email-field-change':
+			return { ...state, emailField: action.payload };
 		case 'password-field-change':
-			return { ...state, password: action.payload };
-		case 'password-status-change':
-			return { ...state, passwordStatus: action.payload };
+			return { ...state, passwordField: action.payload };
 		case 'confirm-password-field-change':
-			return { ...state, confirmPassword: action.payload };
-		case 'confirm-password-status-change':
-			return { ...state, confirmPasswordStatus: action.payload };
-		case 'loading-check':
+			return { ...state, confirmPasswordField: action.payload };
+		case 'loading-change':
 			return { ...state, loading: action.payload };
-		case 'error-check':
+		case 'error-change':
 			return { ...state, error: action.payload };
-		case 'is-editing':
-			return { ...state, isEditing: action.payload };
-		case 'message-change':
-			return { ...state, message: action.payload };
-		case 'spinner-text-change':
-			return { ...state, spinnerText: action.payload };
+		case 'editing-change':
+			return { ...state, editing: action.payload };
+		case 'spinner-change':
+			return { ...state, spinner: action.payload };
 		case 'modal-change':
 			return { ...state, modal: action.payload };
 	}
@@ -88,262 +84,119 @@ const reducer = (state, action) => {
 
 const ProfilePage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
-	const { userId, userRole, token, login, logout } = useContext(AuthContext);
 
+	const { userId, userRole, token, login, logout } = useContext(AuthContext);
 	const navigate = useNavigate();
-	const { validateName, validatePassword } = validation;
+
+	const { getUserById, updateUserById, deleteUserById, changePassword } = userController;
+	const { validateName, validateEmail, validatePassword } = validation;
 
 	const handleEditBtn = () => {
-		dispatch({ type: 'is-editing', payload: true });
+		dispatch({ type: 'editing-change', payload: true });
 	};
 
 	const handleCancelBtn = () => {
-		dispatch({ type: 'is-editing', payload: false });
-		dispatch({ type: 'name-field-change', payload: state.user.name });
-		dispatch({ type: 'email-change', payload: state.user.email });
+		dispatch({ type: 'editing-change', payload: false });
+		dispatch({ type: 'name-field-change', payload: state.result.name });
+		dispatch({ type: 'email-field-change', payload: state.result.email });
+	};
+
+	const handleUpdateUserById = async e => {
+		await updateUserById(e, userId, userRole, token, state, dispatch, login, navigate);
+	};
+
+	const handleDeleteUserById = async () => {
+		await deleteUserById(userId, token, dispatch, logout, navigate);
+	};
+
+	const handleChangePassword = async e => {
+		await changePassword(e, userId, token, state, dispatch);
 	};
 
 	useEffect(() => {
-		const getUser = async () => {
-			try {
-				dispatch({ type: 'loading-check', payload: true });
-				dispatch({ type: 'message-change', payload: '' });
-				dispatch({ type: 'spinner-text-change', payload: 'Loading' });
-
-				const response = await fetch(`http://localhost:5174/api/v1/users/${userId}`, {
-					method: 'GET',
-					body: null,
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
-				const data = await response.json();
-
-				if (data.status === 200) {
-					dispatch({ type: 'user-fetched', payload: data.user });
-					dispatch({ type: 'name-field-change', payload: data.user.name });
-					dispatch({ type: 'email-change', payload: data.user.email });
-					dispatch({ type: 'message-change', payload: '' });
-					dispatch({ type: 'spinner-text-change', payload: '' });
-					dispatch({ type: 'error-check', payload: false });
-					dispatch({ type: 'loading-check', payload: false });
-				} else {
-					dispatch({ type: 'message-change', payload: data.message });
-					dispatch({ type: 'spinner-text-change', payload: '' });
-					dispatch({ type: 'error-check', payload: true });
-					dispatch({ type: 'loading-check', payload: false });
-				}
-			} catch {
-				dispatch({ type: 'message-change', payload: 'Something went wrong.' });
-				dispatch({ type: 'spinner-text-change', payload: '' });
-				dispatch({ type: 'error-check', payload: true });
-				dispatch({ type: 'loading-check', payload: false });
-			}
+		const handleGetUserById = async () => {
+			await getUserById(userId, token, dispatch);
 		};
-		getUser();
-	}, [userId, token]);
-
-	const updateUser = async e => {
-		e.preventDefault();
-
-		if (state.user.name === state.inputName && state.user.email === state.inputEmail) {
-			dispatch({ type: 'is-editing', payload: false });
-		} else {
-			const updatedUser = {
-				name: state.inputName,
-				email: state.inputEmail,
-			};
-
-			try {
-				dispatch({ type: 'loading-check', payload: true });
-				dispatch({ type: 'spinner-text-change', payload: 'Updating' });
-
-				const response = await fetch(`http://localhost:5174/api/v1/users/${userId}`, {
-					method: 'PATCH',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Bearer ${token}`,
-					},
-					body: JSON.stringify(updatedUser),
-				});
-				const data = await response.json();
-
-				if (data.status === 200) {
-					// If the email doesn't change there is no need to recreate token and login again
-					if (state.user.email === state.inputEmail) {
-						navigate(0);
-					} else {
-						login(userId, userRole, data.token);
-						navigate(0);
-					}
-				} else {
-					dispatch({ type: 'spinner-text-change', payload: '' });
-					dispatch({ type: 'loading-check', payload: false });
-					dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
-				}
-			} catch {
-				dispatch({ type: 'spinner-text-change', payload: '' });
-				dispatch({ type: 'loading-check', payload: false });
-				dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
-			}
-		}
-	};
-
-	const changePassword = async e => {
-		e.preventDefault();
-
-		const changedPassword = {
-			password: state.password,
-			confirmPassword: state.confirmPassword,
-		};
-
-		try {
-			dispatch({ type: 'loading-check', payload: true });
-			dispatch({ type: 'spinner-text-change', payload: 'Updating' });
-
-			const response = await fetch(`http://localhost:5174/api/v1/users/change-password/${userId}`, {
-				method: 'PATCH',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`,
-				},
-				body: JSON.stringify(changedPassword),
-			});
-			const data = await response.json();
-
-			if (data.status === 200) {
-				dispatch({ type: 'spinner-text-change', payload: '' });
-				dispatch({ type: 'loading-check', payload: false });
-				dispatch({ type: 'modal-change', payload: { isOpen: true, error: false, message: data.message } });
-			} else {
-				dispatch({ type: 'spinner-text-change', payload: '' });
-				dispatch({ type: 'loading-check', payload: false });
-				dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
-			}
-		} catch {
-			dispatch({ type: 'spinner-text-change', payload: '' });
-			dispatch({ type: 'loading-check', payload: false });
-			dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
-		}
-	};
-
-	const deleteUser = async () => {
-		try {
-			dispatch({ type: 'loading-check', payload: true });
-			dispatch({ type: 'spinner-text-change', payload: 'Deleting' });
-
-			const response = await fetch(`http://localhost:5174/api/v1/users/${userId}`, {
-				method: 'DELETE',
-				body: null,
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-
-			if (response.status === 204) {
-				logout();
-				navigate('/');
-			} else {
-				const data = await response.json();
-
-				dispatch({ type: 'spinner-text-change', payload: '' });
-				dispatch({ type: 'loading-check', payload: false });
-				dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
-			}
-		} catch {
-			dispatch({ type: 'spinner-text-change', payload: '' });
-			dispatch({ type: 'loading-check', payload: false });
-			dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
-		}
-	};
+		handleGetUserById();
+	}, [userId, token, getUserById]);
 
 	return (
 		<main className={state.loading ? `${styles.loading}` : `${styles.profile}`}>
-			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
-			{state.loading && <Spinner text={state.spinnerText} />}
-			{!state.loading && state.error && <Message message={state.message} />}
-			{!state.loading && !state.error && state.user && (
+			{state.loading && <Spinner text={state.spinner} />}
+			{state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
+			{!state.loading && !state.error && state.result && Object.keys(state.result).length > 0 && (
 				<>
 					<section className={styles.section}>
-						<h2 className={styles.heading}>PROFILE INFO</h2>
-						<form onSubmit={updateUser} className={styles.infoForm}>
+						<Form onSubmit={handleUpdateUserById}>
+							<h2 className={styles.heading}>PROFILE INFO</h2>
 							<FormField
-								htmlFor="name"
-								type="name"
-								id="name"
 								name="name"
-								fieldChangeType="name-field-change"
-								statusChangeType="name-status-change"
-								onValidate={validateName}
+								type="text"
+								initial={state.result.name}
+								fieldChange="name-field-change"
 								onDispatch={dispatch}
-								message={state.nameStatus.message}
-								initialValue={state.name}
+								onValidate={validateName}
+								readOnly={state.editing ? false : true}
+								autoFocus={false}
 							/>
-							<div className={styles.block}>
-								<label className={styles.label}>EMAIL</label>
-								<input
-									className={state.isEditing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
-									value={state.inputEmail}
-									onChange={e => {
-										dispatch({ type: 'email-change', payload: e.target.value });
-									}}
-									readOnly={state.isEditing ? false : true}
-								/>
-							</div>
-							<div className={styles.block}>
-								<label className={styles.label}>ROLE</label>
-								<input className={`${styles.input} ${styles.inputReadOnly}`} value={state.user.role} readOnly={true} />
-							</div>
-							<div className={styles.block}>
-								<label className={styles.label}>CREATED</label>
-								<input
-									className={`${styles.input} ${styles.inputReadOnly}`}
-									value={`${UTCtoLocal(state.user.createdAt).date} ${UTCtoLocal(state.user.createdAt).time}`}
-									readOnly={true}
-								/>
-							</div>
-							<div className={styles.infoFormBtns}>
-								{!state.isEditing && <FormBtn text="EDIT" color="gray" onClick={handleEditBtn} />}
-								{state.isEditing && (
+							<FormField
+								name="email"
+								type="text"
+								initial={state.result.email}
+								fieldChange="email-field-change"
+								onDispatch={dispatch}
+								onValidate={validateEmail}
+								readOnly={state.editing ? false : true}
+								autoFocus={false}
+							/>
+							<FormField name="role" type="text" initial={state.result.role} readOnly={true} autoFocus={false} />
+							<FormField
+								name="created"
+								type="text"
+								initial={`${UTCtoLocal(state.result.createdAt).date} ${UTCtoLocal(state.result.createdAt).time}`}
+								readOnly={true}
+								autoFocus={false}
+							/>
+							<div className={styles.formBtns}>
+								{!state.editing && <FormBtn text="EDIT" type="button" color="gray" onClick={handleEditBtn} />}
+								{state.editing && (
 									<>
-										<FormBtn text="SAVE" color="blue" />
-										<FormBtn text="X" color="red" onClick={handleCancelBtn} />
+										<FormBtn text="SAVE" type="submit" color="blue" />
+										<FormBtn text="X" type="button" color="red" onClick={handleCancelBtn} />
 									</>
 								)}
 							</div>
-						</form>
+						</Form>
 					</section>
 					<section className={styles.section}>
-						<h2 className={styles.heading}>CHANGE PASSWORD</h2>
-						<form onSubmit={changePassword} className={styles.passwordForm}>
+						<Form onSubmit={handleChangePassword}>
+							<h2 className={styles.heading}>CHANGE PASSWORD</h2>
 							<FormField
-								htmlFor="password"
+								name="password"
 								type="password"
-								id="password"
-								name="new password"
-								fieldChangeType="password-field-change"
-								statusChangeType="password-status-change"
-								onValidate={validatePassword}
+								fieldChange="password-field-change"
 								onDispatch={dispatch}
-								message={state.passwordStatus.message}
+								onValidate={validatePassword}
+								readOnly={false}
+								autoFocus={false}
 							/>
 							<FormField
-								htmlFor="confirm-password"
-								type="password"
-								id="confirm-password"
 								name="confirm password"
-								fieldChangeType="confirm-password-field-change"
-								statusChangeType="confirm-password-status-change"
-								onValidate={validatePassword}
+								type="password"
+								fieldChange="confirm-password-field-change"
 								onDispatch={dispatch}
-								message={state.confirmPasswordStatus.message}
+								onValidate={validatePassword}
+								readOnly={false}
+								autoFocus={false}
 							/>
-							<FormBtn text="CHANGE" color="blue" onClick={changePassword} />
-						</form>
+							<FormBtn text="CHANGE" type="submit" color="blue" />
+						</Form>
 					</section>
 					<section className={styles.section}>
-						<h2 className={styles.heading}>DELETE ACCOUNT</h2>
-						<FormBtn text="DELETE" color="red" onClick={deleteUser} />
+						<Form onSubmit={handleDeleteUserById}>
+							<h2 className={styles.heading}>DELETE ACCOUNT</h2>
+							<FormBtn text="DELETE" type="submit" color="red" />
+						</Form>
 					</section>
 				</>
 			)}

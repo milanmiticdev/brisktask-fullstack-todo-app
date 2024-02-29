@@ -1,5 +1,5 @@
 // React
-import { useReducer, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 // Components
 import Message from './Message.jsx';
@@ -14,84 +14,60 @@ import styles from './FormField.module.css';
 // PropTypes
 import PropTypes from 'prop-types';
 
-// Initial reducer state
-const initialState = {
-	field: {
-		value: '',
-		error: false,
-		message: '',
-	},
-	passwordVisibility: false,
-};
-
-// Reducer function
-const reducer = (state, action) => {
-	switch (action.type) {
-		case 'field-change':
-			return { ...state, field: action.payload };
-		case 'password-visibility-change':
-			return { ...state, passwordVisibility: action.payload };
-	}
-};
-
-const FormField = ({
-	field,
-	type,
-	onValidate,
-	onDispatch,
-	message,
-	fieldChange,
-	section = '',
-	initial = { value: '', error: false, message: '' },
-	isUpdating = false,
-}) => {
-	const [state, dispatch] = useReducer(reducer, initialState);
+const FormField = ({ name, type, initial, onDispatch, fieldChange, onValidate, section, readOnly, autoFocus }) => {
+	const [field, setField] = useState(() => ({ value: initial ? initial : '', error: false, message: '' }));
+	const [passwordVisible, setPasswordVisible] = useState(false);
 
 	const handlePasswordVisibility = () => {
-		dispatch({ type: 'password-visibility-change', payload: !state.passwordVisibility });
+		setPasswordVisible(prevState => !prevState);
 	};
 
 	useEffect(() => {
-		const reset = {
-			value: '',
-			error: false,
-			message: '',
-		};
-		dispatch({ type: 'field-change', payload: reset });
+		if (section) {
+			const reset = {
+				value: '',
+				error: false,
+				message: '',
+			};
+			setField(reset);
+		}
 	}, [section]);
-
-	useEffect(() => {
-		onDispatch({ type: fieldChange, payload: { value: state.field.value, error: state.field.error, message: state.field.message } });
-	}, [state.field, fieldChange, onDispatch]);
 
 	return (
 		<div className={styles.formField}>
 			<div className={styles.inputBlock}>
-				<label htmlFor={field} className={styles.label}>
-					{field.charAt(0).toUpperCase() + field.slice(1)}
+				<label htmlFor={name ? name : ''} className={styles.label}>
+					{name ? `${name.charAt(0).toUpperCase()}${name.slice(1)}` : ''}
 				</label>
-				<div className={styles.inputField}>
+				<div className={readOnly ? `${styles.inputField} ${styles.inputFieldReadOnly}` : `${styles.inputField}`}>
 					<input
 						className={styles.input}
-						type={state.passwordVisibility ? 'text' : type}
-						id={field}
-						name={field}
-						value={isUpdating ? initial.value : state.field.value}
+						type={passwordVisible ? 'text' : type}
+						id={name ? name : ''}
+						name={name ? name : ''}
+						value={field.value}
 						onChange={e => {
-							const validated = onValidate(e.target.value);
-							const change = {
-								value: e.target.value,
-								error: validated.error,
-								message: validated.message,
-							};
-							isUpdating
-								? onDispatch({ type: fieldChange, payload: change })
-								: dispatch({ type: 'field-change', payload: change });
+							setField(prevState => ({
+								...prevState,
+								value: readOnly ? prevState.value : e.target.value,
+								error: readOnly ? prevState.error : onValidate(e.target.value).error,
+								message: readOnly ? prevState.message : onValidate(e.target.value).message,
+							}));
+							onDispatch({
+								type: fieldChange,
+								payload: {
+									value: readOnly ? field.value : e.target.value,
+									error: readOnly ? field.error : onValidate(e.target.value).error,
+									message: readOnly ? field.message : onValidate(e.target.value).message,
+								},
+							});
 						}}
+						readOnly={readOnly}
+						autoFocus={autoFocus}
 					/>
 					{type === 'password' && (
 						<div className={styles.icon}>
-							{state.passwordVisibility ? (
+							{passwordVisible ? (
 								<FontAwesomeIcon icon={faEyeSlash} onClick={handlePasswordVisibility} />
 							) : (
 								<FontAwesomeIcon icon={faEye} onClick={handlePasswordVisibility} />
@@ -100,7 +76,7 @@ const FormField = ({
 					)}
 				</div>
 			</div>
-			<Message message={message} />
+			{!readOnly && <Message message={field.message} />}
 		</div>
 	);
 };
@@ -108,13 +84,13 @@ const FormField = ({
 export default FormField;
 
 FormField.propTypes = {
-	field: PropTypes.string,
+	name: PropTypes.string,
 	type: PropTypes.string,
 	onValidate: PropTypes.func,
 	onDispatch: PropTypes.func,
-	message: PropTypes.string,
 	fieldChange: PropTypes.string,
 	section: PropTypes.string,
-	initial: PropTypes.object,
-	isUpdating: PropTypes.bool,
+	initial: PropTypes.string,
+	readOnly: PropTypes.bool,
+	autoFocus: PropTypes.bool,
 };

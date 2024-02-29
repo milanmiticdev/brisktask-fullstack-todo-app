@@ -8,7 +8,6 @@ import AuthContext from './../contexts/AuthContext.js';
 import Task from './../components/Task.jsx';
 import Modal from './../components/Modal.jsx';
 import Spinner from '../components/Spinner.jsx';
-import Message from './../components/Message.jsx';
 
 // Utils
 import taskController from './../utils/controllers/task.controller.js';
@@ -21,10 +20,9 @@ const initialState = {
 	result: [],
 	loading: false,
 	error: false,
-	message: '',
-	spinnerText: '',
+	spinner: '',
 	modal: {
-		isOpen: false,
+		open: false,
 		error: false,
 		message: '',
 	},
@@ -33,16 +31,14 @@ const initialState = {
 // Reducr function
 const reducer = (state, action) => {
 	switch (action.type) {
-		case 'result-fetched':
+		case 'result-change':
 			return { ...state, result: action.payload };
-		case 'is-loading':
+		case 'loading-change':
 			return { ...state, loading: action.payload };
-		case 'is-error':
+		case 'error-change':
 			return { ...state, error: action.payload };
-		case 'message-change':
-			return { ...state, message: action.payload };
-		case 'spinner-text-change':
-			return { ...state, spinnerText: action.payload };
+		case 'spinner-change':
+			return { ...state, spinner: action.payload };
 		case 'modal-change':
 			return { ...state, message: action.payload };
 	}
@@ -64,14 +60,13 @@ const TasksPage = () => {
 
 	return (
 		<section className={state.loading ? `${styles.loading}` : `${styles.tasks}`}>
-			{state.loading && <Spinner text={state.spinnerText} />}
-			{!state.loading && state.error && <Message message={state.message} />}
+			{state.loading && <Spinner text={state.spinner} />}
+			{state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading &&
 				!state.error &&
 				state.result &&
 				state.result.length > 0 &&
 				state.result.map(task => <Task key={task.id} task={task} dispatch={dispatch} />)}
-			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
 		</section>
 	);
 };

@@ -12,7 +12,6 @@ import FormField from './../components/FormField.jsx';
 import FormBtn from './../components/FormBtn.jsx';
 import Modal from './../components/Modal.jsx';
 import Spinner from './../components/Spinner.jsx';
-import Message from '../components/Message.jsx';
 
 // Utils
 import validation from '../utils/validation.js';
@@ -39,11 +38,10 @@ const initialState = {
 	},
 	loading: false,
 	error: false,
-	isEditing: false,
-	message: '',
-	spinnerText: '',
+	editing: false,
+	spinner: '',
 	modal: {
-		isOpen: false,
+		open: false,
 		error: false,
 		message: '',
 	},
@@ -54,9 +52,9 @@ const reducer = (state, action) => {
 	switch (action.type) {
 		case 'user-fetched':
 			return { ...state, user: action.payload };
-		case 'name-change':
-			return { ...state, inputName: action.payload };
-		case 'email-change':
+		case 'name-field-change':
+			return { ...state, nameField: action.payload };
+		case 'email-field-change':
 			return { ...state, inputEmail: action.payload };
 		case 'role-change':
 			return { ...state, inputRole: action.payload };
@@ -68,16 +66,14 @@ const reducer = (state, action) => {
 			return { ...state, confirmPassword: action.payload };
 		case 'confirm-password-status-change':
 			return { ...state, confirmPasswordStatus: action.payload };
-		case 'loading-check':
+		case 'loading-change':
 			return { ...state, loading: action.payload };
-		case 'error-check':
+		case 'error-change':
 			return { ...state, error: action.payload };
-		case 'is-editing':
-			return { ...state, isEditing: action.payload };
-		case 'message-change':
-			return { ...state, message: action.payload };
-		case 'spinner-text-change':
-			return { ...state, spinnerText: action.payload };
+		case 'editing-change':
+			return { ...state, editing: action.payload };
+		case 'spinner-change':
+			return { ...state, spinner: action.payload };
 		case 'modal-change':
 			return { ...state, modal: action.payload };
 	}
@@ -92,11 +88,11 @@ const AdminUserViewPage = () => {
 	const { validatePassword } = validation;
 
 	const handleEditBtn = () => {
-		dispatch({ type: 'is-editing', payload: true });
+		dispatch({ type: 'editing-change', payload: true });
 	};
 
 	const handleCancelBtn = () => {
-		dispatch({ type: 'is-editing', payload: false });
+		dispatch({ type: 'editing-change', payload: false });
 		dispatch({ type: 'name-change', payload: state.user.name });
 		dispatch({ type: 'email-change', payload: state.user.email });
 		dispatch({ type: 'role-change', payload: state.user.role });
@@ -105,9 +101,9 @@ const AdminUserViewPage = () => {
 	useEffect(() => {
 		const getUser = async () => {
 			try {
-				dispatch({ type: 'loading-check', payload: true });
+				dispatch({ type: 'loading-change', payload: true });
 				dispatch({ type: 'message-change', payload: '' });
-				dispatch({ type: 'spinner-text-change', payload: 'Loading' });
+				dispatch({ type: 'spinner-change', payload: 'Loading' });
 
 				const response = await fetch(`http://localhost:5174/api/v1/users/${Number(userId)}`, {
 					method: 'GET',
@@ -124,20 +120,20 @@ const AdminUserViewPage = () => {
 					dispatch({ type: 'email-change', payload: data.user.email });
 					dispatch({ type: 'role-change', payload: data.user.role });
 					dispatch({ type: 'message-change', payload: '' });
-					dispatch({ type: 'spinner-text-change', payload: '' });
-					dispatch({ type: 'error-check', payload: false });
-					dispatch({ type: 'loading-check', payload: false });
+					dispatch({ type: 'spinner-change', payload: '' });
+					dispatch({ type: 'error-change', payload: false });
+					dispatch({ type: 'loading-change', payload: false });
 				} else {
 					dispatch({ type: 'message-change', payload: data.message });
-					dispatch({ type: 'spinner-text-change', payload: '' });
-					dispatch({ type: 'error-check', payload: true });
-					dispatch({ type: 'loading-check', payload: false });
+					dispatch({ type: 'spinner-change', payload: '' });
+					dispatch({ type: 'error-change', payload: true });
+					dispatch({ type: 'loading-change', payload: false });
 				}
 			} catch {
 				dispatch({ type: 'message-change', payload: 'Something went wrong.' });
-				dispatch({ type: 'spinner-text-change', payload: '' });
-				dispatch({ type: 'error-check', payload: true });
-				dispatch({ type: 'loading-check', payload: false });
+				dispatch({ type: 'spinner-change', payload: '' });
+				dispatch({ type: 'error-change', payload: true });
+				dispatch({ type: 'loading-change', payload: false });
 			}
 		};
 		getUser();
@@ -147,7 +143,7 @@ const AdminUserViewPage = () => {
 		e.preventDefault();
 
 		if (state.user.name === state.inputName && state.user.email === state.inputEmail && state.user.role === state.inputRole) {
-			dispatch({ type: 'is-editing', payload: false });
+			dispatch({ type: 'editing-change', payload: false });
 		} else {
 			const updatedUser = {
 				name: state.inputName,
@@ -156,8 +152,8 @@ const AdminUserViewPage = () => {
 			};
 
 			try {
-				dispatch({ type: 'loading-check', payload: true });
-				dispatch({ type: 'spinner-text-change', payload: 'Updating' });
+				dispatch({ type: 'loading-change', payload: true });
+				dispatch({ type: 'spinner-change', payload: 'Updating' });
 
 				const response = await fetch(`http://localhost:5174/api/v1/users/${Number(userId)}`, {
 					method: 'PATCH',
@@ -172,14 +168,14 @@ const AdminUserViewPage = () => {
 				if (data.status === 200) {
 					navigate(0);
 				} else {
-					dispatch({ type: 'spinner-text-change', payload: '' });
-					dispatch({ type: 'loading-check', payload: false });
-					dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
+					dispatch({ type: 'spinner-change', payload: '' });
+					dispatch({ type: 'loading-change', payload: false });
+					dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });
 				}
 			} catch {
-				dispatch({ type: 'spinner-text-change', payload: '' });
-				dispatch({ type: 'loading-check', payload: false });
-				dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
+				dispatch({ type: 'spinner-change', payload: '' });
+				dispatch({ type: 'loading-change', payload: false });
+				dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Something went wrong.' } });
 			}
 		}
 	};
@@ -193,8 +189,8 @@ const AdminUserViewPage = () => {
 		};
 
 		try {
-			dispatch({ type: 'loading-check', payload: true });
-			dispatch({ type: 'spinner-text-change', payload: 'Updating' });
+			dispatch({ type: 'loading-change', payload: true });
+			dispatch({ type: 'spinner-change', payload: 'Updating' });
 
 			const response = await fetch(`http://localhost:5174/api/v1/users/change-password/${Number(userId)}`, {
 				method: 'PATCH',
@@ -207,25 +203,25 @@ const AdminUserViewPage = () => {
 			const data = await response.json();
 
 			if (data.status === 200) {
-				dispatch({ type: 'spinner-text-change', payload: '' });
-				dispatch({ type: 'loading-check', payload: false });
-				dispatch({ type: 'modal-change', payload: { isOpen: true, error: false, message: data.message } });
+				dispatch({ type: 'spinner-change', payload: '' });
+				dispatch({ type: 'loading-change', payload: false });
+				dispatch({ type: 'modal-change', payload: { open: true, error: false, message: data.message } });
 			} else {
-				dispatch({ type: 'spinner-text-change', payload: '' });
-				dispatch({ type: 'loading-check', payload: false });
-				dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
+				dispatch({ type: 'spinner-change', payload: '' });
+				dispatch({ type: 'loading-change', payload: false });
+				dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });
 			}
 		} catch {
-			dispatch({ type: 'spinner-text-change', payload: '' });
-			dispatch({ type: 'loading-check', payload: false });
-			dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
+			dispatch({ type: 'spinner-change', payload: '' });
+			dispatch({ type: 'loading-change', payload: false });
+			dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Something went wrong.' } });
 		}
 	};
 
 	const deleteUser = async () => {
 		try {
-			dispatch({ type: 'loading-check', payload: true });
-			dispatch({ type: 'spinner-text-change', payload: 'Deleting' });
+			dispatch({ type: 'loading-change', payload: true });
+			dispatch({ type: 'spinner-change', payload: 'Deleting' });
 
 			const response = await fetch(`http://localhost:5174/api/v1/users/${Number(userId)}`, {
 				method: 'DELETE',
@@ -240,22 +236,21 @@ const AdminUserViewPage = () => {
 			} else {
 				const data = await response.json();
 
-				dispatch({ type: 'spinner-text-change', payload: '' });
-				dispatch({ type: 'loading-check', payload: false });
-				dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
+				dispatch({ type: 'spinner-change', payload: '' });
+				dispatch({ type: 'loading-change', payload: false });
+				dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });
 			}
 		} catch {
-			dispatch({ type: 'spinner-text-change', payload: '' });
-			dispatch({ type: 'loading-check', payload: false });
-			dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
+			dispatch({ type: 'spinner-change', payload: '' });
+			dispatch({ type: 'loading-change', payload: false });
+			dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Something went wrong.' } });
 		}
 	};
 
 	return (
 		<main className={state.loading ? `${styles.loading}` : `${styles.profile}`}>
-			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
-			{state.loading && <Spinner text={state.spinnerText} />}
-			{!state.loading && state.error && <Message message={state.message} />}
+			{state.loading && <Spinner text={state.spinner} />}
+			{state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && !state.error && state.user && (
 				<>
 					<section className={styles.section}>
@@ -264,34 +259,34 @@ const AdminUserViewPage = () => {
 							<div className={styles.block}>
 								<label className={styles.label}>NAME</label>
 								<input
-									className={state.isEditing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
+									className={state.editing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
 									value={state.inputName}
 									onChange={e => {
 										dispatch({ type: 'name-change', payload: e.target.value });
 									}}
-									readOnly={state.isEditing ? false : true}
+									readOnly={state.editing ? false : true}
 								/>
 							</div>
 							<div className={styles.block}>
 								<label className={styles.label}>EMAIL</label>
 								<input
-									className={state.isEditing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
+									className={state.editing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
 									value={state.inputEmail}
 									onChange={e => {
 										dispatch({ type: 'email-change', payload: e.target.value });
 									}}
-									readOnly={state.isEditing ? false : true}
+									readOnly={state.editing ? false : true}
 								/>
 							</div>
 							<div className={styles.block}>
 								<label className={styles.label}>ROLE</label>
 								<input
-									className={state.isEditing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
+									className={state.editing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
 									value={state.inputRole}
 									onChange={e => {
 										dispatch({ type: 'role-change', payload: e.target.value });
 									}}
-									readOnly={state.isEditing ? false : true}
+									readOnly={state.editing ? false : true}
 								/>
 							</div>
 							<div className={styles.block}>
@@ -311,8 +306,8 @@ const AdminUserViewPage = () => {
 								/>
 							</div>
 							<div className={styles.infoFormBtns}>
-								{!state.isEditing && <FormBtn text="EDIT" color="gray" onClick={handleEditBtn} />}
-								{state.isEditing && (
+								{!state.editing && <FormBtn text="EDIT" color="gray" onClick={handleEditBtn} />}
+								{state.editing && (
 									<>
 										<FormBtn text="SAVE" color="blue" />
 										<FormBtn text="X" color="red" onClick={handleCancelBtn} />

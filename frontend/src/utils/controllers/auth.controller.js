@@ -7,8 +7,8 @@ const loginUser = async (e, state, dispatch, login, navigate) => {
 	};
 
 	try {
-		dispatch({ type: 'is-loading', payload: true });
-		dispatch({ type: 'spinner-text-change', payload: 'Login' });
+		dispatch({ type: 'loading-change', payload: true });
+		dispatch({ type: 'spinner-change', payload: 'Login' });
 
 		const response = await fetch('http://localhost:5174/api/v1/auth/login', {
 			method: 'POST',
@@ -23,13 +23,13 @@ const loginUser = async (e, state, dispatch, login, navigate) => {
 			login(data.user.id, data.user.role, data.token);
 			navigate('/');
 		} else {
-			dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
+			dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });
 		}
 	} catch {
-		dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
+		dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Something went wrong.' } });
 	} finally {
-		dispatch({ type: 'is-loading', payload: false });
-		dispatch({ type: 'spinner-text-change', payload: '' });
+		dispatch({ type: 'loading-change', payload: false });
+		dispatch({ type: 'spinner-change', payload: '' });
 	}
 };
 
@@ -43,8 +43,8 @@ const registerUser = async (e, state, dispatch, login, navigate) => {
 	};
 
 	try {
-		dispatch({ type: 'is-loading', payload: true });
-		dispatch({ type: 'spinner-text-change', payload: 'Register' });
+		dispatch({ type: 'loading-change', payload: true });
+		dispatch({ type: 'spinner-change', payload: 'Register' });
 
 		const response = await fetch('http://localhost:5174/api/v1/auth/register', {
 			method: 'POST',
@@ -59,13 +59,13 @@ const registerUser = async (e, state, dispatch, login, navigate) => {
 			login(data.user.id, data.user.role, data.token);
 			navigate('/');
 		} else {
-			dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
+			dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });
 		}
 	} catch {
-		dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
+		dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Something went wrong.' } });
 	} finally {
-		dispatch({ type: 'is-loading', payload: false });
-		dispatch({ type: 'spinner-text-change', payload: '' });
+		dispatch({ type: 'loading-change', payload: false });
+		dispatch({ type: 'spinner-change', payload: '' });
 	}
 };
 

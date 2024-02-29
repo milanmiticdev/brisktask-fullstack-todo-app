@@ -41,7 +41,7 @@ const initialState = {
 	},
 	section: 'login',
 	loading: false,
-	spinnerText: '',
+	spinner: '',
 	modal: {
 		isOpen: false,
 		error: false,
@@ -59,10 +59,10 @@ const reducer = (state, action) => {
 			return { ...state, passwordField: action.payload };
 		case 'section-change':
 			return { ...state, section: action.payload };
-		case 'is-loading':
+		case 'loading-change':
 			return { ...state, loading: action.payload };
-		case 'spinner-text-change':
-			return { ...state, spinnerText: action.payload };
+		case 'spinner-change':
+			return { ...state, spinner: action.payload };
 		case 'modal-change':
 			return { ...state, modal: action.payload };
 	}
@@ -87,8 +87,8 @@ const AuthPage = () => {
 
 	return (
 		<main className={state.loading ? `${styles.loading}` : `${styles.authPage}`}>
-			{state.loading && <Spinner text={state.spinnerText} />}
-			{!state.loading && state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
+			{state.loading && <Spinner text={state.spinner} />}
+			{!state.loading && state.modal.isOpen && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && (
 				<TabsToggle>
 					<Tab section={state.section} dispatch={dispatch} type="section-change" payload="login" position="left" text="LOGIN" />
@@ -106,34 +106,37 @@ const AuthPage = () => {
 				<Form onSubmit={state.section === 'login' ? handleLoginUser : handleRegisterUser}>
 					{state.section === 'register' && (
 						<FormField
-							field="name"
+							name="name"
 							type="text"
 							fieldChange="name-field-change"
-							onValidate={validateName}
 							onDispatch={dispatch}
-							message={state.nameField.message}
+							onValidate={validateName}
 							section={state.section}
+							readOnly={false}
+							autoFocus={false}
 						/>
 					)}
 					<FormField
-						field="email"
+						name="email"
 						type="text"
 						fieldChange="email-field-change"
-						onValidate={validateEmail}
 						onDispatch={dispatch}
-						message={state.emailField.message}
+						onValidate={validateEmail}
 						section={state.section}
+						readOnly={false}
+						autoFocus={false}
 					/>
 					<FormField
-						field="password"
+						name="password"
 						type="password"
 						fieldChange="password-field-change"
-						onValidate={validatePassword}
 						onDispatch={dispatch}
-						message={state.passwordField.message}
+						onValidate={validatePassword}
 						section={state.section}
+						readOnly={false}
+						autoFocus={false}
 					/>
-					<FormBtn text="LOGIN" color="blue" />
+					<FormBtn text={state.section === 'login' ? 'LOGIN' : 'REGISTER'} type="submit" color="blue" />
 				</Form>
 			)}
 		</main>

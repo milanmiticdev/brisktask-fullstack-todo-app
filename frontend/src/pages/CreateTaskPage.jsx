@@ -29,9 +29,9 @@ const initialState = {
 		message: '',
 	},
 	loading: false,
-	spinnerText: '',
+	spinner: '',
 	modal: {
-		isOpen: false,
+		open: false,
 		error: true,
 		message: '',
 	},
@@ -42,10 +42,10 @@ const reducer = (state, action) => {
 	switch (action.type) {
 		case 'name-field-change':
 			return { ...state, nameField: action.payload };
-		case 'is-loading':
+		case 'loading-change':
 			return { ...state, loading: action.payload };
-		case 'spinner-text-change':
-			return { ...state, spinnerText: action.payload };
+		case 'spinner-change':
+			return { ...state, spinner: action.payload };
 		case 'modal-change':
 			return { ...state, modal: action.payload };
 	}
@@ -66,21 +66,22 @@ const CreateTaskPage = () => {
 
 	return (
 		<section className={state.loading ? `${styles.loading}` : `${styles.createTaskPage}`}>
-			{state.loading && <Spinner text={state.spinnerText} />}
+			{state.loading && <Spinner text={state.spinner} />}
+			{state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && (
 				<Form onSubmit={handleCreateTask}>
 					<FormField
-						field="name"
+						name="name"
 						type="text"
-						onValidate={validateName}
-						onDispatch={dispatch}
-						message={state.nameField.message}
 						fieldChange="name-field-change"
+						onDispatch={dispatch}
+						onValidate={validateName}
+						readOnly={false}
+						autoFocus={true}
 					/>
-					<FormBtn text="CREATE" color="blue" />
+					<FormBtn text="CREATE" type="submit" color="blue" />
 				</Form>
 			)}
-			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
 		</section>
 	);
 };

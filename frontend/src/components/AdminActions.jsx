@@ -1,5 +1,5 @@
 //React
-import { useRef, useEffect, useContext } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
 
 // Context
 import AuthContext from '../contexts/AuthContext.js';
@@ -9,11 +9,8 @@ import userController from './../utils/controllers/user.controller.js';
 import taskController from './../utils/controllers/task.controller.js';
 
 // Components
-import SelectBtn from './SelectBtn.jsx';
-
-// Font Awesome Icons
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import AdminActionsOption from './AdminActionsOption.jsx';
+import AdminActionsBtn from './AdminActionsBtn.jsx';
 
 // Styles
 import styles from './AdminActions.module.css';
@@ -21,7 +18,8 @@ import styles from './AdminActions.module.css';
 // PropTypes
 import PropTypes from 'prop-types';
 
-const AdminActions = ({ state, dispatch }) => {
+const AdminActions = ({ onDispatch }) => {
+	const [isSelecting, setIsSelecting] = useState(false);
 	const selectRef = useRef(null);
 
 	const { token } = useContext(AuthContext);
@@ -30,17 +28,17 @@ const AdminActions = ({ state, dispatch }) => {
 	const { getAllTasks } = taskController;
 
 	const handleGetAllUsers = async () => {
-		await getAllUsers(token, dispatch);
+		await getAllUsers(token, onDispatch);
 	};
 
 	const handleGetAllTasks = async () => {
-		await getAllTasks(token, dispatch);
+		await getAllTasks(token, onDispatch);
 	};
 
 	useEffect(() => {
 		const handleClickOutside = e => {
 			if (selectRef.current && !selectRef.current.contains(e.target)) {
-				dispatch({ type: 'is-selecting', payload: false });
+				setIsSelecting(false);
 			}
 		};
 
@@ -49,83 +47,21 @@ const AdminActions = ({ state, dispatch }) => {
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside);
 		};
-	}, [selectRef, dispatch]);
+	}, [selectRef]);
 
 	return (
 		<section className={styles.actions}>
-			<section className={styles.selection}>
-				<SelectBtn text="SELECT ACTION" dispatch={dispatch} />
-				{state.isSelecting && (
-					<div className={styles.options} ref={selectRef}>
-						<div className={styles.option}>
-							<button className={styles.btn} onClick={handleGetAllUsers}>
-								GET ALL USERS
-							</button>
-						</div>
-						<div className={styles.option}>
-							<form>
-								<input
-									type="number"
-									className={styles.idInput}
-									value={state.inputId}
-									onChange={e => dispatch({ type: 'id-change', payload: e.target.value })}
-								/>
-								<button type="submit" className={styles.btn} onClick={handleGetAllTasks}>
-									GET USER BY ID
-								</button>
-							</form>
-						</div>
-						<div className={styles.option}>
-							<form className={styles.createUserForm}>
-								<div className={styles.inputBlock}>
-									<label htmlFor="name-input">Name</label>
-									<input
-										id="name-input"
-										name="name-input"
-										type="text"
-										value={state.inputName}
-										onChange={e => dispatch({ type: 'name-change', payload: e.target.value })}
-									/>
-								</div>
-								<div className={styles.inputBlock}>
-									<label htmlFor="email-input">Email</label>
-									<input
-										id="email-input"
-										name="email-input"
-										type="text"
-										className={styles.input}
-										value={state.inputEmail}
-										onChange={e => dispatch({ type: 'email-change', payload: e.target.value })}
-									/>
-								</div>
-								<div className={styles.inputBlock}>
-									<label htmlFor="password-input">Password</label>
-									<div className={styles.inputField}>
-										<input
-											id="password-input"
-											name="password-input"
-											type="password"
-											className={styles.input}
-											value={state.inputPassword}
-											onChange={e => dispatch({ type: 'password-change', payload: e.target.value })}
-										/>
-										<div className={styles.icon}>
-											<FontAwesomeIcon icon={faEye} />
-										</div>
-									</div>
-								</div>
-
-								<button type="submit" className={styles.btn}>
-									CREATE USER
-								</button>
-							</form>
-						</div>
-						<div className={styles.option}>GET ALL TASKS</div>
-						<div className={styles.option}>GET TASKS BY USER ID</div>
-						<div className={styles.option}>GET TASK BY ID</div>
-					</div>
-				)}
-			</section>
+			<AdminActionsBtn text="SELECT ACTION" setIsSelecting={setIsSelecting} />
+			{isSelecting && (
+				<div className={styles.options} ref={selectRef}>
+					<AdminActionsOption text="GET ALL USERS" onClick={handleGetAllUsers} onDispatch={onDispatch} input={false} />
+					<AdminActionsOption text="GET USER BY ID" onClick={() => console.log('submit')} onDispatch={onDispatch} />
+					<AdminActionsOption text="CREATE USER" onClick={() => console.log('submit')} onDispatch={onDispatch} />
+					<AdminActionsOption text="GET ALL TASKS" onClick={handleGetAllTasks} onDispatch={onDispatch} input={false} />
+					<AdminActionsOption text="GET TASKS BY USER ID" onClick={() => console.log('submit')} onDispatch={onDispatch} />
+					<AdminActionsOption text="GET TASK BY ID" onClick={() => console.log('submit')} onDispatch={onDispatch} />
+				</div>
+			)}
 		</section>
 	);
 };
@@ -133,7 +69,6 @@ const AdminActions = ({ state, dispatch }) => {
 export default AdminActions;
 
 AdminActions.propTypes = {
-	category: PropTypes.string,
 	state: PropTypes.object,
-	dispatch: PropTypes.func,
+	onDispatch: PropTypes.func,
 };

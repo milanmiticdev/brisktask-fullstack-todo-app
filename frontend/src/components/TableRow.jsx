@@ -11,13 +11,13 @@ import styles from './TableRow.module.css';
 // PropTypes
 import PropTypes from 'prop-types';
 
-const TableRow = ({ parent, id, email, result }) => {
+const TableRow = ({ parent, section, id, email }) => {
 	return (
 		<tr className={styles.row}>
 			{parent === 'head' ? (
 				<>
 					<th scope="col">ID</th>
-					{result.users ? <th scope="col">EMAIL</th> : <th scope="col">CREATOR</th>}
+					<th scope="col">{section === 'users' ? 'EMAIL' : 'CREATOR'}</th>
 					<th scope="col">
 						<FontAwesomeIcon icon={faEye} />
 					</th>
@@ -27,7 +27,7 @@ const TableRow = ({ parent, id, email, result }) => {
 					<th scope="row">{id}</th>
 					<td>{email}</td>
 					<td>
-						<Link to={category === 'users' ? `/dashboard/users/${id}` : `/dashboard/tasks/${id}`}>
+						<Link to={`/dashboard/${section}/${id}`}>
 							<button className={styles.viewBtn}>View</button>
 						</Link>
 					</td>
@@ -41,6 +41,7 @@ export default TableRow;
 
 TableRow.propTypes = {
 	parent: PropTypes.string,
+	section: PropTypes.string,
 	id: PropTypes.number,
 	email: PropTypes.string,
 	result: PropTypes.array,

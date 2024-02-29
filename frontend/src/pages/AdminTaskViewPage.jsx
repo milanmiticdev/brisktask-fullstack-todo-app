@@ -11,7 +11,6 @@ import AuthContext from './../contexts/AuthContext.js';
 import FormBtn from './../components/FormBtn.jsx';
 import Modal from './../components/Modal.jsx';
 import Spinner from './../components/Spinner.jsx';
-import Message from '../components/Message.jsx';
 
 // Utils
 import taskController from './../utils/controllers/task.controller.js';
@@ -23,14 +22,17 @@ import styles from './AdminTaskViewPage.module.css';
 // Initial reducer state
 const initialState = {
 	result: {},
-	nameField: '',
+	nameField: {
+		value: '',
+		error: false,
+		message: '',
+	},
 	loading: false,
 	error: false,
-	isEditing: false,
-	message: '',
-	spinnerText: '',
+	editing: false,
+	spinner: '',
 	modal: {
-		isOpen: false,
+		open: false,
 		error: false,
 		message: '',
 	},
@@ -39,20 +41,20 @@ const initialState = {
 // Reducr function
 const reducer = (state, action) => {
 	switch (action.type) {
-		case 'result-fetched':
-			return { ...state, task: action.payload };
+		case 'result-change':
+			return { ...state, result: action.payload };
 		case 'name-field-change':
 			return { ...state, nameField: action.payload };
-		case 'is-loading':
+		case 'loading-change':
 			return { ...state, loading: action.payload };
-		case 'is-error':
+		case 'error-change':
 			return { ...state, error: action.payload };
-		case 'is-editing':
-			return { ...state, isEditing: action.payload };
+		case 'editing-change':
+			return { ...state, editing: action.payload };
 		case 'message-change':
 			return { ...state, message: action.payload };
-		case 'spinner-text-change':
-			return { ...state, spinnerText: action.payload };
+		case 'spinner-change':
+			return { ...state, spinner: action.payload };
 		case 'modal-change':
 			return { ...state, modal: action.payload };
 	}
@@ -68,11 +70,11 @@ const AdminTaskViewPage = () => {
 	const { getTaskById, updateTaskById, deleteTaskById } = taskController;
 
 	const handleEditBtn = () => {
-		dispatch({ type: 'is-editing', payload: true });
+		dispatch({ type: 'editing-change', payload: true });
 	};
 
 	const handleCancelBtn = () => {
-		dispatch({ type: 'is-editing', payload: false });
+		dispatch({ type: 'editing-change', payload: false });
 		dispatch({ type: 'name-change', payload: state.task.name });
 	};
 
@@ -93,10 +95,9 @@ const AdminTaskViewPage = () => {
 
 	return (
 		<main className={state.loading ? `${styles.loading}` : `${styles.taskViewPage}`}>
-			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
-			{state.loading && <Spinner text={state.spinnerText} />}
-			{!state.loading && state.error && <Message message={state.message} />}
-			{!state.loading && !state.error && state.task && (
+			{state.loading && <Spinner text={state.spinner} />}
+			{state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
+			{!state.loading && !state.error && state.result && (
 				<>
 					<section className={styles.section}>
 						<h2 className={styles.heading}>TASK INFO</h2>
@@ -104,12 +105,12 @@ const AdminTaskViewPage = () => {
 							<div className={styles.block}>
 								<label className={styles.label}>NAME</label>
 								<input
-									className={state.isEditing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
+									className={state.editing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
 									value={state.inputName}
 									onChange={e => {
 										dispatch({ type: 'name-change', payload: e.target.value });
 									}}
-									readOnly={state.isEditing ? false : true}
+									readOnly={state.editing ? false : true}
 								/>
 							</div>
 							<div className={styles.block}>
@@ -133,8 +134,8 @@ const AdminTaskViewPage = () => {
 								/>
 							</div>
 							<div className={styles.infoFormBtns}>
-								{!state.isEditing && <FormBtn text="EDIT" color="gray" onClick={handleEditBtn} />}
-								{state.isEditing && (
+								{!state.editing && <FormBtn text="EDIT" color="gray" onClick={handleEditBtn} />}
+								{state.editing && (
 									<>
 										<FormBtn text="SAVE" color="blue" />
 										<FormBtn text="X" color="red" onClick={handleCancelBtn} />

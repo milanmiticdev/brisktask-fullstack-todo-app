@@ -2,25 +2,20 @@
 import { useReducer } from 'react';
 
 // Components
-import Modal from './../components/Modal.jsx';
-import Spinner from './../components/Spinner.jsx';
 import AdminActions from './../components/AdminActions.jsx';
 import Table from './../components/Table.jsx';
+import Modal from './../components/Modal.jsx';
+import Spinner from './../components/Spinner.jsx';
 
 // Styles
 import styles from './AdminDashboardPage.module.css';
 
 const initialState = {
 	result: null,
-	inputId: 0,
-	inputName: '',
-	inputEmail: '',
-	inputPassword: '',
-	isSelecting: false,
 	loading: false,
 	spinnerText: '',
 	modal: {
-		isOpen: false,
+		open: false,
 		error: false,
 		message: '',
 	},
@@ -30,17 +25,7 @@ const reducer = (state, action) => {
 	switch (action.type) {
 		case 'result-fetched':
 			return { ...state, result: action.payload };
-		case 'id-change':
-			return { ...state, inputId: action.payload };
-		case 'name-change':
-			return { ...state, inputName: action.payload };
-		case 'email-change':
-			return { ...state, inputEmail: action.payload };
-		case 'password-change':
-			return { ...state, inputPassword: action.payload };
-		case 'is-selecting':
-			return { ...state, isSelecting: action.payload };
-		case 'loading-check':
+		case 'is-loading':
 			return { ...state, loading: action.payload };
 		case 'spinner-text-change':
 			return { ...state, spinnerText: action.payload };
@@ -55,9 +40,9 @@ const AdminDashboardPage = () => {
 	return (
 		<main className={state.loading ? `${styles.loading}` : `${styles.dashboardPage}`}>
 			{state.loading && <Spinner text={state.spinnerText} />}
-			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
-			{!state.loading && <AdminActions state={state} dispatch={dispatch} />}
-			{!state.loading && state.result && state.result.length > 0 && <Table result={state.result} />}
+			{state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
+			{!state.loading && <AdminActions onDispatch={dispatch} />}
+			{!state.loading && state.result && <Table result={state.result} />}
 		</main>
 	);
 };

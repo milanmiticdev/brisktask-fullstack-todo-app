@@ -26,9 +26,9 @@ const getAllTasks = async (req, res, next) => {
 							userEmail: task.user_email,
 							createdAt: task.created_at,
 							updatedAt: task.updated_at,
+							section: 'tasks',
 						};
 					}),
-					section: 'tasks',
 					message: 'Tasks fetched.',
 					status: 200,
 				});
@@ -63,8 +63,8 @@ const getTasksByUserId = async (req, res, next) => {
 						userEmail: task.user_email,
 						createdAt: task.created_at,
 						updatedAt: task.updated_at,
+						section: 'tasks',
 					})),
-					section: 'tasks',
 					message: 'Tasks fetched.',
 					status: 200,
 				});
@@ -91,8 +91,8 @@ const getTasksByUserId = async (req, res, next) => {
 							userEmail: task.user_email,
 							createdAt: task.created_at,
 							updatedAt: task.updated_at,
+							section: 'tasks',
 						})),
-						section: 'tasks',
 						message: 'Tasks fetched.',
 						status: 200,
 					});
@@ -120,7 +120,6 @@ const getTaskById = async (req, res, next) => {
 			if (result) {
 				return res.status(200).json({
 					message: 'Task fetched.',
-					section: 'tasks',
 					task: {
 						id: result.id,
 						name: result.name,
@@ -128,6 +127,7 @@ const getTaskById = async (req, res, next) => {
 						userEmail: result.user_email,
 						createdAt: result.created_at,
 						updatedAt: result.updated_at,
+						section: 'tasks',
 					},
 					status: 200,
 				});
@@ -149,7 +149,6 @@ const getTaskById = async (req, res, next) => {
 			} else {
 				return res.status(200).json({
 					message: 'Task fetched.',
-					section: 'tasks',
 					task: {
 						id: result.id,
 						name: result.name,
@@ -157,6 +156,7 @@ const getTaskById = async (req, res, next) => {
 						userEmail: result.user_email,
 						createdAt: result.created_at,
 						updatedAt: result.updated_at,
+						section: 'tasks',
 					},
 					status: 200,
 				});
@@ -185,7 +185,7 @@ const createTask = async (req, res, next) => {
 					const [result] = await pool.query(sql, [name.trim(), userData.id, userData.email]);
 
 					if (result && result.affectedRows !== 0) {
-						return res.status(201).json({ message: 'Task created.', section: 'tasks', status: 201 });
+						return res.status(201).json({ message: 'Task created.', status: 201 });
 					} else {
 						throw new ApiError(500, 'Something went wrong.');
 					}
@@ -204,7 +204,6 @@ const updateTaskById = async (req, res, next) => {
 	const { name } = req.body;
 	const userData = req.userData;
 	const nameStatus = validateName(name);
-	console.log(nameStatus);
 
 	if (!nameStatus.error) {
 		if (!taskId) {
@@ -222,7 +221,7 @@ const updateTaskById = async (req, res, next) => {
 						const [result] = await pool.query(sql, [name.trim(), Number(taskId)]);
 
 						if (result && result.affectedRows !== 0) {
-							return res.status(200).json({ message: 'Task updated.', section: 'tasks', status: 200 });
+							return res.status(200).json({ message: 'Task updated.', status: 200 });
 						} else {
 							throw new ApiError(500, 'Something went wrong.');
 						}
@@ -248,7 +247,7 @@ const updateTaskById = async (req, res, next) => {
 						const [result] = await pool.query(sql, [name.trim(), Number(taskId), userData.id]);
 
 						if (result && result.affectedRows !== 0) {
-							return res.status(200).json({ message: 'Task updated.', section: 'tasks', status: 200 });
+							return res.status(200).json({ message: 'Task updated.', status: 200 });
 						} else {
 							throw new ApiError(500, 'Something went wrong.');
 						}

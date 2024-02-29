@@ -9,9 +9,9 @@ import styles from './Modal.module.css';
 // PropTypes
 import PropTypes from 'prop-types';
 
-const Modal = ({ modal, dispatch }) => {
+const Modal = ({ modal, onDispatch }) => {
 	const handleCloseModal = () => {
-		dispatch({ type: 'modal-change', payload: { isOpen: false, error: false, message: '' } });
+		onDispatch({ type: 'modal-change', payload: { open: false, error: false, message: '' } });
 	};
 
 	return (
@@ -33,5 +33,5 @@ export default Modal;
 
 Modal.propTypes = {
 	modal: PropTypes.object,
-	dispatch: PropTypes.func,
+	onDispatch: PropTypes.func,
 };

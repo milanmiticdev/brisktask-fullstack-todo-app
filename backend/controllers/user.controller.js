@@ -34,8 +34,8 @@ const getAllUsers = async (req, res, next) => {
 						role: user.role,
 						createdAt: user.created_at,
 						updatedAt: user.updated_at,
+						section: 'users',
 					})),
-					section: 'users',
 					message: 'Users fetched.',
 					status: 200,
 				});
@@ -64,7 +64,7 @@ const getUserById = async (req, res, next) => {
 			if (result) {
 				return res.status(200).json({
 					message: 'User found.',
-					section: 'users',
+
 					user: {
 						id: result.id,
 						name: result.name,
@@ -72,6 +72,7 @@ const getUserById = async (req, res, next) => {
 						role: result.role,
 						createdAt: result.created_at,
 						updatedAt: result.updated_at,
+						section: 'users',
 					},
 					status: 200,
 				});
@@ -94,7 +95,7 @@ const getUserById = async (req, res, next) => {
 				} else {
 					return res.status(200).json({
 						message: 'User found.',
-						section: 'users',
+
 						status: 200,
 						user: {
 							id: result.id,
@@ -103,6 +104,7 @@ const getUserById = async (req, res, next) => {
 							role: result.role,
 							createdAt: result.created_at,
 							updatedAt: result.updated_at,
+							section: 'users',
 						},
 					});
 				}
@@ -135,7 +137,7 @@ const createUser = async (req, res, next) => {
 						const [result] = await pool.query(sql, [name.trim(), email.trim(), await bcrypt.hash(password.trim(), 12)]);
 
 						if (result && result.affectedRows !== 0) {
-							return res.status(201).json({ message: 'User created.', section: 'users', status: 201 });
+							return res.status(201).json({ message: 'User created.', status: 201 });
 						} else {
 							throw new ApiError(500, 'Something went wrong.');
 						}
@@ -179,7 +181,7 @@ const updateUserById = async (req, res, next) => {
 							const [result] = await pool.query(sql, [name.trim(), email.trim(), role.trim(), Number(userId)]);
 
 							if (result && result.affectedRows !== 0) {
-								return res.status(200).json({ message: 'User updated.', section: 'users', status: 200 });
+								return res.status(200).json({ message: 'User updated.', status: 200 });
 							} else {
 								throw new ApiError(500, 'Something went wrong.');
 							}
@@ -211,7 +213,7 @@ const updateUserById = async (req, res, next) => {
 								const [result] = await pool.query(sql, [name.trim(), userData.id]);
 
 								if (result && result.affectedRows !== 0) {
-									return res.status(200).json({ message: 'User updated.', section: 'users', status: 200 });
+									return res.status(200).json({ message: 'User updated.', status: 200 });
 								} else {
 									throw new ApiError(500, 'Something went wrong.');
 								}
@@ -231,7 +233,7 @@ const updateUserById = async (req, res, next) => {
 										{ expiresIn: jwtExpires }
 									);
 
-									return res.status(200).json({ token, message: 'User updated.', section: 'users', status: 200 });
+									return res.status(200).json({ token, message: 'User updated.', status: 200 });
 								} else {
 									throw new ApiError(500, 'Something went wrong.');
 								}
@@ -336,7 +338,7 @@ const changePassword = async (req, res, next) => {
 							const [result] = await pool.query(sql, [await bcrypt.hash(password.trim(), 12), Number(userId)]);
 
 							if (result && result.affectedRows !== 0) {
-								return res.status(200).json({ message: 'Password changed.', section: 'users', status: 200 });
+								return res.status(200).json({ message: 'Password changed.', status: 200 });
 							} else {
 								throw new ApiError(500, 'Something went wrong.');
 							}
@@ -363,7 +365,7 @@ const changePassword = async (req, res, next) => {
 								const [result] = await pool.query(sql, [await bcrypt.hash(password.trim(), 12), userData.id]);
 
 								if (result && result.affectedRows !== 0) {
-									return res.status(200).json({ message: 'Password changed.', section: 'users', status: 200 });
+									return res.status(200).json({ message: 'Password changed.', status: 200 });
 								} else {
 									throw new ApiError(500, 'Something went wrong.');
 								}
