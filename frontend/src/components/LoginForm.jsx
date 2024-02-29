@@ -12,6 +12,7 @@ import FormField from './FormField.jsx';
 import FormBtn from './FormBtn.jsx';
 
 // Utils
+import authController from './../utils/controllers/auth.controller.js';
 import validation from '../utils/validation.js';
 
 // Styles
@@ -54,44 +55,13 @@ const LoginForm = ({ formWrapperDispatch }) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
 	const { login } = useContext(AuthContext);
-
 	const navigate = useNavigate();
+
+	const { loginUser } = authController;
 	const { validateEmail, validatePassword } = validation;
 
 	const handleLogin = async e => {
-		e.preventDefault();
-
-		const user = {
-			email: state.email,
-			password: state.password,
-		};
-
-		try {
-			formWrapperDispatch({ type: 'loading-check', payload: true });
-			formWrapperDispatch({ type: 'spinner-text-change', payload: 'Login' });
-
-			const response = await fetch('http://localhost:5174/api/v1/auth/login', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(user),
-			});
-			const data = await response.json();
-
-			if (data.status === 200) {
-				login(data.user.id, data.user.role, data.token);
-				navigate('/');
-			} else {
-				formWrapperDispatch({ type: 'spinner-text-change', payload: '' });
-				formWrapperDispatch({ type: 'loading-check', payload: false });
-				formWrapperDispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
-			}
-		} catch {
-			formWrapperDispatch({ type: 'spinner-text-change', payload: '' });
-			formWrapperDispatch({ type: 'loading-check', payload: false });
-			formWrapperDispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
-		}
+		await loginUser(e, state, dispatch, login, navigate);
 	};
 
 	return (
@@ -101,7 +71,7 @@ const LoginForm = ({ formWrapperDispatch }) => {
 				type="text"
 				id="email"
 				name="email"
-				fieldChangeType="email-field-change"
+				fieldChange="email-field-change"
 				statusChangeType="email-status-change"
 				onValidate={validateEmail}
 				onDispatch={dispatch}
@@ -112,8 +82,7 @@ const LoginForm = ({ formWrapperDispatch }) => {
 				type="password"
 				id="password"
 				name="password"
-				fieldChangeType="password-field-change"
-				statusChangeType="password-status-change"
+				fieldChange="password-field-change"
 				onValidate={validatePassword}
 				onDispatch={dispatch}
 				message={state.passwordStatus.message}

@@ -1,5 +1,15 @@
+.actions {
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 3rem;
+	padding: 2rem;
+}
+
 .selection {
-	width: 17rem;
+	width: 22rem;
 	position: relative;
 	display: flex;
 	flex-flow: column wrap;
@@ -7,7 +17,7 @@
 	align-items: center;
 }
 
-.actions {
+.options {
 	position: absolute;
 	top: 6rem;
 	width: 100%;
@@ -18,4 +28,109 @@
 	border-radius: 0.5rem;
 	background-color: #ffffff;
 	box-shadow: 0.1rem 0.1rem 0.9rem #2c2c2c;
+}
+
+.option {
+	width: 100%;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 1rem;
+	padding: 1.5rem 0rem;
+	cursor: pointer;
+	font-size: 1.5rem;
+	font-weight: bold;
+	border-bottom: 0.1rem solid #c0c0c0;
+	color: #6b6b6b;
+}
+
+.option:first-child {
+	border-top-left-radius: 0.5rem;
+	border-top-right-radius: 0.5rem;
+}
+
+.option:last-child {
+	border-bottom-left-radius: 0.5rem;
+	border-bottom-right-radius: 0.5rem;
+}
+
+form {
+	width: 100%;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 1rem;
+}
+
+.createUserForm {
+	flex-flow: column wrap;
+	gap: 1.25rem;
+}
+
+.inputBlock {
+	width: 100%;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 3%;
+}
+
+.inputField {
+	width: 64%;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	padding: 0 0.7rem;
+	border: 0.1rem solid #6b6b6b;
+	border-radius: 0.5rem;
+}
+
+.inputBlock label {
+	width: 33%;
+	color: #6b6b6b;
+}
+
+.inputBlock input {
+	outline: none;
+	border: none;
+	padding: 0.25rem 0.5rem;
+	color: #6b6b6b;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+}
+
+input[type='number'] {
+	-moz-appearance: textfield;
+}
+
+.idInput {
+	border: 0.1rem solid #6b6b6b;
+	border-radius: 0.5rem;
+	outline: none;
+	padding: 0.25rem 1rem;
+	width: 30%;
+	color: #6b6b6b;
+}
+
+.btn {
+	font-size: 1.25rem;
+	padding: 0.75rem 1.5rem;
+	border: none;
+	border-radius: 0.5rem;
+	text-align: center;
+	cursor: pointer;
+	color: #ffffff;
+	background-color: #1e449e;
+	box-shadow: 0.1rem 0.1rem 0.9rem #2c2c2c;
+}
+
+.btn:hover {
+	opacity: 0.85;
 }

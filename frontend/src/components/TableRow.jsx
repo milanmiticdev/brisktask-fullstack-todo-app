@@ -11,19 +11,19 @@ import styles from './TableRow.module.css';
 // PropTypes
 import PropTypes from 'prop-types';
 
-const TableRow = ({ category, parent, id, email }) => {
+const TableRow = ({ parent, id, email, result }) => {
 	return (
-		<>
+		<tr className={styles.row}>
 			{parent === 'head' ? (
-				<tr className={styles.row}>
+				<>
 					<th scope="col">ID</th>
-					{category === 'users' ? <th scope="col">EMAIL</th> : <th scope="col">CREATOR</th>}
+					{result.users ? <th scope="col">EMAIL</th> : <th scope="col">CREATOR</th>}
 					<th scope="col">
 						<FontAwesomeIcon icon={faEye} />
 					</th>
-				</tr>
+				</>
 			) : (
-				<tr className={styles.row}>
+				<>
 					<th scope="row">{id}</th>
 					<td>{email}</td>
 					<td>
@@ -31,17 +31,17 @@ const TableRow = ({ category, parent, id, email }) => {
 							<button className={styles.viewBtn}>View</button>
 						</Link>
 					</td>
-				</tr>
+				</>
 			)}
-		</>
+		</tr>
 	);
 };
 
 export default TableRow;
 
 TableRow.propTypes = {
-	category: PropTypes.string,
 	parent: PropTypes.string,
 	id: PropTypes.number,
 	email: PropTypes.string,
+	result: PropTypes.array,
 };

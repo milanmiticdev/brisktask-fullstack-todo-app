@@ -24,8 +24,12 @@ import styles from './ProfilePage.module.css';
 // Initial reducer state
 const initialState = {
 	user: {},
-	inputName: '',
 	inputEmail: '',
+	name: '',
+	nameStatus: {
+		error: false,
+		message: '',
+	},
 	password: '',
 	passwordStatus: {
 		error: false,
@@ -53,8 +57,10 @@ const reducer = (state, action) => {
 	switch (action.type) {
 		case 'user-fetched':
 			return { ...state, user: action.payload };
-		case 'name-change':
-			return { ...state, inputName: action.payload };
+		case 'name-field-change':
+			return { ...state, name: action.payload };
+		case 'name-status-change':
+			return { ...state, nameStatus: action.payload };
 		case 'email-change':
 			return { ...state, inputEmail: action.payload };
 		case 'password-field-change':
@@ -85,7 +91,7 @@ const ProfilePage = () => {
 	const { userId, userRole, token, login, logout } = useContext(AuthContext);
 
 	const navigate = useNavigate();
-	const { validatePassword } = validation;
+	const { validateName, validatePassword } = validation;
 
 	const handleEditBtn = () => {
 		dispatch({ type: 'is-editing', payload: true });
@@ -93,7 +99,7 @@ const ProfilePage = () => {
 
 	const handleCancelBtn = () => {
 		dispatch({ type: 'is-editing', payload: false });
-		dispatch({ type: 'name-change', payload: state.user.name });
+		dispatch({ type: 'name-field-change', payload: state.user.name });
 		dispatch({ type: 'email-change', payload: state.user.email });
 	};
 
@@ -115,7 +121,7 @@ const ProfilePage = () => {
 
 				if (data.status === 200) {
 					dispatch({ type: 'user-fetched', payload: data.user });
-					dispatch({ type: 'name-change', payload: data.user.name });
+					dispatch({ type: 'name-field-change', payload: data.user.name });
 					dispatch({ type: 'email-change', payload: data.user.email });
 					dispatch({ type: 'message-change', payload: '' });
 					dispatch({ type: 'spinner-text-change', payload: '' });
@@ -261,17 +267,18 @@ const ProfilePage = () => {
 					<section className={styles.section}>
 						<h2 className={styles.heading}>PROFILE INFO</h2>
 						<form onSubmit={updateUser} className={styles.infoForm}>
-							<div className={styles.block}>
-								<label className={styles.label}>NAME</label>
-								<input
-									className={state.isEditing ? `${styles.input}` : `${styles.input} ${styles.inputReadOnly}`}
-									value={state.inputName}
-									onChange={e => {
-										dispatch({ type: 'name-change', payload: e.target.value });
-									}}
-									readOnly={state.isEditing ? false : true}
-								/>
-							</div>
+							<FormField
+								htmlFor="name"
+								type="name"
+								id="name"
+								name="name"
+								fieldChangeType="name-field-change"
+								statusChangeType="name-status-change"
+								onValidate={validateName}
+								onDispatch={dispatch}
+								message={state.nameStatus.message}
+								initialValue={state.name}
+							/>
 							<div className={styles.block}>
 								<label className={styles.label}>EMAIL</label>
 								<input

@@ -1,11 +1,9 @@
 //React
-import { useReducer, useEffect } from 'react';
+import { useReducer } from 'react';
 
 // Components
 import Modal from './../components/Modal.jsx';
 import Spinner from './../components/Spinner.jsx';
-import TabsToggle from './../components/TabsToggle.jsx';
-import Tab from './../components/Tab.jsx';
 import AdminActions from './../components/AdminActions.jsx';
 import Table from './../components/Table.jsx';
 
@@ -13,10 +11,12 @@ import Table from './../components/Table.jsx';
 import styles from './AdminDashboardPage.module.css';
 
 const initialState = {
-	result: [],
-	category: 'users',
+	result: null,
+	inputId: 0,
+	inputName: '',
+	inputEmail: '',
+	inputPassword: '',
 	isSelecting: false,
-	showTable: false,
 	loading: false,
 	spinnerText: '',
 	modal: {
@@ -30,12 +30,16 @@ const reducer = (state, action) => {
 	switch (action.type) {
 		case 'result-fetched':
 			return { ...state, result: action.payload };
-		case 'category-change':
-			return { ...state, category: action.payload };
+		case 'id-change':
+			return { ...state, inputId: action.payload };
+		case 'name-change':
+			return { ...state, inputName: action.payload };
+		case 'email-change':
+			return { ...state, inputEmail: action.payload };
+		case 'password-change':
+			return { ...state, inputPassword: action.payload };
 		case 'is-selecting':
 			return { ...state, isSelecting: action.payload };
-		case 'show-table':
-			return { ...state, showTable: action.payload };
 		case 'loading-check':
 			return { ...state, loading: action.payload };
 		case 'spinner-text-change':
@@ -48,39 +52,12 @@ const reducer = (state, action) => {
 const AdminDashboardPage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
-	useEffect(() => {
-		dispatch({ type: 'is-selecting', payload: false });
-		dispatch({ type: 'show-table', payload: false });
-	}, [state.category]);
-
 	return (
 		<main className={state.loading ? `${styles.loading}` : `${styles.dashboardPage}`}>
 			{state.loading && <Spinner text={state.spinnerText} />}
 			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
-			{!state.loading && (
-				<section className={styles.operations}>
-					<TabsToggle>
-						<Tab
-							category={state.category}
-							dispatch={dispatch}
-							type="category-change"
-							payload="users"
-							position="left"
-							text="USERS"
-						/>
-						<Tab
-							category={state.category}
-							dispatch={dispatch}
-							type="category-change"
-							payload="tasks"
-							position="right"
-							text="TASKS"
-						/>
-					</TabsToggle>
-					<AdminActions category={state.category} isSelecting={state.isSelecting} dispatch={dispatch} />
-				</section>
-			)}
-			{!state.loading && state.showTable && state.result.length > 0 && <Table category={state.category} result={state.result} />}
+			{!state.loading && <AdminActions state={state} dispatch={dispatch} />}
+			{!state.loading && state.result && state.result.length > 0 && <Table result={state.result} />}
 		</main>
 	);
 };

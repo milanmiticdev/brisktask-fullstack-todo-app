@@ -10,12 +10,15 @@ import Modal from './../components/Modal.jsx';
 import Spinner from '../components/Spinner.jsx';
 import Message from './../components/Message.jsx';
 
+// Utils
+import taskController from './../utils/controllers/task.controller.js';
+
 // Styles
 import styles from './TasksPage.module.css';
 
 // Initial reducer state
 const initialState = {
-	tasks: [],
+	result: [],
 	loading: false,
 	error: false,
 	message: '',
@@ -30,11 +33,11 @@ const initialState = {
 // Reducr function
 const reducer = (state, action) => {
 	switch (action.type) {
-		case 'tasks-fetched':
-			return { ...state, tasks: action.payload };
-		case 'loading-check':
+		case 'result-fetched':
+			return { ...state, result: action.payload };
+		case 'is-loading':
 			return { ...state, loading: action.payload };
-		case 'error-check':
+		case 'is-error':
 			return { ...state, error: action.payload };
 		case 'message-change':
 			return { ...state, message: action.payload };
@@ -50,43 +53,14 @@ const TasksPage = () => {
 
 	const { userId, token } = useContext(AuthContext);
 
+	const { getTasksByUserId } = taskController;
+
 	useEffect(() => {
-		const getTasks = async () => {
-			try {
-				dispatch({ type: 'loading-check', payload: true });
-				dispatch({ type: 'message-change', payload: '' });
-				dispatch({ type: 'spinner-text-change', payload: 'Loading' });
-
-				const response = await fetch(`http://localhost:5174/api/v1/tasks/user/${userId}`, {
-					method: 'GET',
-					body: null,
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
-				const data = await response.json();
-
-				if (data.status === 200) {
-					dispatch({ type: 'tasks-fetched', payload: data.tasks });
-					dispatch({ type: 'message-change', payload: '' });
-					dispatch({ type: 'spinner-text-change', payload: '' });
-					dispatch({ type: 'error-check', payload: false });
-					dispatch({ type: 'loading-check', payload: false });
-				} else {
-					dispatch({ type: 'message-change', payload: data.message });
-					dispatch({ type: 'spinner-text-change', payload: '' });
-					dispatch({ type: 'error-check', payload: true });
-					dispatch({ type: 'loading-check', payload: false });
-				}
-			} catch {
-				dispatch({ type: 'message-change', payload: 'Something went wrong.' });
-				dispatch({ type: 'spinner-text-change', payload: '' });
-				dispatch({ type: 'error-check', payload: true });
-				dispatch({ type: 'loading-check', payload: false });
-			}
+		const handleGetTasksByUserId = async () => {
+			await getTasksByUserId(userId, token, dispatch);
 		};
-		getTasks();
-	}, [userId, token]);
+		handleGetTasksByUserId();
+	}, [userId, token, getTasksByUserId]);
 
 	return (
 		<section className={state.loading ? `${styles.loading}` : `${styles.tasks}`}>
@@ -94,9 +68,9 @@ const TasksPage = () => {
 			{!state.loading && state.error && <Message message={state.message} />}
 			{!state.loading &&
 				!state.error &&
-				state.tasks &&
-				state.tasks.length > 0 &&
-				state.tasks.map(task => <Task key={task.id} task={task} dispatch={dispatch} />)}
+				state.result &&
+				state.result.length > 0 &&
+				state.result.map(task => <Task key={task.id} task={task} dispatch={dispatch} />)}
 			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
 		</section>
 	);

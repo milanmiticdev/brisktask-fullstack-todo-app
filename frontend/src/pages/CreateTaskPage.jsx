@@ -8,12 +8,14 @@ import AuthContext from './../contexts/AuthContext.js';
 import { useNavigate } from 'react-router-dom';
 
 // Components
+import Form from './../components/Form.jsx';
+import FormField from './../components/FormField.jsx';
 import FormBtn from './../components/FormBtn.jsx';
 import Modal from './../components/Modal.jsx';
 import Spinner from './../components/Spinner.jsx';
-import Message from './../components/Message.jsx';
 
 // Utils
+import taskController from './../utils/controllers/task.controller.js';
 import validation from './../utils/validation.js';
 
 // Styles
@@ -21,10 +23,9 @@ import styles from './CreateTaskPage.module.css';
 
 // Initial reducer state
 const initialState = {
-	value: '',
-	initialEmptyState: true,
-	status: {
-		error: true,
+	nameField: {
+		value: '',
+		error: false,
 		message: '',
 	},
 	loading: false,
@@ -39,13 +40,9 @@ const initialState = {
 // Reducer function
 const reducer = (state, action) => {
 	switch (action.type) {
-		case 'value-change':
-			return { ...state, value: action.payload };
-		case 'initial-empty-state-change':
-			return { ...state, initialEmptyState: action.payload };
-		case 'status-change':
-			return { ...state, status: action.payload };
-		case 'loading-check':
+		case 'name-field-change':
+			return { ...state, nameField: action.payload };
+		case 'is-loading':
 			return { ...state, loading: action.payload };
 		case 'spinner-text-change':
 			return { ...state, spinnerText: action.payload };
@@ -58,68 +55,30 @@ const CreateTaskPage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
 	const { userId, token } = useContext(AuthContext);
-	const { validateName } = validation;
 	const navigate = useNavigate();
 
-	const createTask = async e => {
-		e.preventDefault();
+	const { createTask } = taskController;
+	const { validateName } = validation;
 
-		try {
-			dispatch({ type: 'loading-check', payload: true });
-			dispatch({ type: 'spinner-text-change', payload: 'Creating' });
-
-			const task = {
-				name: state.value,
-			};
-
-			const response = await fetch(`http://localhost:5174/api/v1/tasks/create/${userId}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`,
-				},
-				body: JSON.stringify(task),
-			});
-			const data = await response.json();
-
-			if (data.status === 201) {
-				navigate('/tasks');
-			} else {
-				dispatch({ type: 'spinner-text-change', payload: '' });
-				dispatch({ type: 'loading-check', payload: false });
-				dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
-			}
-		} catch {
-			dispatch({ type: 'spinner-text-change', payload: '' });
-			dispatch({ type: 'loading-check', payload: false });
-			dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
-		}
+	const handleCreateTask = async e => {
+		await createTask(e, userId, token, state, dispatch, navigate);
 	};
 
 	return (
 		<section className={state.loading ? `${styles.loading}` : `${styles.createTaskPage}`}>
 			{state.loading && <Spinner text={state.spinnerText} />}
 			{!state.loading && (
-				<form onSubmit={createTask} className={styles.form}>
-					<label htmlFor="create-task" className={styles.label}>
-						CREATE TASK
-					</label>
-					<input
-						className={styles.input}
-						id="create-task"
-						name="create-task"
+				<Form onSubmit={handleCreateTask}>
+					<FormField
+						field="name"
 						type="text"
-						autoFocus
-						value={state.value}
-						onChange={e => {
-							dispatch({ type: 'initial-empty-state-change', payload: false });
-							dispatch({ type: 'value-change', payload: e.target.value });
-							dispatch({ type: 'status-change', payload: validateName(e.target.value) });
-						}}
+						onValidate={validateName}
+						onDispatch={dispatch}
+						message={state.nameField.message}
+						fieldChange="name-field-change"
 					/>
-					<Message message={state.status.message} />
 					<FormBtn text="CREATE" color="blue" />
-				</form>
+				</Form>
 			)}
 			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
 		</section>

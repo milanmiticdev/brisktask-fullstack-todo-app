@@ -1,0 +1,27 @@
+.form {
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 1rem;
+}
+
+@media screen and (min-width: 400px) {
+	.form {
+		gap: 1.5rem;
+	}
+}
+
+@media screen and (min-width: 500px) {
+	.form {
+		gap: 2rem;
+	}
+}
+
+@media screen and (min-width: 600px) {
+	.form {
+		width: 54rem;
+		padding: 3rem;
+	}
+}

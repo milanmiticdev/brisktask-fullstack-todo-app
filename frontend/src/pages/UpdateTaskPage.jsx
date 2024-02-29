@@ -8,12 +8,15 @@ import AuthContext from './../contexts/AuthContext.js';
 import { useParams, useNavigate } from 'react-router-dom';
 
 // Components
+import Form from './../components/Form.jsx';
+import FormField from './../components/FormField.jsx';
 import FormBtn from './../components/FormBtn.jsx';
 import Modal from './../components/Modal.jsx';
 import Spinner from './../components/Spinner.jsx';
 import Message from './../components/Message.jsx';
 
 // Utils
+import taskController from './../utils/controllers/task.controller.js';
 import validation from './../utils/validation.js';
 
 // Styles
@@ -21,9 +24,10 @@ import styles from './UpdateTaskPage.module.css';
 
 // Initial reducer state
 const initialState = {
-	value: '',
-	status: {
-		error: true,
+	result: {},
+	nameField: {
+		value: '',
+		error: false,
 		message: '',
 	},
 	loading: false,
@@ -40,13 +44,13 @@ const initialState = {
 // Reducer function
 const reducer = (state, action) => {
 	switch (action.type) {
-		case 'value-change':
-			return { ...state, value: action.payload };
-		case 'status-change':
-			return { ...state, status: action.payload };
-		case 'loading-check':
+		case 'result-fetched':
+			return { ...state, result: action.payload };
+		case 'name-field-change':
+			return { ...state, nameField: action.payload };
+		case 'is-loading':
 			return { ...state, loading: action.payload };
-		case 'error-check':
+		case 'is-error':
 			return { ...state, error: action.payload };
 		case 'message-change':
 			return { ...state, message: action.payload };
@@ -60,82 +64,26 @@ const reducer = (state, action) => {
 const UpdateTaskPage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
+	const { token, userRole } = useContext(AuthContext);
 	const { taskId } = useParams();
-	const { token } = useContext(AuthContext);
-	const { validateName } = validation;
 	const navigate = useNavigate();
 
+	const { getTaskById, updateTaskById } = taskController;
+	const { validateName } = validation;
+
 	useEffect(() => {
-		const getTask = async () => {
-			try {
-				dispatch({ type: 'loading-check', payload: true });
-				dispatch({ type: 'message-change', payload: '' });
-				dispatch({ type: 'spinner-text-change', payload: 'Loading' });
-
-				const response = await fetch(`http://localhost:5174/api/v1/tasks/${Number(taskId)}`, {
-					method: 'GET',
-					body: null,
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
-				const data = await response.json();
-
-				if (data.status === 200) {
-					dispatch({ type: 'value-change', payload: data.task.name });
-					dispatch({ type: 'message-change', payload: '' });
-					dispatch({ type: 'spinner-text-change', payload: '' });
-					dispatch({ type: 'error-check', payload: false });
-					dispatch({ type: 'loading-check', payload: false });
-				} else {
-					dispatch({ type: 'message-change', payload: data.message });
-					dispatch({ type: 'spinner-text-change', payload: '' });
-					dispatch({ type: 'error-check', payload: true });
-					dispatch({ type: 'loading-check', payload: false });
-				}
-			} catch {
-				dispatch({ type: 'message-change', payload: 'Something went wrong.' });
-				dispatch({ type: 'spinner-text-change', payload: '' });
-				dispatch({ type: 'error-check', payload: true });
-				dispatch({ type: 'loading-check', payload: false });
-			}
+		const handleGetTaskById = async () => {
+			await getTaskById(taskId, token, dispatch);
 		};
-		getTask();
-	}, [taskId, token]);
+		handleGetTaskById();
+	}, [taskId, token, getTaskById]);
 
-	const updateTask = async e => {
-		e.preventDefault();
+	useEffect(() => {
+		dispatch({ type: 'name-field-change', payload: { value: state.result.name, error: false, message: '' } });
+	}, [state.result]);
 
-		try {
-			dispatch({ type: 'loading-check', payload: true });
-			dispatch({ type: 'spinner-text-change', payload: 'Updating' });
-
-			const updatedTask = {
-				name: state.value,
-			};
-
-			const response = await fetch(`http://localhost:5174/api/v1/tasks/${taskId}`, {
-				method: 'PATCH',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`,
-				},
-				body: JSON.stringify(updatedTask),
-			});
-			const data = await response.json();
-
-			if (data.status === 200) {
-				navigate('/tasks');
-			} else {
-				dispatch({ type: 'spinner-text-change', payload: '' });
-				dispatch({ type: 'loading-check', payload: false });
-				dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
-			}
-		} catch {
-			dispatch({ type: 'spinner-text-change', payload: '' });
-			dispatch({ type: 'loading-check', payload: false });
-			dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
-		}
+	const handleUpdateTaskById = async e => {
+		await updateTaskById(e, taskId, token, userRole, navigate, dispatch);
 	};
 
 	return (
@@ -143,26 +91,19 @@ const UpdateTaskPage = () => {
 			{state.loading && <Spinner text={state.spinnerText} />}
 			{!state.loading && state.error && <Message message={state.message} />}
 			{!state.loading && !state.error && (
-				<form onSubmit={updateTask} className={styles.form}>
-					<label htmlFor="update_task" className={styles.label}>
-						UPDATE TASK
-					</label>
-					<input
-						className={styles.input}
-						id="update_task"
-						name="update_task"
+				<Form onSubmit={handleUpdateTaskById}>
+					<FormField
+						field="name"
 						type="text"
-						autoFocus={true}
-						readOnly={true}
-						value={state.value}
-						onChange={e => {
-							dispatch({ type: 'value-change', payload: e.target.value });
-							dispatch({ type: 'status-change', payload: validateName(e.target.value) });
-						}}
+						onValidate={validateName}
+						onDispatch={dispatch}
+						message={state.nameField.message}
+						fieldChange="name-field-change"
+						section=""
+						initial={state.nameField.value}
 					/>
-					<Message message={state.status.message} />
 					<FormBtn text="UPDATE" color="blue" />
-				</form>
+				</Form>
 			)}
 			{state.modal.isOpen && <Modal modal={state.modal} dispatch={dispatch} />}
 		</section>

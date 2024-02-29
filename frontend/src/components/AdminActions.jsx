@@ -4,9 +4,16 @@ import { useRef, useEffect, useContext } from 'react';
 // Context
 import AuthContext from '../contexts/AuthContext.js';
 
+// Utils
+import userController from './../utils/controllers/user.controller.js';
+import taskController from './../utils/controllers/task.controller.js';
+
 // Components
 import SelectBtn from './SelectBtn.jsx';
-import SelectOption from './SelectOption.jsx';
+
+// Font Awesome Icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 // Styles
 import styles from './AdminActions.module.css';
@@ -14,10 +21,21 @@ import styles from './AdminActions.module.css';
 // PropTypes
 import PropTypes from 'prop-types';
 
-const AdminActions = ({ category, isSelecting, dispatch }) => {
+const AdminActions = ({ state, dispatch }) => {
 	const selectRef = useRef(null);
 
 	const { token } = useContext(AuthContext);
+
+	const { getAllUsers } = userController;
+	const { getAllTasks } = taskController;
+
+	const handleGetAllUsers = async () => {
+		await getAllUsers(token, dispatch);
+	};
+
+	const handleGetAllTasks = async () => {
+		await getAllTasks(token, dispatch);
+	};
 
 	useEffect(() => {
 		const handleClickOutside = e => {
@@ -33,55 +51,81 @@ const AdminActions = ({ category, isSelecting, dispatch }) => {
 		};
 	}, [selectRef, dispatch]);
 
-	const getAll = async () => {
-		try {
-			dispatch({ type: 'loading-check', payload: true });
-			dispatch({ type: 'spinner-text-change', payload: 'Loading' });
-
-			const response = await fetch(`http://localhost:5174/api/v1/${category}`, {
-				method: 'GET',
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-				body: null,
-			});
-			const data = await response.json();
-
-			if (data.status === 200) {
-				dispatch({ type: 'show-table', payload: true });
-				dispatch({ type: 'result-fetched', payload: data[category] });
-			} else {
-				dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
-				dispatch({ type: 'show-table', payload: false });
-			}
-		} catch {
-			dispatch({ type: 'show-table', payload: false });
-			dispatch({ type: 'spinner-text-change', payload: '' });
-			dispatch({ type: 'loading-check', payload: false });
-			dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
-		} finally {
-			dispatch({ type: 'category-change', payload: category });
-			dispatch({ type: 'spinner-text-change', payload: '' });
-			dispatch({ type: 'loading-check', payload: false });
-			dispatch({ type: 'is-selecting', payload: false });
-		}
-	};
-
 	return (
-		<section className={styles.selection}>
-			{category === 'users' ? (
-				<SelectBtn text="SELECT USER ACTION" dispatch={dispatch} />
-			) : (
-				<SelectBtn text="SELECT TASK ACTION" dispatch={dispatch} />
-			)}
-			{isSelecting && (
-				<div className={styles.actions} ref={selectRef}>
-					<SelectOption text={category === 'users' ? 'GET ALL USERS' : 'GET ALL TASKS'} dispatch={dispatch} onClick={getAll} />
-					{category === 'tasks' && <SelectOption text="GET TASKS BY USER" dispatch={dispatch} />}
-					<SelectOption text={category === 'users' ? 'GET SINGLE USER' : 'GET SINGLE TASK'} dispatch={dispatch} />
-					{category === 'users' && <SelectOption text="CREATE USER" dispatch={dispatch} />}
-				</div>
-			)}
+		<section className={styles.actions}>
+			<section className={styles.selection}>
+				<SelectBtn text="SELECT ACTION" dispatch={dispatch} />
+				{state.isSelecting && (
+					<div className={styles.options} ref={selectRef}>
+						<div className={styles.option}>
+							<button className={styles.btn} onClick={handleGetAllUsers}>
+								GET ALL USERS
+							</button>
+						</div>
+						<div className={styles.option}>
+							<form>
+								<input
+									type="number"
+									className={styles.idInput}
+									value={state.inputId}
+									onChange={e => dispatch({ type: 'id-change', payload: e.target.value })}
+								/>
+								<button type="submit" className={styles.btn} onClick={handleGetAllTasks}>
+									GET USER BY ID
+								</button>
+							</form>
+						</div>
+						<div className={styles.option}>
+							<form className={styles.createUserForm}>
+								<div className={styles.inputBlock}>
+									<label htmlFor="name-input">Name</label>
+									<input
+										id="name-input"
+										name="name-input"
+										type="text"
+										value={state.inputName}
+										onChange={e => dispatch({ type: 'name-change', payload: e.target.value })}
+									/>
+								</div>
+								<div className={styles.inputBlock}>
+									<label htmlFor="email-input">Email</label>
+									<input
+										id="email-input"
+										name="email-input"
+										type="text"
+										className={styles.input}
+										value={state.inputEmail}
+										onChange={e => dispatch({ type: 'email-change', payload: e.target.value })}
+									/>
+								</div>
+								<div className={styles.inputBlock}>
+									<label htmlFor="password-input">Password</label>
+									<div className={styles.inputField}>
+										<input
+											id="password-input"
+											name="password-input"
+											type="password"
+											className={styles.input}
+											value={state.inputPassword}
+											onChange={e => dispatch({ type: 'password-change', payload: e.target.value })}
+										/>
+										<div className={styles.icon}>
+											<FontAwesomeIcon icon={faEye} />
+										</div>
+									</div>
+								</div>
+
+								<button type="submit" className={styles.btn}>
+									CREATE USER
+								</button>
+							</form>
+						</div>
+						<div className={styles.option}>GET ALL TASKS</div>
+						<div className={styles.option}>GET TASKS BY USER ID</div>
+						<div className={styles.option}>GET TASK BY ID</div>
+					</div>
+				)}
+			</section>
 		</section>
 	);
 };
@@ -90,6 +134,6 @@ export default AdminActions;
 
 AdminActions.propTypes = {
 	category: PropTypes.string,
-	isSelecting: PropTypes.bool,
+	state: PropTypes.object,
 	dispatch: PropTypes.func,
 };

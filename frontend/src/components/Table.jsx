@@ -12,7 +12,7 @@ const Table = ({ category, result }) => {
 		<section className={styles.result}>
 			<table className={styles.table}>
 				<thead className={styles.head}>
-					<TableRow parent="head" category={category} />
+					<TableRow parent="head" category={category} result={result} />
 				</thead>
 				<tbody className={styles.body}>
 					{result.map(row => (
@@ -21,7 +21,8 @@ const Table = ({ category, result }) => {
 							parent="body"
 							category={category}
 							id={row.id}
-							email={category === 'users' ? row.email : row.userEmail}
+							email={row.email ? row.email : null}
+							creator={row.userEmail ? row.userEmail : null}
 						/>
 					))}
 				</tbody>

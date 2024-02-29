@@ -1,5 +1,5 @@
 // React
-import { useReducer, useEffect } from 'react';
+import { useRef, useReducer, useEffect } from 'react';
 
 // Components
 import Message from './Message.jsx';
@@ -16,10 +16,9 @@ import PropTypes from 'prop-types';
 
 // Initial reducer state
 const initialState = {
-	value: '',
-	initialEmptyState: true,
-	status: {
-		error: true,
+	field: {
+		value: '',
+		error: false,
 		message: '',
 	},
 	passwordVisibility: false,
@@ -28,48 +27,57 @@ const initialState = {
 // Reducer function
 const reducer = (state, action) => {
 	switch (action.type) {
-		case 'value-change':
-			return { ...state, value: action.payload };
-		case 'initial-empty-state-change':
-			return { ...state, initialEmptyState: action.payload };
-		case 'status-change':
-			return { ...state, status: action.payload };
+		case 'field-change':
+			return { ...state, field: action.payload };
 		case 'password-visibility-change':
 			return { ...state, passwordVisibility: action.payload };
 	}
 };
 
-const FormField = ({ htmlFor, type, id, name, fieldChangeType, statusChangeType, onValidate, onDispatch, message }) => {
+const FormField = ({ field, type, onValidate, onDispatch, message, fieldChange, initial, section }) => {
+	const initialRef = useRef(initial);
 	const [state, dispatch] = useReducer(reducer, initialState);
+
+	console.log(initialRef.current);
 
 	const handlePasswordVisibility = () => {
 		dispatch({ type: 'password-visibility-change', payload: !state.passwordVisibility });
 	};
 
 	useEffect(() => {
-		onDispatch({ type: fieldChangeType, payload: state.value });
-		if (!state.initialEmptyState) {
-			onDispatch({ type: statusChangeType, payload: state.status });
-		}
-	}, [state.value, state.status, state.initialEmptyState, onDispatch, fieldChangeType, statusChangeType]);
+		const reset = {
+			value: '',
+			error: false,
+			message: '',
+		};
+		dispatch({ type: 'field-change', payload: reset });
+	}, [section]);
+
+	useEffect(() => {
+		dispatch({ type: 'field-change', payload: { value: initialRef.current, error: false, message: '' } });
+	}, [initialRef]);
 
 	return (
 		<div className={styles.formField}>
 			<div className={styles.inputBlock}>
-				<label htmlFor={htmlFor} className={styles.label}>
-					{name.charAt(0).toUpperCase() + name.slice(1)}
+				<label htmlFor={field} className={styles.label}>
+					{field.charAt(0).toUpperCase() + field.slice(1)}
 				</label>
 				<div className={styles.inputField}>
 					<input
 						className={styles.input}
 						type={state.passwordVisibility ? 'text' : type}
-						id={id}
-						name={name}
-						value={state.value}
+						id={field}
+						name={field}
+						value={state.field.value}
 						onChange={e => {
-							dispatch({ type: 'value-change', payload: e.target.value });
-							dispatch({ type: 'status-change', payload: onValidate(e.target.value) });
-							dispatch({ type: 'initial-empty-state-change', payload: false });
+							const validated = onValidate(e.target.value);
+							const change = {
+								value: e.target.value,
+								error: validated.error,
+								message: validated.message,
+							};
+							dispatch({ type: 'field-change', payload: change });
 						}}
 					/>
 					{type === 'password' && (
@@ -91,13 +99,12 @@ const FormField = ({ htmlFor, type, id, name, fieldChangeType, statusChangeType,
 export default FormField;
 
 FormField.propTypes = {
-	htmlFor: PropTypes.string,
+	field: PropTypes.string,
 	type: PropTypes.string,
-	id: PropTypes.string,
-	name: PropTypes.string,
-	fieldChangeType: PropTypes.string,
-	statusChangeType: PropTypes.string,
 	onValidate: PropTypes.func,
 	onDispatch: PropTypes.func,
 	message: PropTypes.string,
+	section: PropTypes.string,
+	fieldChange: PropTypes.string,
+	initial: PropTypes.string,
 };

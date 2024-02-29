@@ -14,6 +14,7 @@ import Spinner from './../components/Spinner.jsx';
 import Message from '../components/Message.jsx';
 
 // Utils
+import taskController from './../utils/controllers/task.controller.js';
 import UTCtoLocal from './../utils/UTCtoLocal.js';
 
 // Styles
@@ -21,8 +22,8 @@ import styles from './AdminTaskViewPage.module.css';
 
 // Initial reducer state
 const initialState = {
-	task: {},
-	inputName: '',
+	result: {},
+	nameField: '',
 	loading: false,
 	error: false,
 	isEditing: false,
@@ -38,13 +39,13 @@ const initialState = {
 // Reducr function
 const reducer = (state, action) => {
 	switch (action.type) {
-		case 'task-fetched':
+		case 'result-fetched':
 			return { ...state, task: action.payload };
-		case 'name-change':
-			return { ...state, inputName: action.payload };
-		case 'loading-check':
+		case 'name-field-change':
+			return { ...state, nameField: action.payload };
+		case 'is-loading':
 			return { ...state, loading: action.payload };
-		case 'error-check':
+		case 'is-error':
 			return { ...state, error: action.payload };
 		case 'is-editing':
 			return { ...state, isEditing: action.payload };
@@ -54,8 +55,6 @@ const reducer = (state, action) => {
 			return { ...state, spinnerText: action.payload };
 		case 'modal-change':
 			return { ...state, modal: action.payload };
-		case 'window-resize':
-			return { ...state, windowSize: action.payload };
 	}
 };
 
@@ -66,6 +65,8 @@ const AdminTaskViewPage = () => {
 
 	const navigate = useNavigate();
 
+	const { getTaskById, updateTaskById, deleteTaskById } = taskController;
+
 	const handleEditBtn = () => {
 		dispatch({ type: 'is-editing', payload: true });
 	};
@@ -75,112 +76,20 @@ const AdminTaskViewPage = () => {
 		dispatch({ type: 'name-change', payload: state.task.name });
 	};
 
+	const handleUpdateTaskById = async e => {
+		await updateTaskById(e, taskId, token, state, dispatch, navigate);
+	};
+
+	const handleDeleteTaskById = async () => {
+		await deleteTaskById(taskId, token, dispatch, navigate);
+	};
+
 	useEffect(() => {
-		const getTask = async () => {
-			try {
-				dispatch({ type: 'loading-check', payload: true });
-				dispatch({ type: 'message-change', payload: '' });
-				dispatch({ type: 'spinner-text-change', payload: 'Loading' });
-
-				const response = await fetch(`http://localhost:5174/api/v1/tasks/${Number(taskId)}`, {
-					method: 'GET',
-					body: null,
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
-				const data = await response.json();
-
-				if (data.status === 200) {
-					dispatch({ type: 'task-fetched', payload: data.task });
-					dispatch({ type: 'name-change', payload: data.task.name });
-					dispatch({ type: 'message-change', payload: '' });
-					dispatch({ type: 'spinner-text-change', payload: '' });
-					dispatch({ type: 'error-check', payload: false });
-					dispatch({ type: 'loading-check', payload: false });
-				} else {
-					dispatch({ type: 'message-change', payload: data.message });
-					dispatch({ type: 'spinner-text-change', payload: '' });
-					dispatch({ type: 'error-check', payload: true });
-					dispatch({ type: 'loading-check', payload: false });
-				}
-			} catch {
-				dispatch({ type: 'message-change', payload: 'Something went wrong.' });
-				dispatch({ type: 'spinner-text-change', payload: '' });
-				dispatch({ type: 'error-check', payload: true });
-				dispatch({ type: 'loading-check', payload: false });
-			}
+		const handleGetTaskById = async () => {
+			await getTaskById(taskId, token, dispatch);
 		};
-		getTask();
-	}, [taskId, token]);
-
-	const updateTask = async e => {
-		e.preventDefault();
-
-		if (state.task.name === state.inputName) {
-			dispatch({ type: 'is-editing', payload: false });
-		} else {
-			const updatedTask = {
-				name: state.inputName,
-			};
-
-			try {
-				dispatch({ type: 'loading-check', payload: true });
-				dispatch({ type: 'spinner-text-change', payload: 'Updating' });
-
-				const response = await fetch(`http://localhost:5174/api/v1/tasks/${Number(taskId)}`, {
-					method: 'PATCH',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Bearer ${token}`,
-					},
-					body: JSON.stringify(updatedTask),
-				});
-				const data = await response.json();
-
-				if (data.status === 200) {
-					navigate(0);
-				} else {
-					dispatch({ type: 'spinner-text-change', payload: '' });
-					dispatch({ type: 'loading-check', payload: false });
-					dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
-				}
-			} catch {
-				dispatch({ type: 'spinner-text-change', payload: '' });
-				dispatch({ type: 'loading-check', payload: false });
-				dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
-			}
-		}
-	};
-
-	const deleteTask = async () => {
-		try {
-			dispatch({ type: 'loading-check', payload: true });
-			dispatch({ type: 'spinner-text-change', payload: 'Deleting' });
-
-			const response = await fetch(`http://localhost:5174/api/v1/tasks/${Number(taskId)}`, {
-				method: 'DELETE',
-				body: null,
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-
-			if (response.status === 204) {
-				navigate('/dashboard');
-			} else {
-				const data = await response.json();
-
-				dispatch({ type: 'spinner-text-change', payload: '' });
-				dispatch({ type: 'loading-check', payload: false });
-				dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: data.message } });
-			}
-		} catch {
-			dispatch({ type: 'spinner-text-change', payload: '' });
-			dispatch({ type: 'loading-check', payload: false });
-			dispatch({ type: 'modal-change', payload: { isOpen: true, error: true, message: 'Something went wrong.' } });
-		}
-	};
+		handleGetTaskById();
+	}, [taskId, token, dispatch, getTaskById]);
 
 	return (
 		<main className={state.loading ? `${styles.loading}` : `${styles.taskViewPage}`}>
@@ -191,7 +100,7 @@ const AdminTaskViewPage = () => {
 				<>
 					<section className={styles.section}>
 						<h2 className={styles.heading}>TASK INFO</h2>
-						<form onSubmit={updateTask} className={styles.infoForm}>
+						<form onSubmit={handleUpdateTaskById} className={styles.infoForm}>
 							<div className={styles.block}>
 								<label className={styles.label}>NAME</label>
 								<input
@@ -236,7 +145,7 @@ const AdminTaskViewPage = () => {
 					</section>
 					<section className={styles.section}>
 						<h2 className={styles.heading}>DELETE TASK</h2>
-						<FormBtn text="DELETE" color="red" onClick={deleteTask} />
+						<FormBtn text="DELETE" color="red" onClick={handleDeleteTaskById} />
 					</section>
 				</>
 			)}
