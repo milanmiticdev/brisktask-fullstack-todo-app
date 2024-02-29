@@ -60,7 +60,7 @@ const CreateTaskPage = () => {
 	const { createTask } = taskController;
 	const { validateName } = validation;
 
-	const handleCreateTask = async e => await createTask(e, userId, token, state, dispatch, navigate);
+	const handleCreateTask = async e => await createTask(userId, token, state, dispatch, navigate, e);
 
 	return (
 		<main className={state.loading ? `${styles.loading}` : `${styles.createTaskPage}`}>

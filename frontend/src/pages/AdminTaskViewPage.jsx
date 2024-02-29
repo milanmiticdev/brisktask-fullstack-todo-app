@@ -73,8 +73,8 @@ const AdminTaskViewPage = () => {
 
 	const handleEditBtn = () => dispatch({ type: 'editing-change', payload: true });
 	const handleCancelBtn = () => dispatch({ type: 'editing-change', payload: false });
-	const handleUpdateTaskById = async e => await updateTaskById(e, taskId, userRole, token, state, dispatch, navigate);
-	const handleDeleteTaskById = async () => await deleteTaskById(taskId, userRole, token, dispatch, navigate);
+	const handleUpdateTaskById = async e => await updateTaskById(taskId, userRole, token, state, dispatch, navigate, e);
+	const handleDeleteTaskById = async e => await deleteTaskById(taskId, userRole, token, dispatch, navigate, e);
 
 	useEffect(() => {
 		const handleGetTaskById = async () => await getTaskById(taskId, token, dispatch);

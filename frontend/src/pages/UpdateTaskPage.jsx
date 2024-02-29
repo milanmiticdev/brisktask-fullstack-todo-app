@@ -68,11 +68,11 @@ const UpdateTaskPage = () => {
 	const { validateName } = validation;
 
 	useEffect(() => {
-		const handleGetTaskById = async () => await getTaskById(taskId, token, dispatch);
+		const handleGetTaskById = async e => await getTaskById(taskId, token, dispatch, e);
 		handleGetTaskById();
 	}, [taskId, token, getTaskById]);
 
-	const handleUpdateTaskById = async e => await updateTaskById(e, taskId, userRole, token, dispatch, state, navigate);
+	const handleUpdateTaskById = async e => await updateTaskById(taskId, userRole, token, state, dispatch, navigate, e);
 
 	return (
 		<main className={state.loading ? `${styles.loading}` : `${styles.updateTaskPage}`}>

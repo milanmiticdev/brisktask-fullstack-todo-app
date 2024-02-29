@@ -101,9 +101,9 @@ const AdminUserViewPage = () => {
 
 	const handleEditBtn = () => dispatch({ type: 'editing-change', payload: true });
 	const handleCancelBtn = () => dispatch({ type: 'editing-change', payload: false });
-	const handleUpdateUserById = async e => await updateUserById(e, userId, userRole, token, state, dispatch, login, navigate);
-	const handleDeleteUserById = async () => await deleteUserById(userId, userRole, token, dispatch, logout, navigate);
-	const handleChangePassword = async e => await changePassword(e, userId, token, state, dispatch);
+	const handleUpdateUserById = async e => await updateUserById(userId, userRole, token, state, dispatch, login, navigate, e);
+	const handleDeleteUserById = async e => await deleteUserById(userId, userRole, token, dispatch, logout, navigate, e);
+	const handleChangePassword = async e => await changePassword(userId, token, state, dispatch, e);
 
 	useEffect(() => {
 		const handleGetUserById = async () => await getUserById(userId, token, dispatch);
@@ -118,7 +118,7 @@ const AdminUserViewPage = () => {
 				<>
 					<section className={styles.section}>
 						<Form onSubmit={handleUpdateUserById}>
-							<h2 className={styles.heading}>PROFILE INFO</h2>
+							<h2 className={styles.heading}>USER INFO</h2>
 							<FormField
 								name="name"
 								type="text"

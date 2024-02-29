@@ -25,7 +25,11 @@ const getAllTasks = async (token, dispatch) => {
 	}
 };
 
-const getTasksByUserId = async (userId, token, dispatch) => {
+const getTasksByUserId = async (userId, token, dispatch, e) => {
+	if (e) {
+		e.preventDefault();
+	}
+
 	try {
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Loading' });
@@ -55,7 +59,11 @@ const getTasksByUserId = async (userId, token, dispatch) => {
 	}
 };
 
-const getTaskById = async (taskId, token, dispatch) => {
+const getTaskById = async (taskId, token, dispatch, e) => {
+	if (e) {
+		e.preventDefault();
+	}
+
 	try {
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Loading' });
@@ -85,8 +93,10 @@ const getTaskById = async (taskId, token, dispatch) => {
 	}
 };
 
-const createTask = async (e, userId, token, state, dispatch, navigate) => {
-	e.preventDefault();
+const createTask = async (userId, token, state, dispatch, navigate, e) => {
+	if (e) {
+		e.preventDefault();
+	}
 
 	try {
 		dispatch({ type: 'loading-change', payload: true });
@@ -119,8 +129,10 @@ const createTask = async (e, userId, token, state, dispatch, navigate) => {
 	}
 };
 
-const updateTaskById = async (e, taskId, userRole, token, state, dispatch, navigate) => {
-	e.preventDefault();
+const updateTaskById = async (taskId, userRole, token, state, dispatch, navigate, e) => {
+	if (e) {
+		e.preventDefault();
+	}
 
 	try {
 		dispatch({ type: 'loading-change', payload: true });
@@ -129,8 +141,6 @@ const updateTaskById = async (e, taskId, userRole, token, state, dispatch, navig
 		const updatedTask = {
 			name: state.nameField.value,
 		};
-
-		console.log(updatedTask);
 
 		const response = await fetch(`http://localhost:5174/api/v1/tasks/${Number(taskId)}`, {
 			method: 'PATCH',
@@ -155,7 +165,11 @@ const updateTaskById = async (e, taskId, userRole, token, state, dispatch, navig
 	}
 };
 
-const deleteTaskById = async (taskId, userRole, token, dispatch, navigate) => {
+const deleteTaskById = async (taskId, userRole, token, dispatch, navigate, e) => {
+	if (e) {
+		e.preventDefault();
+	}
+
 	try {
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Deleting' });

@@ -1,12 +1,14 @@
-const loginUser = async (e, state, dispatch, login, navigate) => {
-	e.preventDefault();
-
-	const user = {
-		email: state.emailField.value,
-		password: state.passwordField.value,
-	};
+const loginUser = async (state, dispatch, login, navigate, e) => {
+	if (e) {
+		e.preventDefault();
+	}
 
 	try {
+		const user = {
+			email: state.emailField.value,
+			password: state.passwordField.value,
+		};
+
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Login' });
 
@@ -33,16 +35,18 @@ const loginUser = async (e, state, dispatch, login, navigate) => {
 	}
 };
 
-const registerUser = async (e, state, dispatch, login, navigate) => {
-	e.preventDefault();
-
-	const user = {
-		name: state.nameField.value,
-		email: state.emailField.value,
-		password: state.passwordField.value,
-	};
+const registerUser = async (state, dispatch, login, navigate, e) => {
+	if (e) {
+		e.preventDefault();
+	}
 
 	try {
+		const user = {
+			name: state.nameField.value,
+			email: state.emailField.value,
+			password: state.passwordField.value,
+		};
+
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Register' });
 

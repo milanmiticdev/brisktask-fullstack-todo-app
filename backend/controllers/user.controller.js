@@ -76,7 +76,7 @@ const getUserById = async (req, res, next) => {
 					status: 200,
 				});
 			} else {
-				throw new HttpError(404, `User doesn't exist.`);
+				throw new ApiError(404, `User doesn't exist.`);
 			}
 		} catch (error) {
 			return next(error);
@@ -156,9 +156,7 @@ const createUser = async (req, res, next) => {
 			return res.status(403).json({ message: 'Not authorized.', status: 403 });
 		}
 	} else {
-		return res
-			.status(400)
-			.json({ message: 'Invalid inputs.', status: { nameStatus, emailStatus, passwordStatus, roleStatus }, status: 400 });
+		return res.status(400).json({ message: 'Invalid inputs.', status: 400 });
 	}
 };
 
@@ -254,7 +252,7 @@ const updateUserById = async (req, res, next) => {
 			}
 		}
 	} else {
-		return res.status(400).json({ message: 'Invalid inputs.', status: { nameStatus, emailStatus }, status: 400 });
+		return res.status(400).json({ message: 'Invalid inputs.', status: 400 });
 	}
 };
 
@@ -388,7 +386,7 @@ const changePassword = async (req, res, next) => {
 			return res.status(400).json({ message: `Passwords don't match.`, status: 400 });
 		}
 	} else {
-		return res.status(400).json({ message: 'Invalid inputs.', status: { passwordStatus, confirmPasswordStatus }, status: 400 });
+		return res.status(400).json({ message: 'Invalid inputs.', status: 400 });
 	}
 };
 

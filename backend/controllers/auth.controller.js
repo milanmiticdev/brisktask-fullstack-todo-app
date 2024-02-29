@@ -20,10 +20,10 @@ const { jwtSecret, jwtExpires } = config;
 const login = async (req, res, next) => {
 	const { email, password } = req.body;
 
-	const emailState = validateEmail(email);
-	const passwordState = validatePassword(password);
+	const emailStatus = validateEmail(email);
+	const passwordStatus = validatePassword(password);
 
-	if (!emailState.error && !passwordState.error) {
+	if (!emailStatus.error && !passwordStatus.error) {
 		try {
 			const sql = 'SELECT * FROM users WHERE email = ?';
 			const [[result]] = await pool.query(sql, [email.trim()]);
@@ -47,7 +47,7 @@ const login = async (req, res, next) => {
 			return next(error);
 		}
 	} else {
-		return res.status(400).json({ message: 'Invalid inputs.', state: { emailState, passwordState }, status: 400 });
+		return res.status(400).json({ message: 'Invalid inputs.', status: 400 });
 	}
 };
 
@@ -55,11 +55,11 @@ const login = async (req, res, next) => {
 const register = async (req, res, next) => {
 	const { name, email, password } = req.body;
 
-	const nameState = validateName(name);
-	const emailState = validateEmail(email);
-	const passwordState = validatePassword(password);
+	const nameStatus = validateName(name);
+	const emailStatus = validateEmail(email);
+	const passwordStatus = validatePassword(password);
 
-	if (!nameState.error && !emailState.error && !passwordState.error) {
+	if (!nameStatus.error && !emailStatus.error && !passwordStatus.error) {
 		try {
 			const sql = 'SELECT * FROM users WHERE email = ?';
 			const [[result]] = await pool.query(sql, [email.trim()]);
@@ -94,7 +94,7 @@ const register = async (req, res, next) => {
 			return next(error);
 		}
 	} else {
-		return res.status(400).json({ message: 'Invalid inputs.', state: { nameState, emailState, passwordState }, status: 400 });
+		return res.status(400).json({ message: 'Invalid inputs.', status: 400 });
 	}
 };
 

@@ -43,7 +43,7 @@ const initialState = {
 	loading: false,
 	spinner: '',
 	modal: {
-		isOpen: false,
+		open: false,
 		error: false,
 		message: '',
 	},
@@ -77,19 +77,19 @@ const AuthPage = () => {
 	const { loginUser, registerUser } = authController;
 	const { validateName, validateEmail, validatePassword } = validation;
 
-	const handleLoginUser = async e => await loginUser(e, state, dispatch, login, navigate);
-	const handleRegisterUser = async e => await registerUser(e, state, dispatch, login, navigate);
+	const handleLoginUser = async e => await loginUser(state, dispatch, login, navigate, e);
+	const handleRegisterUser = async e => await registerUser(state, dispatch, login, navigate, e);
 
 	return (
 		<main className={state.loading ? `${styles.loading}` : `${styles.authPage}`}>
 			{state.loading && <Spinner text={state.spinner} />}
-			{!state.loading && state.modal.isOpen && <Modal modal={state.modal} onDispatch={dispatch} />}
+			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && (
 				<TabsToggle>
-					<Tab section={state.section} dispatch={dispatch} type="section-change" payload="login" position="left" text="LOGIN" />
+					<Tab section={state.section} onDispatch={dispatch} type="section-change" payload="login" position="left" text="LOGIN" />
 					<Tab
 						section={state.section}
-						dispatch={dispatch}
+						onDispatch={dispatch}
 						type="section-change"
 						payload="register"
 						position="right"

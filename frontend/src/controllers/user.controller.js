@@ -25,7 +25,11 @@ const getAllUsers = async (token, dispatch) => {
 	}
 };
 
-const getUserById = async (userId, token, dispatch) => {
+const getUserById = async (userId, token, dispatch, e) => {
+	if (e) {
+		e.preventDefault();
+	}
+
 	try {
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Loading' });
@@ -55,8 +59,10 @@ const getUserById = async (userId, token, dispatch) => {
 	}
 };
 
-const updateUserById = async (e, userId, userRole, token, state, dispatch, login, navigate) => {
-	e.preventDefault();
+const updateUserById = async (userId, userRole, token, state, dispatch, login, navigate, e) => {
+	if (e) {
+		e.preventDefault();
+	}
 
 	try {
 		let updatedUser;
@@ -86,7 +92,6 @@ const updateUserById = async (e, userId, userRole, token, state, dispatch, login
 			body: JSON.stringify(updatedUser),
 		});
 		const data = await response.json();
-		console.log(data);
 
 		if (data.status === 200) {
 			// If the email doesn't change there is no need to recreate token and login again
@@ -109,7 +114,10 @@ const updateUserById = async (e, userId, userRole, token, state, dispatch, login
 	}
 };
 
-const deleteUserById = async (userId, userRole, token, dispatch, logout, navigate) => {
+const deleteUserById = async (userId, userRole, token, dispatch, logout, navigate, e) => {
+	if (e) {
+		e.preventDefault();
+	}
 	try {
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Deleting' });
@@ -141,15 +149,17 @@ const deleteUserById = async (userId, userRole, token, dispatch, logout, navigat
 	}
 };
 
-const changePassword = async (e, userId, token, state, dispatch) => {
-	e.preventDefault();
-
-	const changedPassword = {
-		password: state.passwordField.value,
-		confirmPassword: state.confirmPasswordField.value,
-	};
+const changePassword = async (userId, token, state, dispatch, e) => {
+	if (e) {
+		e.preventDefault();
+	}
 
 	try {
+		const changedPassword = {
+			password: state.passwordField.value,
+			confirmPassword: state.confirmPasswordField.value,
+		};
+
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Updating' });
 
