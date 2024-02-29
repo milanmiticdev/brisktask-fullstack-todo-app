@@ -33,13 +33,13 @@ const getAllTasks = async (req, res, next) => {
 					status: 200,
 				});
 			} else {
-				throw new ApiError(404, 'Task list empty.');
+				throw new ApiError(404, 'No tasks.');
 			}
 		} catch (error) {
 			next(error);
 		}
 	} else {
-		return res.status(403).json({ message: 'Forbidden Access - Not authorized.', status: 403 });
+		return res.status(403).json({ message: 'Not authorized.', status: 403 });
 	}
 };
 
@@ -69,14 +69,14 @@ const getTasksByUserId = async (req, res, next) => {
 					status: 200,
 				});
 			} else {
-				throw new ApiError(404, 'Task list empty.');
+				throw new ApiError(404, 'No tasks.');
 			}
 		} catch (error) {
 			next(error);
 		}
 	} else {
 		if (Number(userId) !== userData.id) {
-			res.status(403).json({ message: 'Forbidden Access - Not authorized.', status: 403 });
+			res.status(403).json({ message: 'Not authorized.', status: 403 });
 		} else {
 			try {
 				const sql = 'SELECT * FROM tasks WHERE user_id = ?';
@@ -97,7 +97,7 @@ const getTasksByUserId = async (req, res, next) => {
 						status: 200,
 					});
 				} else {
-					throw new ApiError(404, 'Task list empty.');
+					throw new ApiError(404, 'No tasks.');
 				}
 			} catch (error) {
 				next(error);
@@ -132,7 +132,7 @@ const getTaskById = async (req, res, next) => {
 					status: 200,
 				});
 			} else {
-				throw new ApiError(404, 'Task not found');
+				throw new ApiError(404, 'No tasks.');
 			}
 		} catch (error) {
 			return next(error);
@@ -143,9 +143,9 @@ const getTaskById = async (req, res, next) => {
 			const [[result]] = await pool.query(sql, [Number(taskId)]);
 
 			if (!result) {
-				throw new ApiError(404, 'Task not found');
+				throw new ApiError(404, 'No tasks.');
 			} else if (result.user_id !== userData.id) {
-				throw new ApiError(403, 'Forbidden Access - Not authorized.');
+				throw new ApiError(403, 'Not authorized.');
 			} else {
 				return res.status(200).json({
 					message: 'Task fetched.',
@@ -178,7 +178,7 @@ const createTask = async (req, res, next) => {
 			return res.status(400).json({ message: 'No user id.', status: 400 });
 		} else {
 			if (Number(userId) !== userData.id) {
-				return res.status(403).json({ message: 'Forbidden Access - Not authorized.', status: 403 });
+				return res.status(403).json({ message: 'Not authorized.', status: 403 });
 			} else {
 				try {
 					const sql = 'INSERT INTO tasks (name, user_id, user_email) VALUES(?, ?, ?)';
@@ -240,7 +240,7 @@ const updateTaskById = async (req, res, next) => {
 				if (!result) {
 					throw new ApiError(404, 'Task not found.');
 				} else if (result.user_id !== userData.id) {
-					throw new ApiError(403, 'Forbidden Access - Not authorized.');
+					throw new ApiError(403, 'Not authorized.');
 				} else {
 					try {
 						const sql = 'UPDATE tasks SET name = ? WHERE id = ? AND user_id = ?';
@@ -302,7 +302,7 @@ const deleteTaskById = async (req, res, next) => {
 			if (!result) {
 				throw new ApiError(404, 'Task not found.');
 			} else if (result.user_id !== userData.id) {
-				throw new ApiError(403, 'Forbidden Access - Not authorized.');
+				throw new ApiError(403, 'Not authorized.');
 			} else {
 				try {
 					const sql = 'DELETE FROM tasks WHERE id = ? AND user_id = ?';

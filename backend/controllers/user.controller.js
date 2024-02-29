@@ -40,13 +40,13 @@ const getAllUsers = async (req, res, next) => {
 					status: 200,
 				});
 			} else {
-				throw new ApiError(404, 'User does not exist.');
+				throw new ApiError(404, `User doesn't exist.`);
 			}
 		} catch (error) {
 			return next(error);
 		}
 	} else {
-		return res.status(403).json({ message: 'Forbidden Access - Not Authorized.', status: 403 });
+		return res.status(403).json({ message: 'Not Authorized.', status: 403 });
 	}
 };
 
@@ -84,7 +84,7 @@ const getUserById = async (req, res, next) => {
 		}
 	} else {
 		if (Number(userId) !== userData.id) {
-			return res.status(403).json({ message: 'Forbidden Access - Not Authorized.', status: 403 });
+			return res.status(403).json({ message: 'Not Authorized.', status: 403 });
 		} else {
 			try {
 				const sql = 'SELECT * FROM users WHERE id = ?';
@@ -149,7 +149,7 @@ const createUser = async (req, res, next) => {
 				return next(error);
 			}
 		} else {
-			return res.status(403).json({ message: 'Forbidden Access - Not authorized.', status: 403 });
+			return res.status(403).json({ message: 'Not authorized.', status: 403 });
 		}
 	} else {
 		return res.status(400).json({ message: 'Invalid inputs.', status: { nameStatus, emailStatus, passwordStatus }, status: 400 });
@@ -197,7 +197,7 @@ const updateUserById = async (req, res, next) => {
 			}
 		} else {
 			if (Number(userId) !== userData.id) {
-				return res.status(403).json({ message: 'Forbidden Access - Not Authorized.', status: 403 });
+				return res.status(403).json({ message: 'Not Authorized.', status: 403 });
 			} else {
 				try {
 					const sql = 'SELECT * FROM users WHERE id = ?';
@@ -284,7 +284,7 @@ const deleteUserById = async (req, res, next) => {
 		}
 	} else {
 		if (Number(userId) !== userData.id) {
-			return res.status(403).json({ message: 'Forbidden Access - Not authorized.', status: 403 });
+			return res.status(403).json({ message: 'Not authorized.', status: 403 });
 		} else {
 			try {
 				const sql = 'SELECT * FROM users WHERE id = ?';
@@ -351,7 +351,7 @@ const changePassword = async (req, res, next) => {
 				}
 			} else {
 				if (Number(userId) !== userData.id) {
-					return res.status(403).json({ message: 'Forbidden Access - Not Authorized.', status: 403 });
+					return res.status(403).json({ message: 'Not Authorized.', status: 403 });
 				} else {
 					try {
 						const sql = 'SELECT * FROM users WHERE id = ?';

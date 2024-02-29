@@ -17,7 +17,7 @@ const middleware = (req, res, next) => {
 			const token = req.headers.authorization.split(' ')[1];
 
 			if (!token) {
-				throw new ApiError(401, 'Forbidden Access - Not authenticated.');
+				throw new ApiError(401, 'Not authenticated.');
 			} else {
 				const decodedToken = jwt.verify(token, jwtSecret);
 

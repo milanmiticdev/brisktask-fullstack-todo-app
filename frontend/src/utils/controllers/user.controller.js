@@ -97,7 +97,7 @@ const updateUserById = async (e, userId, userRole, token, state, dispatch, login
 	}
 };
 
-const deleteUserById = async (userId, token, dispatch, logout, navigate) => {
+const deleteUserById = async (userId, userRole, token, dispatch, logout, navigate) => {
 	try {
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Deleting' });
@@ -111,8 +111,12 @@ const deleteUserById = async (userId, token, dispatch, logout, navigate) => {
 		});
 
 		if (response.status === 204) {
-			logout();
-			navigate('/');
+			if (userRole === 'user') {
+				logout();
+				navigate('/');
+			} else {
+				navigate('/dashboard');
+			}
 		} else {
 			const data = await response.json();
 			dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });

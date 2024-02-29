@@ -106,7 +106,7 @@ const ProfilePage = () => {
 	};
 
 	const handleDeleteUserById = async () => {
-		await deleteUserById(userId, token, dispatch, logout, navigate);
+		await deleteUserById(userId, userRole, token, dispatch, logout, navigate);
 	};
 
 	const handleChangePassword = async e => {
