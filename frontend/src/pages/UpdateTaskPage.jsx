@@ -15,7 +15,7 @@ import Modal from './../components/Modal.jsx';
 import Spinner from './../components/Spinner.jsx';
 
 // Utils
-import taskController from './../utils/controllers/task.controller.js';
+import taskController from './../controllers/task.controller.js';
 import validation from './../utils/validation.js';
 
 // Styles
@@ -68,18 +68,14 @@ const UpdateTaskPage = () => {
 	const { validateName } = validation;
 
 	useEffect(() => {
-		const handleGetTaskById = async () => {
-			await getTaskById(taskId, token, dispatch);
-		};
+		const handleGetTaskById = async () => await getTaskById(taskId, token, dispatch);
 		handleGetTaskById();
 	}, [taskId, token, getTaskById]);
 
-	const handleUpdateTaskById = async e => {
-		await updateTaskById(e, taskId, token, userRole, navigate, dispatch, state);
-	};
+	const handleUpdateTaskById = async e => await updateTaskById(e, taskId, userRole, token, dispatch, state, navigate);
 
 	return (
-		<section className={state.loading ? `${styles.loading}` : `${styles.updateTaskPage}`}>
+		<main className={state.loading ? `${styles.loading}` : `${styles.updateTaskPage}`}>
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && !state.error && state.result && Object.keys(state.result).length > 0 && (
@@ -92,12 +88,12 @@ const UpdateTaskPage = () => {
 						onDispatch={dispatch}
 						onValidate={validateName}
 						readOnly={false}
-						autoFocus={false}
+						autoFocus={true}
 					/>
 					<FormBtn text="UPDATE" type="submit" color="blue" />
 				</Form>
 			)}
-		</section>
+		</main>
 	);
 };
 

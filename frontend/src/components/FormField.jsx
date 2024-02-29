@@ -18,39 +18,28 @@ const FormField = ({ name, type, initial, onDispatch, fieldChange, onValidate, s
 	const [field, setField] = useState(() => ({ value: initial ? initial : '', error: false, message: '' }));
 	const [passwordVisible, setPasswordVisible] = useState(false);
 
-	const handlePasswordVisibility = () => {
-		setPasswordVisible(prevState => !prevState);
-	};
+	const handlePasswordVisibility = () => setPasswordVisible(prevState => !prevState);
 
 	useEffect(() => {
-		if (onDispatch) {
-			onDispatch({ type: fieldChange, payload: field });
-		}
+		if (onDispatch) onDispatch({ type: fieldChange, payload: field });
 	}, [field, fieldChange, onDispatch]);
 
 	useEffect(() => {
-		if (section) {
-			const reset = {
-				value: '',
-				error: false,
-				message: '',
-			};
-			setField(reset);
-		}
+		if (section) setField({ value: '', error: false, message: '' });
 	}, [section]);
 
 	return (
 		<div className={styles.formField}>
 			<div className={styles.inputBlock}>
-				<label htmlFor={name ? name : ''} className={styles.label}>
-					{name ? `${name.charAt(0).toUpperCase()}${name.slice(1)}` : ''}
+				<label htmlFor={name} className={styles.label}>
+					{`${name.charAt(0).toUpperCase()}${name.slice(1)}`}
 				</label>
 				<div className={readOnly ? `${styles.inputField} ${styles.inputFieldReadOnly}` : `${styles.inputField}`}>
 					<input
 						className={styles.input}
 						type={passwordVisible ? 'text' : type}
-						id={name ? name : ''}
-						name={name ? name : ''}
+						id={name}
+						name={name}
 						value={field.value}
 						onChange={e => {
 							setField(prevState => ({

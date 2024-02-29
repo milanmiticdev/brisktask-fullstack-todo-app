@@ -15,7 +15,7 @@ import Modal from './../components/Modal.jsx';
 import Spinner from './../components/Spinner.jsx';
 
 // Utils
-import userController from '../utils/controllers/user.controller.js';
+import userController from './../controllers/user.controller.js';
 import validation from '../utils/validation.js';
 
 // Styles
@@ -90,32 +90,14 @@ const ProfilePage = () => {
 	const { getUserById, updateUserById, deleteUserById, changePassword } = userController;
 	const { validateName, validateEmail, validatePassword } = validation;
 
-	const handleEditBtn = () => {
-		dispatch({ type: 'editing-change', payload: true });
-	};
-
-	const handleCancelBtn = () => {
-		dispatch({ type: 'editing-change', payload: false });
-		dispatch({ type: 'name-field-change', payload: state.result.name });
-		dispatch({ type: 'email-field-change', payload: state.result.email });
-	};
-
-	const handleUpdateUserById = async e => {
-		await updateUserById(e, userId, userRole, token, state, dispatch, login, navigate);
-	};
-
-	const handleDeleteUserById = async () => {
-		await deleteUserById(userId, userRole, token, dispatch, logout, navigate);
-	};
-
-	const handleChangePassword = async e => {
-		await changePassword(e, userId, token, state, dispatch);
-	};
+	const handleEditBtn = () => dispatch({ type: 'editing-change', payload: true });
+	const handleCancelBtn = () => dispatch({ type: 'editing-change', payload: false });
+	const handleUpdateUserById = async e => await updateUserById(e, userId, userRole, token, state, dispatch, login, navigate);
+	const handleDeleteUserById = async () => await deleteUserById(userId, userRole, token, dispatch, logout, navigate);
+	const handleChangePassword = async e => await changePassword(e, userId, token, state, dispatch);
 
 	useEffect(() => {
-		const handleGetUserById = async () => {
-			await getUserById(userId, token, dispatch);
-		};
+		const handleGetUserById = async () => await getUserById(userId, token, dispatch);
 		handleGetUserById();
 	}, [userId, token, getUserById]);
 

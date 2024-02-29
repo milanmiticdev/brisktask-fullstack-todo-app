@@ -15,7 +15,7 @@ import Modal from './../components/Modal.jsx';
 import Spinner from './../components/Spinner.jsx';
 
 // Utils
-import taskController from './../utils/controllers/task.controller.js';
+import taskController from './../controllers/task.controller.js';
 import validation from './../utils/validation.js';
 
 // Styles
@@ -60,12 +60,10 @@ const CreateTaskPage = () => {
 	const { createTask } = taskController;
 	const { validateName } = validation;
 
-	const handleCreateTask = async e => {
-		await createTask(e, userId, token, state, dispatch, navigate);
-	};
+	const handleCreateTask = async e => await createTask(e, userId, token, state, dispatch, navigate);
 
 	return (
-		<section className={state.loading ? `${styles.loading}` : `${styles.createTaskPage}`}>
+		<main className={state.loading ? `${styles.loading}` : `${styles.createTaskPage}`}>
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && (
@@ -82,7 +80,7 @@ const CreateTaskPage = () => {
 					<FormBtn text="CREATE" type="submit" color="blue" />
 				</Form>
 			)}
-		</section>
+		</main>
 	);
 };
 

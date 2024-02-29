@@ -8,7 +8,7 @@ import AuthContext from './../contexts/AuthContext.js';
 import { Link, useNavigate } from 'react-router-dom';
 
 // Utils
-import taskController from './../utils/controllers/task.controller.js';
+import taskController from './../controllers/task.controller.js';
 
 // FontAwesome Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -21,15 +21,13 @@ import styles from './Task.module.css';
 // PropTypes
 import PropTypes from 'prop-types';
 
-const Task = ({ task, dispatch }) => {
+const Task = ({ task, onDispatch }) => {
+	const { userRole, token } = useContext(AuthContext);
 	const navigate = useNavigate();
-	const { token, userRole } = useContext(AuthContext);
 
 	const { deleteTaskById } = taskController;
 
-	const handleDeleteTaskById = async () => {
-		await deleteTaskById(task.id, token, userRole, dispatch, navigate);
-	};
+	const handleDeleteTaskById = async () => await deleteTaskById(task.id, userRole, token, onDispatch, navigate);
 
 	return (
 		<article className={styles.task}>
@@ -52,5 +50,5 @@ export default Task;
 
 Task.propTypes = {
 	task: PropTypes.object,
-	dispatch: PropTypes.func,
+	onDispatch: PropTypes.func,
 };

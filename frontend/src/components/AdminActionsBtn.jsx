@@ -5,9 +5,7 @@ import styles from './AdminActionsBtn.module.css';
 import PropTypes from 'prop-types';
 
 const AdminActionsBtn = ({ text, setIsSelecting }) => {
-	const handleSelect = () => {
-		setIsSelecting(true);
-	};
+	const handleSelect = () => setIsSelecting(true);
 
 	return (
 		<div className={styles.selectBtn} onClick={handleSelect}>

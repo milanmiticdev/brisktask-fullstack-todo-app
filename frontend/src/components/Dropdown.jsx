@@ -25,16 +25,12 @@ const Dropdown = ({ setShowDropdown }) => {
 
 	useEffect(() => {
 		const handleClickOutside = e => {
-			if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-				setShowDropdown(false);
-			}
+			if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setShowDropdown(false);
 		};
 
 		document.addEventListener('mousedown', handleClickOutside);
 
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
-		};
+		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, [dropdownRef, setShowDropdown]);
 
 	const handleLogout = () => {

@@ -20,8 +20,8 @@ import styles from './Navbar.module.css';
 
 const NavBar = () => {
 	const [showDropdown, setShowDropdown] = useState(false);
-	const { userRole, token, logout } = useContext(AuthContext);
 
+	const { userRole, token, logout } = useContext(AuthContext);
 	const navigate = useNavigate();
 
 	const handleLogout = () => {

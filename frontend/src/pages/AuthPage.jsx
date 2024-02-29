@@ -17,7 +17,7 @@ import Spinner from './../components/Spinner.jsx';
 import Modal from './../components/Modal.jsx';
 
 // Utils
-import authController from './../utils/controllers/auth.controller.js';
+import authController from './../controllers/auth.controller.js';
 import validation from './../utils/validation.js';
 
 // Styles
@@ -77,13 +77,8 @@ const AuthPage = () => {
 	const { loginUser, registerUser } = authController;
 	const { validateName, validateEmail, validatePassword } = validation;
 
-	const handleLoginUser = async e => {
-		await loginUser(e, state, dispatch, login, navigate);
-	};
-
-	const handleRegisterUser = async e => {
-		await registerUser(e, state, dispatch, login, navigate);
-	};
+	const handleLoginUser = async e => await loginUser(e, state, dispatch, login, navigate);
+	const handleRegisterUser = async e => await registerUser(e, state, dispatch, login, navigate);
 
 	return (
 		<main className={state.loading ? `${styles.loading}` : `${styles.authPage}`}>

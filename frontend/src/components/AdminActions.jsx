@@ -5,8 +5,8 @@ import { useState, useRef, useEffect, useContext } from 'react';
 import AuthContext from '../contexts/AuthContext.js';
 
 // Utils
-import userController from './../utils/controllers/user.controller.js';
-import taskController from './../utils/controllers/task.controller.js';
+import userController from './../controllers/user.controller.js';
+import taskController from './../controllers/task.controller.js';
 
 // Components
 import AdminActionsOption from './AdminActionsOption.jsx';
@@ -27,26 +27,17 @@ const AdminActions = ({ onDispatch }) => {
 	const { getAllUsers } = userController;
 	const { getAllTasks } = taskController;
 
-	const handleGetAllUsers = async () => {
-		await getAllUsers(token, onDispatch);
-	};
-
-	const handleGetAllTasks = async () => {
-		await getAllTasks(token, onDispatch);
-	};
+	const handleGetAllUsers = async () => await getAllUsers(token, onDispatch);
+	const handleGetAllTasks = async () => await getAllTasks(token, onDispatch);
 
 	useEffect(() => {
 		const handleClickOutside = e => {
-			if (selectRef.current && !selectRef.current.contains(e.target)) {
-				setIsSelecting(false);
-			}
+			if (selectRef.current && !selectRef.current.contains(e.target)) setIsSelecting(false);
 		};
 
 		document.addEventListener('mousedown', handleClickOutside);
 
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
-		};
+		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, [selectRef]);
 
 	return (

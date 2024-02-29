@@ -28,7 +28,6 @@ const getAllTasks = async (token, dispatch) => {
 const getTasksByUserId = async (userId, token, dispatch) => {
 	try {
 		dispatch({ type: 'loading-change', payload: true });
-		dispatch({ type: 'message-change', payload: '' });
 		dispatch({ type: 'spinner-change', payload: 'Loading' });
 
 		const response = await fetch(`http://localhost:5174/api/v1/tasks/user/${Number(userId)}`, {
@@ -43,14 +42,13 @@ const getTasksByUserId = async (userId, token, dispatch) => {
 		if (data.status === 200) {
 			dispatch({ type: 'result-change', payload: data.tasks });
 			dispatch({ type: 'error-change', payload: false });
-			dispatch({ type: 'message-change', payload: '' });
 		} else {
 			dispatch({ type: 'error-change', payload: true });
-			dispatch({ type: 'message-change', payload: data.message });
+			dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });
 		}
 	} catch {
 		dispatch({ type: 'error-change', payload: true });
-		dispatch({ type: 'message-change', payload: 'Something went wrong.' });
+		dispatch({ type: 'modal-change', payload: 'Something went wrong.' });
 	} finally {
 		dispatch({ type: 'spinner-change', payload: '' });
 		dispatch({ type: 'loading-change', payload: false });
@@ -76,9 +74,11 @@ const getTaskById = async (taskId, token, dispatch) => {
 			dispatch({ type: 'error-change', payload: false });
 		} else {
 			dispatch({ type: 'error-change', payload: true });
+			dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });
 		}
 	} catch {
 		dispatch({ type: 'error-change', payload: true });
+		dispatch({ type: 'modal-change', payload: 'Something went wrong.' });
 	} finally {
 		dispatch({ type: 'spinner-change', payload: '' });
 		dispatch({ type: 'loading-change', payload: false });
@@ -119,7 +119,7 @@ const createTask = async (e, userId, token, state, dispatch, navigate) => {
 	}
 };
 
-const updateTaskById = async (e, taskId, token, userRole, navigate, dispatch, state) => {
+const updateTaskById = async (e, taskId, userRole, token, state, dispatch, navigate) => {
 	e.preventDefault();
 
 	try {
@@ -129,6 +129,8 @@ const updateTaskById = async (e, taskId, token, userRole, navigate, dispatch, st
 		const updatedTask = {
 			name: state.nameField.value,
 		};
+
+		console.log(updatedTask);
 
 		const response = await fetch(`http://localhost:5174/api/v1/tasks/${Number(taskId)}`, {
 			method: 'PATCH',
@@ -153,7 +155,7 @@ const updateTaskById = async (e, taskId, token, userRole, navigate, dispatch, st
 	}
 };
 
-const deleteTaskById = async (taskId, token, userRole, dispatch, navigate) => {
+const deleteTaskById = async (taskId, userRole, token, dispatch, navigate) => {
 	try {
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Deleting' });

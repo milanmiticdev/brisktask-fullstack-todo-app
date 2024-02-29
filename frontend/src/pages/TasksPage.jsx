@@ -10,7 +10,7 @@ import Modal from './../components/Modal.jsx';
 import Spinner from '../components/Spinner.jsx';
 
 // Utils
-import taskController from './../utils/controllers/task.controller.js';
+import taskController from './../controllers/task.controller.js';
 
 // Styles
 import styles from './TasksPage.module.css';
@@ -40,7 +40,7 @@ const reducer = (state, action) => {
 		case 'spinner-change':
 			return { ...state, spinner: action.payload };
 		case 'modal-change':
-			return { ...state, message: action.payload };
+			return { ...state, modal: action.payload };
 	}
 };
 
@@ -52,22 +52,20 @@ const TasksPage = () => {
 	const { getTasksByUserId } = taskController;
 
 	useEffect(() => {
-		const handleGetTasksByUserId = async () => {
-			await getTasksByUserId(userId, token, dispatch);
-		};
+		const handleGetTasksByUserId = async () => await getTasksByUserId(userId, token, dispatch);
 		handleGetTasksByUserId();
 	}, [userId, token, getTasksByUserId]);
 
 	return (
-		<section className={state.loading ? `${styles.loading}` : `${styles.tasks}`}>
+		<main className={state.loading ? `${styles.loading}` : `${styles.tasks}`}>
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading &&
 				!state.error &&
 				state.result &&
 				state.result.length > 0 &&
-				state.result.map(task => <Task key={task.id} task={task} dispatch={dispatch} />)}
-		</section>
+				state.result.map(task => <Task key={task.id} task={task} onDispatch={dispatch} />)}
+		</main>
 	);
 };
 

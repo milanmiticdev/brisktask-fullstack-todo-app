@@ -10,7 +10,7 @@ import ApiError from './../utils/ApiError.js';
 
 // Validation functions
 import validation from './../utils/validation.js';
-const { validateName, validateEmail, validatePassword } = validation;
+const { validateName, validateEmail, validatePassword, validateRole } = validation;
 
 // Config
 import config from './../config/config.js';
@@ -40,7 +40,7 @@ const getAllUsers = async (req, res, next) => {
 					status: 200,
 				});
 			} else {
-				throw new ApiError(404, `User doesn't exist.`);
+				throw new ApiError(404, 'No users.');
 			}
 		} catch (error) {
 			return next(error);
@@ -64,7 +64,6 @@ const getUserById = async (req, res, next) => {
 			if (result) {
 				return res.status(200).json({
 					message: 'User found.',
-
 					user: {
 						id: result.id,
 						name: result.name,
@@ -95,7 +94,6 @@ const getUserById = async (req, res, next) => {
 				} else {
 					return res.status(200).json({
 						message: 'User found.',
-
 						status: 200,
 						user: {
 							id: result.id,
@@ -116,14 +114,15 @@ const getUserById = async (req, res, next) => {
 };
 
 const createUser = async (req, res, next) => {
-	const { name, email, password } = req.body;
+	const { name, email, password, role } = req.body;
 	const userData = req.userData;
 
 	const nameStatus = validateName(name);
 	const emailStatus = validateEmail(email);
 	const passwordStatus = validatePassword(password);
+	const roleStatus = validateRole(password);
 
-	if (!nameStatus.error && !emailStatus.error && !passwordStatus.error) {
+	if (!nameStatus.error && !emailStatus.error && !passwordStatus.error && !roleStatus.error) {
 		if (userData.role === 'admin') {
 			try {
 				const sql = 'SELECT * FROM users WHERE email = ?';
@@ -133,8 +132,13 @@ const createUser = async (req, res, next) => {
 					throw new ApiError(422, 'User already exists.');
 				} else {
 					try {
-						const sql = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
-						const [result] = await pool.query(sql, [name.trim(), email.trim(), await bcrypt.hash(password.trim(), 12)]);
+						const sql = 'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)';
+						const [result] = await pool.query(sql, [
+							name.trim(),
+							email.trim(),
+							await bcrypt.hash(password.trim(), 12),
+							role.trim(),
+						]);
 
 						if (result && result.affectedRows !== 0) {
 							return res.status(201).json({ message: 'User created.', status: 201 });
@@ -152,7 +156,9 @@ const createUser = async (req, res, next) => {
 			return res.status(403).json({ message: 'Not authorized.', status: 403 });
 		}
 	} else {
-		return res.status(400).json({ message: 'Invalid inputs.', status: { nameStatus, emailStatus, passwordStatus }, status: 400 });
+		return res
+			.status(400)
+			.json({ message: 'Invalid inputs.', status: { nameStatus, emailStatus, passwordStatus, roleStatus }, status: 400 });
 	}
 };
 

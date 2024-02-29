@@ -2,7 +2,7 @@
 import styles from './HomePage.module.css';
 
 const HomePage = () => {
-	return <div className={styles.homePage}></div>;
+	return <main className={styles.homePage}></main>;
 };
 
 export default HomePage;

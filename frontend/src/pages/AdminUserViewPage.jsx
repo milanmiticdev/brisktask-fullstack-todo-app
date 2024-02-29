@@ -15,7 +15,7 @@ import Modal from './../components/Modal.jsx';
 import Spinner from './../components/Spinner.jsx';
 
 // Utils
-import userController from '../utils/controllers/user.controller.js';
+import userController from './../controllers/user.controller.js';
 import validation from '../utils/validation.js';
 import UTCtoLocal from './../utils/UTCtoLocal.js';
 
@@ -92,45 +92,26 @@ const reducer = (state, action) => {
 const AdminUserViewPage = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
-	const { userId } = useParams();
 	const { userRole, token, login, logout } = useContext(AuthContext);
+	const { userId } = useParams();
 	const navigate = useNavigate();
 
 	const { getUserById, updateUserById, deleteUserById, changePassword } = userController;
 	const { validateName, validateEmail, validatePassword, validateRole } = validation;
 
-	const handleEditBtn = () => {
-		dispatch({ type: 'editing-change', payload: true });
-	};
-
-	const handleCancelBtn = () => {
-		dispatch({ type: 'editing-change', payload: false });
-		dispatch({ type: 'name-field-change', payload: state.result.name });
-		dispatch({ type: 'email-field-change', payload: state.result.email });
-		dispatch({ type: 'role-field-change', payload: state.result.role });
-	};
-
-	const handleUpdateUserById = async e => {
-		await updateUserById(e, userId, userRole, token, state, dispatch, login, navigate);
-	};
-
-	const handleDeleteUserById = async () => {
-		await deleteUserById(userId, userRole, token, dispatch, logout, navigate);
-	};
-
-	const handleChangePassword = async e => {
-		await changePassword(e, userId, token, state, dispatch);
-	};
+	const handleEditBtn = () => dispatch({ type: 'editing-change', payload: true });
+	const handleCancelBtn = () => dispatch({ type: 'editing-change', payload: false });
+	const handleUpdateUserById = async e => await updateUserById(e, userId, userRole, token, state, dispatch, login, navigate);
+	const handleDeleteUserById = async () => await deleteUserById(userId, userRole, token, dispatch, logout, navigate);
+	const handleChangePassword = async e => await changePassword(e, userId, token, state, dispatch);
 
 	useEffect(() => {
-		const handleGetUserById = async () => {
-			await getUserById(userId, token, dispatch);
-		};
+		const handleGetUserById = async () => await getUserById(userId, token, dispatch);
 		handleGetUserById();
 	}, [userId, token, getUserById]);
 
 	return (
-		<main className={state.loading ? `${styles.loading}` : `${styles.profile}`}>
+		<main className={state.loading ? `${styles.loading}` : `${styles.user}`}>
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && !state.error && state.result && Object.keys(state.result).length > 0 && (
