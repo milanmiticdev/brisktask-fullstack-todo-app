@@ -27,7 +27,7 @@ Frontend is deployed on Netlify: https://brisktask.netlify.app
 
 ### .env SETUP
 
--   In the root folder create .env file with the following options:
+-   In the `/backend` folder create .env file with the following options:
 
     -   `DATABASE_PORT` = Port number that your MySQL server is running on
     -   `DATABASE_HOST` = Your MySQL host, default is `127.0.0.1`
@@ -41,11 +41,11 @@ Frontend is deployed on Netlify: https://brisktask.netlify.app
 
 ### FRONTEND AND BACKEND SETUP
 
--   React frontend was created using Vite: https://vitejs.dev
--   Vite uses port `5173` by default.
--   Inside the root folder run: `npm install` and then `npm start` to start the backend server.
+-   Navigate to `/backend` folder and run: `npm install` and then `npm start` to run the backend server.
 -   Navigate to `/frontend` folder and run: `npm install` and then `npm run dev` to run React.
--   To view the app, open http://localhost:5173 in the browser.
+
+-   React frontend was created using Vite: https://vitejs.dev. Vite uses port `5173` by default.
+-   To view the app, go to http://localhost:5173 in the browser.
 
 ## Description and Usage
 
