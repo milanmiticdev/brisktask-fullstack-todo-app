@@ -1,11 +1,8 @@
 // React
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // React Router
 import { Link } from 'react-router-dom';
-
-// Components
-import FormBtn from './FormBtn.jsx';
 
 // Styles
 import styles from './AdminActionsOption.module.css';
@@ -13,27 +10,36 @@ import styles from './AdminActionsOption.module.css';
 // PropTypes
 import PropTypes from 'prop-types';
 
-const AdminActionsOption = ({ text, input, onClick, onDispatch }) => {
+const AdminActionsOption = ({ text, input, onSubmit, fieldChange, onDispatch }) => {
 	const [field, setField] = useState('');
+
+	useEffect(() => {
+		if (onDispatch && fieldChange) onDispatch({ type: fieldChange, payload: field });
+	}, [field, fieldChange, onDispatch]);
 
 	return (
 		<div className={styles.option}>
-			{input && (
-				<input
-					className={styles.input}
-					type="number"
-					value={field}
-					onChange={e => {
-						setField(e.target.value);
-						onDispatch({ type: 'id-change', payload: e.target.value });
-					}}
-				/>
-			)}
-			{onClick ? (
-				<FormBtn text={text} type="button" onClick={onClick} />
+			{onSubmit ? (
+				<form onSubmit={onSubmit} className={styles.form}>
+					{input && (
+						<input
+							className={styles.input}
+							type="number"
+							value={field}
+							onChange={e => {
+								setField(e.target.value);
+							}}
+						/>
+					)}
+					<button type="submit" className={styles.btn}>
+						{text}
+					</button>
+				</form>
 			) : (
 				<Link to={'/dashboard/create-user'} className={styles.link}>
-					<FormBtn text={text} type="button" />
+					<button type="button" className={styles.btn}>
+						{text}
+					</button>
 				</Link>
 			)}
 		</div>
@@ -45,6 +51,7 @@ export default AdminActionsOption;
 AdminActionsOption.propTypes = {
 	text: PropTypes.string,
 	input: PropTypes.bool,
-	onClick: PropTypes.func,
+	onSubmit: PropTypes.func,
+	fieldChange: PropTypes.string,
 	onDispatch: PropTypes.func,
 };

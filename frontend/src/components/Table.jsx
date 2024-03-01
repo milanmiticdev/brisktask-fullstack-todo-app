@@ -47,5 +47,5 @@ export default Table;
 
 Table.propTypes = {
 	section: PropTypes.string,
-	result: PropTypes.array,
+	result: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
 };

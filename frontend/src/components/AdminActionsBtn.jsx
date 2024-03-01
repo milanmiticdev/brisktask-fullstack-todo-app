@@ -4,8 +4,8 @@ import styles from './AdminActionsBtn.module.css';
 // PropTypes
 import PropTypes from 'prop-types';
 
-const AdminActionsBtn = ({ text, setIsSelecting }) => {
-	const handleSelect = () => setIsSelecting(true);
+const AdminActionsBtn = ({ text, onDispatch }) => {
+	const handleSelect = () => onDispatch({ type: 'selecting-change', payload: true });
 
 	return (
 		<div className={styles.selectBtn} onClick={handleSelect}>
@@ -18,5 +18,5 @@ export default AdminActionsBtn;
 
 AdminActionsBtn.propTypes = {
 	text: PropTypes.string,
-	setIsSelecting: PropTypes.func,
+	onDispatch: PropTypes.func,
 };

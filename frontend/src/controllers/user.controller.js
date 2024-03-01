@@ -1,7 +1,11 @@
 import validators from './../utils/validators.js';
 const { validateName, validateEmail, validatePassword, validateRole } = validators;
 
-const getAllUsers = async (token, dispatch) => {
+const getAllUsers = async (token, dispatch, e) => {
+	if (e) {
+		e.preventDefault();
+	}
+
 	try {
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Loading' });

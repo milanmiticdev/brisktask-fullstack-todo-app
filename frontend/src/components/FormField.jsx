@@ -21,7 +21,7 @@ const FormField = ({ name, type, initial, onDispatch, fieldChange, onValidate, s
 	const handlePasswordVisibility = () => setPasswordVisible(prevState => !prevState);
 
 	useEffect(() => {
-		if (onDispatch) onDispatch({ type: fieldChange, payload: field });
+		if (onDispatch && fieldChange) onDispatch({ type: fieldChange, payload: field });
 	}, [field, fieldChange, onDispatch]);
 
 	useEffect(() => {
