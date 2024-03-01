@@ -104,14 +104,13 @@ const ProfilePage = () => {
 	}, [userId, token, getUserById]);
 
 	return (
-		<main className={state.loading ? `${styles.loading}` : `${styles.profile}`}>
+		<main className={state.loading ? `${styles.loading}` : `${styles.profilePage}`}>
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && !state.error && state.result && Object.keys(state.result).length > 0 && (
 				<>
 					<section className={styles.section}>
-						<Form onSubmit={handleUpdateUserById}>
-							<h2 className={styles.heading}>PROFILE INFO</h2>
+						<Form onSubmit={handleUpdateUserById} heading="PROFILE INFO">
 							<FormField
 								name="name"
 								type="text"
@@ -121,6 +120,7 @@ const ProfilePage = () => {
 								onValidate={validateName}
 								readOnly={state.editing ? false : true}
 								autoFocus={false}
+								fetchedValue={state.result.name}
 							/>
 							<FormField
 								name="email"
@@ -131,6 +131,7 @@ const ProfilePage = () => {
 								onValidate={validateEmail}
 								readOnly={state.editing ? false : true}
 								autoFocus={false}
+								fetchedValue={state.result.email}
 							/>
 							<div className={styles.formBtns}>
 								{!state.editing && <FormBtn text="EDIT" type="button" color="gray" onClick={handleEditBtn} />}
@@ -144,8 +145,7 @@ const ProfilePage = () => {
 						</Form>
 					</section>
 					<section className={styles.section}>
-						<Form onSubmit={handleChangePassword}>
-							<h2 className={styles.heading}>CHANGE PASSWORD</h2>
+						<Form onSubmit={handleChangePassword} heading="CHANGE PASSWORD">
 							<FormField
 								name="password"
 								type="password"
@@ -168,8 +168,7 @@ const ProfilePage = () => {
 						</Form>
 					</section>
 					<section className={styles.section}>
-						<Form onSubmit={handleDeleteUserById}>
-							<h2 className={styles.heading}>DELETE ACCOUNT</h2>
+						<Form onSubmit={handleDeleteUserById} heading="DELETE ACCOUNT">
 							<FormBtn text="DELETE" type="submit" color="red" />
 						</Form>
 					</section>

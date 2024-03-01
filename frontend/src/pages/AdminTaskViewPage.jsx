@@ -84,14 +84,13 @@ const AdminTaskViewPage = () => {
 	}, [taskId, token, dispatch, getTaskById]);
 
 	return (
-		<main className={state.loading ? `${styles.loading}` : `${styles.task}`}>
+		<main className={state.loading ? `${styles.loading}` : `${styles.taskViewPage}`}>
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && !state.error && state.result && (
 				<>
 					<section className={styles.section}>
-						<Form onSubmit={handleUpdateTaskById}>
-							<h2 className={styles.heading}>TASK INFO</h2>
+						<Form onSubmit={handleUpdateTaskById} heading="TASK INFO">
 							<FormField
 								name="name"
 								type="text"
@@ -101,6 +100,7 @@ const AdminTaskViewPage = () => {
 								onValidate={validateName}
 								readOnly={state.editing ? false : true}
 								autoFocus={false}
+								fetchedValue={state.result.name}
 							/>
 							<FormField name="creator" type="text" initial={state.result.userEmail} readOnly={true} autoFocus={false} />
 							<FormField
@@ -129,8 +129,7 @@ const AdminTaskViewPage = () => {
 						</Form>
 					</section>
 					<section className={styles.section}>
-						<Form onSubmit={handleDeleteTaskById}>
-							<h2 className={styles.heading}>DELETE TASK</h2>
+						<Form onSubmit={handleDeleteTaskById} heading="DELETE TASK">
 							<FormBtn text="DELETE" type="submit" color="red" />
 						</Form>
 					</section>

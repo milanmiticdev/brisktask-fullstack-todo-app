@@ -14,7 +14,7 @@ import styles from './FormField.module.css';
 // PropTypes
 import PropTypes from 'prop-types';
 
-const FormField = ({ name, type, initial, onDispatch, fieldChange, onValidate, section, readOnly, autoFocus }) => {
+const FormField = ({ name, type, initial, onDispatch, fieldChange, onValidate, section, readOnly, autoFocus, fetchedValue }) => {
 	const [field, setField] = useState(() => ({ value: initial ? initial : '', error: false, message: '' }));
 	const [passwordVisible, setPasswordVisible] = useState(false);
 
@@ -40,7 +40,7 @@ const FormField = ({ name, type, initial, onDispatch, fieldChange, onValidate, s
 						type={passwordVisible ? 'text' : type}
 						id={name}
 						name={name}
-						value={field.value}
+						value={readOnly && fetchedValue ? fetchedValue : field.value}
 						onChange={e => {
 							setField(prevState => ({
 								...prevState,
@@ -80,4 +80,5 @@ FormField.propTypes = {
 	initial: PropTypes.string,
 	readOnly: PropTypes.bool,
 	autoFocus: PropTypes.bool,
+	fetchedValue: PropTypes.string,
 };

@@ -1,11 +1,11 @@
-.task {
+.taskViewPage {
 	min-height: calc(100vh - 7rem);
 	width: 100%;
 	display: flex;
 	flex-flow: column wrap;
 	justify-content: flex-start;
 	align-items: center;
-	gap: 3rem;
+	gap: 2rem;
 	padding: 3rem;
 }
 
@@ -25,9 +25,9 @@
 	flex-flow: column wrap;
 	justify-content: center;
 	align-items: center;
-	padding-bottom: 3rem;
+	padding-bottom: 2rem;
 	gap: 2rem;
-	border-bottom: 0.1rem dashed #6b6b6b;
+	border-bottom: 0.1rem solid #d5d5d5;
 }
 
 .section:last-child {
@@ -42,40 +42,35 @@
 	gap: 2.5rem;
 }
 
-.heading {
-	font-size: 2rem;
-	font-weight: bold;
-	color: #5f8eff;
-}
-
 @media screen and (min-width: 400px) {
-	.heading {
-		font-size: 2.1rem;
+	.taskViewPage {
+		gap: 2.5rem;
+	}
+	.section {
+		padding-bottom: 2.5rem;
 	}
 }
 
 @media screen and (min-width: 500px) {
-	.task {
+	.taskViewPage {
 		min-height: calc(100vh - 8.5rem);
-		gap: 3.5rem;
 	}
 	.loading {
 		min-height: calc(100vh - 8.5rem);
 	}
 	.section {
 		gap: 2.5rem;
-		padding-bottom: 3.5rem;
 	}
-	.heading {
-		font-size: 2.2rem;
+}
+
+@media screen and (min-width: 600px) {
+	.section {
+		width: 54rem;
 	}
 }
 
 @media screen and (min-width: 800px) {
 	.section {
 		gap: 3rem;
-	}
-	.heading {
-		font-size: 2.4rem;
 	}
 }

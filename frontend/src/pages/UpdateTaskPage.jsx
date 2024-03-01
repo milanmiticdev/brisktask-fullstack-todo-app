@@ -81,7 +81,7 @@ const UpdateTaskPage = () => {
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && !state.error && state.result && Object.keys(state.result).length > 0 && (
-				<Form onSubmit={handleUpdateTaskById}>
+				<Form onSubmit={handleUpdateTaskById} heading="UPDATE TASK">
 					<FormField
 						name="name"
 						type="text"

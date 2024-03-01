@@ -113,14 +113,13 @@ const AdminUserViewPage = () => {
 	}, [userId, token, getUserById]);
 
 	return (
-		<main className={state.loading ? `${styles.loading}` : `${styles.user}`}>
+		<main className={state.loading ? `${styles.loading}` : `${styles.userViewPage}`}>
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && !state.error && state.result && Object.keys(state.result).length > 0 && (
 				<>
 					<section className={styles.section}>
-						<Form onSubmit={handleUpdateUserById}>
-							<h2 className={styles.heading}>USER INFO</h2>
+						<Form onSubmit={handleUpdateUserById} heading="USER INFO">
 							<FormField
 								name="name"
 								type="text"
@@ -130,6 +129,7 @@ const AdminUserViewPage = () => {
 								onValidate={validateName}
 								readOnly={state.editing ? false : true}
 								autoFocus={false}
+								fetchedValue={state.result.name}
 							/>
 							<FormField
 								name="email"
@@ -140,6 +140,7 @@ const AdminUserViewPage = () => {
 								onValidate={validateEmail}
 								readOnly={state.editing ? false : true}
 								autoFocus={false}
+								fetchedValue={state.result.email}
 							/>
 							<FormField
 								name="role"
@@ -150,11 +151,19 @@ const AdminUserViewPage = () => {
 								onValidate={validateRole}
 								readOnly={state.editing ? false : true}
 								autoFocus={false}
+								fetchedValue={state.result.role}
 							/>
 							<FormField
 								name="created"
 								type="text"
 								initial={`${UTCtoLocal(state.result.createdAt).date} ${UTCtoLocal(state.result.createdAt).time}`}
+								readOnly={true}
+								autoFocus={false}
+							/>
+							<FormField
+								name="updated"
+								type="text"
+								initial={`${UTCtoLocal(state.result.updatedAt).date} ${UTCtoLocal(state.result.updatedAt).time}`}
 								readOnly={true}
 								autoFocus={false}
 							/>
@@ -170,8 +179,7 @@ const AdminUserViewPage = () => {
 						</Form>
 					</section>
 					<section className={styles.section}>
-						<Form onSubmit={handleChangePassword}>
-							<h2 className={styles.heading}>CHANGE PASSWORD</h2>
+						<Form onSubmit={handleChangePassword} heading="CHANGE PASSWORD">
 							<FormField
 								name="password"
 								type="password"
@@ -194,8 +202,7 @@ const AdminUserViewPage = () => {
 						</Form>
 					</section>
 					<section className={styles.section}>
-						<Form onSubmit={handleDeleteUserById}>
-							<h2 className={styles.heading}>DELETE ACCOUNT</h2>
+						<Form onSubmit={handleDeleteUserById} heading="DELETE ACCOUNT">
 							<FormBtn text="DELETE" type="submit" color="red" />
 						</Form>
 					</section>
