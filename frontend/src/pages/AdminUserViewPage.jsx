@@ -14,9 +14,11 @@ import FormBtn from './../components/FormBtn.jsx';
 import Modal from './../components/Modal.jsx';
 import Spinner from './../components/Spinner.jsx';
 
-// Utils
+// Controllers
 import userController from './../controllers/user.controller.js';
-import validation from '../utils/validation.js';
+
+// Utils
+import validators from '../utils/validators.js';
 import UTCtoLocal from './../utils/UTCtoLocal.js';
 
 // Styles
@@ -97,7 +99,7 @@ const AdminUserViewPage = () => {
 	const navigate = useNavigate();
 
 	const { getUserById, updateUserById, deleteUserById, changePassword } = userController;
-	const { validateName, validateEmail, validatePassword, validateRole } = validation;
+	const { validateName, validateEmail, validatePassword, validateRole } = validators;
 
 	const handleEditBtn = () => dispatch({ type: 'editing-change', payload: true });
 	const handleCancelBtn = () => dispatch({ type: 'editing-change', payload: false });

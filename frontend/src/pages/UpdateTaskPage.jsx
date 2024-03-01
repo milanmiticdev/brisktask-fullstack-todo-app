@@ -14,9 +14,11 @@ import FormBtn from './../components/FormBtn.jsx';
 import Modal from './../components/Modal.jsx';
 import Spinner from './../components/Spinner.jsx';
 
-// Utils
+// Controllers
 import taskController from './../controllers/task.controller.js';
-import validation from './../utils/validation.js';
+
+// Utils
+import validators from './../utils/validators.js';
 
 // Styles
 import styles from './UpdateTaskPage.module.css';
@@ -65,7 +67,7 @@ const UpdateTaskPage = () => {
 	const navigate = useNavigate();
 
 	const { getTaskById, updateTaskById } = taskController;
-	const { validateName } = validation;
+	const { validateName } = validators;
 
 	useEffect(() => {
 		const handleGetTaskById = async e => await getTaskById(taskId, token, dispatch, e);

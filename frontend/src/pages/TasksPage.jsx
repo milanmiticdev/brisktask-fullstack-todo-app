@@ -9,7 +9,7 @@ import Task from './../components/Task.jsx';
 import Modal from './../components/Modal.jsx';
 import Spinner from '../components/Spinner.jsx';
 
-// Utils
+// Controllers
 import taskController from './../controllers/task.controller.js';
 
 // Styles

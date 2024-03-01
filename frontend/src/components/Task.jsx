@@ -7,7 +7,7 @@ import AuthContext from './../contexts/AuthContext.js';
 // React Router
 import { Link, useNavigate } from 'react-router-dom';
 
-// Utils
+// Controllers
 import taskController from './../controllers/task.controller.js';
 
 // FontAwesome Icons

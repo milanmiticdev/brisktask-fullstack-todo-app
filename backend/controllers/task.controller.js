@@ -5,8 +5,8 @@ import pool from './../config/database.js';
 import ApiError from './../utils/ApiError.js';
 
 // Validation functions
-import validation from './../utils/validation.js';
-const { validateName } = validation;
+import validators from './../utils/validators.js';
+const { validateName } = validators;
 
 const getAllTasks = async (req, res, next) => {
 	const userData = req.userData;

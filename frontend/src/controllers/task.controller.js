@@ -1,3 +1,6 @@
+import validators from './../utils/validators.js';
+const { validateName } = validators;
+
 const getAllTasks = async (token, dispatch) => {
 	try {
 		dispatch({ type: 'loading-change', payload: true });
@@ -98,34 +101,40 @@ const createTask = async (userId, token, state, dispatch, navigate, e) => {
 		e.preventDefault();
 	}
 
-	try {
-		dispatch({ type: 'loading-change', payload: true });
-		dispatch({ type: 'spinner-change', payload: 'Creating' });
+	const nameStatus = validateName(state.nameField.value);
 
-		const task = {
-			name: state.nameField.value,
-		};
+	if (nameStatus.error) {
+		dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Check your input.' } });
+	} else {
+		try {
+			dispatch({ type: 'loading-change', payload: true });
+			dispatch({ type: 'spinner-change', payload: 'Creating' });
 
-		const response = await fetch(`http://localhost:5174/api/v1/tasks/create/${Number(userId)}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${token}`,
-			},
-			body: JSON.stringify(task),
-		});
-		const data = await response.json();
+			const task = {
+				name: state.nameField.value,
+			};
 
-		if (data.status === 201) {
-			navigate('/tasks');
-		} else {
-			dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });
+			const response = await fetch(`http://localhost:5174/api/v1/tasks/create/${Number(userId)}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify(task),
+			});
+			const data = await response.json();
+
+			if (data.status === 201) {
+				navigate('/tasks');
+			} else {
+				dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });
+			}
+		} catch {
+			dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Something went wrong.' } });
+		} finally {
+			dispatch({ type: 'loading-change', payload: false });
+			dispatch({ type: 'spinner-change', payload: '' });
 		}
-	} catch {
-		dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Something went wrong.' } });
-	} finally {
-		dispatch({ type: 'loading-change', payload: false });
-		dispatch({ type: 'spinner-change', payload: '' });
 	}
 };
 
@@ -134,34 +143,40 @@ const updateTaskById = async (taskId, userRole, token, state, dispatch, navigate
 		e.preventDefault();
 	}
 
-	try {
-		dispatch({ type: 'loading-change', payload: true });
-		dispatch({ type: 'spinner-change', payload: 'Updating' });
+	const nameStatus = validateName(state.nameField.value);
 
-		const updatedTask = {
-			name: state.nameField.value,
-		};
+	if (nameStatus.error) {
+		dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Check your input.' } });
+	} else {
+		try {
+			dispatch({ type: 'loading-change', payload: true });
+			dispatch({ type: 'spinner-change', payload: 'Updating' });
 
-		const response = await fetch(`http://localhost:5174/api/v1/tasks/${Number(taskId)}`, {
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${token}`,
-			},
-			body: JSON.stringify(updatedTask),
-		});
-		const data = await response.json();
+			const updatedTask = {
+				name: state.nameField.value,
+			};
 
-		if (data.status === 200) {
-			userRole === 'admin' ? navigate(0) : navigate('/tasks');
-		} else {
-			dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });
+			const response = await fetch(`http://localhost:5174/api/v1/tasks/${Number(taskId)}`, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify(updatedTask),
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				userRole === 'admin' ? navigate(0) : navigate('/tasks');
+			} else {
+				dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });
+			}
+		} catch {
+			dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Something went wrong.' } });
+		} finally {
+			dispatch({ type: 'spinner-change', payload: '' });
+			dispatch({ type: 'loading-change', payload: false });
 		}
-	} catch {
-		dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Something went wrong.' } });
-	} finally {
-		dispatch({ type: 'spinner-change', payload: '' });
-		dispatch({ type: 'loading-change', payload: false });
 	}
 };
 

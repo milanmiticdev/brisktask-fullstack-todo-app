@@ -14,9 +14,11 @@ import FormBtn from './../components/FormBtn.jsx';
 import Modal from './../components/Modal.jsx';
 import Spinner from './../components/Spinner.jsx';
 
-// Utils
+// Controllers
 import taskController from './../controllers/task.controller.js';
-import validation from './../utils/validation.js';
+
+// Utils
+import validators from './../utils/validators.js';
 
 // Styles
 import styles from './CreateTaskPage.module.css';
@@ -32,7 +34,7 @@ const initialState = {
 	spinner: '',
 	modal: {
 		open: false,
-		error: true,
+		error: false,
 		message: '',
 	},
 };
@@ -58,7 +60,7 @@ const CreateTaskPage = () => {
 	const navigate = useNavigate();
 
 	const { createTask } = taskController;
-	const { validateName } = validation;
+	const { validateName } = validators;
 
 	const handleCreateTask = async e => await createTask(userId, token, state, dispatch, navigate, e);
 

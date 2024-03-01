@@ -2,7 +2,7 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import config from './config/config.js';
-const { serverHostname, serverPort } = config;
+const { serverPort } = config;
 
 import authRouter from './routes/auth.router.js';
 import userRouter from './routes/user.router.js';

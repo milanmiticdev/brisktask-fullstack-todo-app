@@ -16,9 +16,11 @@ import FormBtn from './../components/FormBtn.jsx';
 import Spinner from './../components/Spinner.jsx';
 import Modal from './../components/Modal.jsx';
 
-// Utils
+// Controllers
 import authController from './../controllers/auth.controller.js';
-import validation from './../utils/validation.js';
+
+// Utils
+import validators from './../utils/validators.js';
 
 // Styles
 import styles from './AuthPage.module.css';
@@ -75,7 +77,7 @@ const AuthPage = () => {
 	const navigate = useNavigate();
 
 	const { loginUser, registerUser } = authController;
-	const { validateName, validateEmail, validatePassword } = validation;
+	const { validateName, validateEmail, validatePassword } = validators;
 
 	const handleLoginUser = async e => await loginUser(state, dispatch, login, navigate, e);
 	const handleRegisterUser = async e => await registerUser(state, dispatch, login, navigate, e);

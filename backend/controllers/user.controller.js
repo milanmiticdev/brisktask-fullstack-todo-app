@@ -9,8 +9,8 @@ import pool from './../config/database.js';
 import ApiError from './../utils/ApiError.js';
 
 // Validation functions
-import validation from './../utils/validation.js';
-const { validateName, validateEmail, validatePassword, validateRole } = validation;
+import validators from './../utils/validators.js';
+const { validateName, validateEmail, validatePassword, validateRole } = validators;
 
 // Config
 import config from './../config/config.js';

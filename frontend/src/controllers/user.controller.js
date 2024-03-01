@@ -1,3 +1,6 @@
+import validators from './../utils/validators.js';
+const { validateName, validateEmail, validatePassword, validateRole } = validators;
+
 const getAllUsers = async (token, dispatch) => {
 	try {
 		dispatch({ type: 'loading-change', payload: true });
@@ -64,53 +67,61 @@ const updateUserById = async (userId, userRole, token, state, dispatch, login, n
 		e.preventDefault();
 	}
 
-	try {
-		let updatedUser;
+	const nameStatus = validateName(state.nameField.value);
+	const emailStatus = validateEmail(state.emailField.value);
+	const roleStatus = userRole === 'admin' ? validateRole(state.roleField.value) : { error: false };
 
-		if (userRole === 'user') {
-			updatedUser = {
-				name: state.nameField.value,
-				email: state.emailField.value,
-			};
-		} else {
-			updatedUser = {
-				name: state.nameField.value,
-				email: state.emailField.value,
-				role: state.roleField.value,
-			};
-		}
+	if (nameStatus.error || emailStatus.error || roleStatus.error) {
+		dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Check your inputs.' } });
+	} else {
+		try {
+			let updatedUser;
 
-		dispatch({ type: 'loading-change', payload: true });
-		dispatch({ type: 'spinner-change', payload: 'Updating' });
-
-		const response = await fetch(`http://localhost:5174/api/v1/users/${Number(userId)}`, {
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${token}`,
-			},
-			body: JSON.stringify(updatedUser),
-		});
-		const data = await response.json();
-
-		if (data.status === 200) {
-			// If the email doesn't change there is no need to recreate token and login again
-			if (state.result.email === state.emailField.value) {
-				navigate(0);
+			if (userRole === 'admin') {
+				updatedUser = {
+					name: state.nameField.value,
+					email: state.emailField.value,
+					role: state.roleField.value,
+				};
 			} else {
-				if (userRole === 'user') {
-					login(userId, userRole, data.token);
-				}
-				navigate(0);
+				updatedUser = {
+					name: state.nameField.value,
+					email: state.emailField.value,
+				};
 			}
-		} else {
-			dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });
+
+			dispatch({ type: 'loading-change', payload: true });
+			dispatch({ type: 'spinner-change', payload: 'Updating' });
+
+			const response = await fetch(`http://localhost:5174/api/v1/users/${Number(userId)}`, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify(updatedUser),
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				// If the email doesn't change there is no need to recreate token and login again
+				if (state.result.email === state.emailField.value) {
+					navigate(0);
+				} else {
+					if (userRole === 'user') {
+						login(userId, userRole, data.token);
+					}
+					navigate(0);
+				}
+			} else {
+				dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });
+			}
+		} catch {
+			dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Something went wrong.' } });
+		} finally {
+			dispatch({ type: 'loading-change', payload: false });
+			dispatch({ type: 'spinner-change', payload: '' });
 		}
-	} catch {
-		dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Something went wrong.' } });
-	} finally {
-		dispatch({ type: 'loading-change', payload: false });
-		dispatch({ type: 'spinner-change', payload: '' });
 	}
 };
 
@@ -118,6 +129,7 @@ const deleteUserById = async (userId, userRole, token, dispatch, logout, navigat
 	if (e) {
 		e.preventDefault();
 	}
+
 	try {
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Deleting' });
@@ -154,35 +166,44 @@ const changePassword = async (userId, token, state, dispatch, e) => {
 		e.preventDefault();
 	}
 
-	try {
-		const changedPassword = {
-			password: state.passwordField.value,
-			confirmPassword: state.confirmPasswordField.value,
-		};
+	const password = state.passwordField.value;
+	const confirmPassword = state.confirmPasswordField.value;
 
-		dispatch({ type: 'loading-change', payload: true });
-		dispatch({ type: 'spinner-change', payload: 'Updating' });
+	const passwordStatus = validatePassword(password);
+	const confirmPasswordStatus = validatePassword(confirmPassword);
 
-		const response = await fetch(`http://localhost:5174/api/v1/users/change-password/${Number(userId)}`, {
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${token}`,
-			},
-			body: JSON.stringify(changedPassword),
-		});
-		const data = await response.json();
+	if (password.trim() !== confirmPassword.trim()) {
+		dispatch({ type: 'modal-change', payload: { open: true, error: true, message: `Passwords don't match.` } });
+	} else if (passwordStatus.error || confirmPasswordStatus.error) {
+		dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Check your inputs.' } });
+	} else {
+		try {
+			const changedPassword = { password, confirmPassword };
 
-		if (data.status === 200) {
-			dispatch({ type: 'modal-change', payload: { open: true, error: false, message: data.message } });
-		} else {
-			dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });
+			dispatch({ type: 'loading-change', payload: true });
+			dispatch({ type: 'spinner-change', payload: 'Updating' });
+
+			const response = await fetch(`http://localhost:5174/api/v1/users/change-password/${Number(userId)}`, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify(changedPassword),
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				dispatch({ type: 'modal-change', payload: { open: true, error: false, message: data.message } });
+			} else {
+				dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });
+			}
+		} catch {
+			dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Something went wrong.' } });
+		} finally {
+			dispatch({ type: 'loading-change', payload: false });
+			dispatch({ type: 'spinner-change', payload: '' });
 		}
-	} catch {
-		dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Something went wrong.' } });
-	} finally {
-		dispatch({ type: 'loading-change', payload: false });
-		dispatch({ type: 'spinner-change', payload: '' });
 	}
 };
 

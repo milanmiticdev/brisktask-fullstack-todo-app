@@ -7,7 +7,7 @@ const validateName = name => {
 	} else {
 		return {
 			error: true,
-			message: `Name can't be empty.`,
+			message: 'Name field empty.',
 		};
 	}
 };
@@ -26,13 +26,13 @@ const validateEmail = email => {
 		} else {
 			return {
 				error: true,
-				message: 'Not a valid email address.',
+				message: 'Email address not valid.',
 			};
 		}
 	} else {
 		return {
 			error: true,
-			message: `Email can't be empty.`,
+			message: 'Email field empty.',
 		};
 	}
 };
@@ -46,7 +46,7 @@ const validatePassword = password => {
 	} else {
 		return {
 			error: true,
-			message: `Password can't be empty.`,
+			message: 'Password field empty.',
 		};
 	}
 
@@ -92,11 +92,11 @@ const validateRole = role => {
 	} else {
 		return {
 			error: true,
-			message: `Role can't be empty.`,
+			message: 'Role field empty.',
 		};
 	}
 };
 
-const validation = { validateName, validateEmail, validatePassword, validateRole };
+const validators = { validateName, validateEmail, validatePassword, validateRole };
 
-export default validation;
+export default validators;

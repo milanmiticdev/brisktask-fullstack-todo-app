@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useContext } from 'react';
 // Context
 import AuthContext from '../contexts/AuthContext.js';
 
-// Utils
+// Controllers
 import userController from './../controllers/user.controller.js';
 import taskController from './../controllers/task.controller.js';
 
