@@ -120,7 +120,7 @@ const createUser = async (req, res, next) => {
 	const nameStatus = validateName(name);
 	const emailStatus = validateEmail(email);
 	const passwordStatus = validatePassword(password);
-	const roleStatus = validateRole(password);
+	const roleStatus = validateRole(role);
 
 	if (!nameStatus.error && !emailStatus.error && !passwordStatus.error && !roleStatus.error) {
 		if (userData.role === 'admin') {
@@ -156,7 +156,7 @@ const createUser = async (req, res, next) => {
 			return res.status(403).json({ message: 'Not authorized.', status: 403 });
 		}
 	} else {
-		return res.status(400).json({ message: 'Invalid inputs.', status: 400 });
+		return res.status(400).json({ message: 'Check your inputs.', status: 400 });
 	}
 };
 
@@ -252,7 +252,7 @@ const updateUserById = async (req, res, next) => {
 			}
 		}
 	} else {
-		return res.status(400).json({ message: 'Invalid inputs.', status: 400 });
+		return res.status(400).json({ message: 'Check your inputs.', status: 400 });
 	}
 };
 
@@ -386,7 +386,7 @@ const changePassword = async (req, res, next) => {
 			return res.status(400).json({ message: `Passwords don't match.`, status: 400 });
 		}
 	} else {
-		return res.status(400).json({ message: 'Invalid inputs.', status: 400 });
+		return res.status(400).json({ message: 'Check your inputs.', status: 400 });
 	}
 };
 

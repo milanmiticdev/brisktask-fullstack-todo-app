@@ -47,7 +47,7 @@ const login = async (req, res, next) => {
 			return next(error);
 		}
 	} else {
-		return res.status(400).json({ message: 'Invalid inputs.', status: 400 });
+		return res.status(400).json({ message: 'Check your inputs.', status: 400 });
 	}
 };
 
@@ -94,7 +94,7 @@ const register = async (req, res, next) => {
 			return next(error);
 		}
 	} else {
-		return res.status(400).json({ message: 'Invalid inputs.', status: 400 });
+		return res.status(400).json({ message: 'Check your inputs.', status: 400 });
 	}
 };
 

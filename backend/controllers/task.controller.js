@@ -206,7 +206,7 @@ const createTask = async (req, res, next) => {
 			}
 		}
 	} else {
-		return res.status(400).json({ message: 'Invalid input.', status: 400 });
+		return res.status(400).json({ message: 'Check your input.', status: 400 });
 	}
 };
 
@@ -271,7 +271,7 @@ const updateTaskById = async (req, res, next) => {
 			}
 		}
 	} else {
-		return res.status(400).json({ message: 'Invalid input.', status: 400 });
+		return res.status(400).json({ message: 'Check your input.', status: 400 });
 	}
 };
 
