@@ -17,6 +17,11 @@ td {
 	opacity: 0.85;
 }
 
+.link {
+	text-decoration: none;
+	list-style: none;
+}
+
 @media screen and (min-width: 600px) {
 	.viewBtn {
 		padding: 0.5rem 1rem;

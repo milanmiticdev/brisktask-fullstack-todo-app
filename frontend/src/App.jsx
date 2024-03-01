@@ -16,6 +16,7 @@ import ProfilePage from './pages/ProfilePage.jsx';
 import AdminDashboardPage from './pages/AdminDashboardPage.jsx';
 import AdminUserViewPage from './pages/AdminUserViewPage.jsx';
 import AdminTaskViewPage from './pages/AdminTaskViewPage.jsx';
+import CreateUserPage from './pages/CreateUserPage.jsx';
 
 const initialState = {
 	userId: null,
@@ -86,6 +87,7 @@ const App = () => {
 				{state.token && state.userRole === 'admin' ? (
 					<Routes>
 						<Route path="/" element={<AppSharedLayout />}>
+							<Route path="/dashboard/create-user" element={<CreateUserPage />} />
 							<Route path="/dashboard/users/:userId" element={<AdminUserViewPage />} />
 							<Route path="/dashboard/tasks/:taskId" element={<AdminTaskViewPage />} />
 							<Route path="/dashboard" element={<AdminDashboardPage />} />

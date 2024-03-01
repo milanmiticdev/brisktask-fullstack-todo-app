@@ -27,7 +27,7 @@ const TableRow = ({ parent, section, id, email }) => {
 					<th scope="row">{id}</th>
 					<td>{email}</td>
 					<td>
-						<Link to={`/dashboard/${section}/${id}`}>
+						<Link to={`/dashboard/${section}/${id}`} className={styles.link}>
 							<button className={styles.viewBtn}>View</button>
 						</Link>
 					</td>

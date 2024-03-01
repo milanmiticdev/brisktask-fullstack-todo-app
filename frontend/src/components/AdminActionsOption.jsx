@@ -1,6 +1,9 @@
 // React
 import { useState } from 'react';
 
+// React Router
+import { Link } from 'react-router-dom';
+
 // Components
 import FormBtn from './FormBtn.jsx';
 
@@ -26,7 +29,13 @@ const AdminActionsOption = ({ text, input, onClick, onDispatch }) => {
 					}}
 				/>
 			)}
-			<FormBtn text={text} type="button" onClick={onClick} />
+			{onClick ? (
+				<FormBtn text={text} type="button" onClick={onClick} />
+			) : (
+				<Link to={'/dashboard/create-user'} className={styles.link}>
+					<FormBtn text={text} type="button" />
+				</Link>
+			)}
 		</div>
 	);
 };

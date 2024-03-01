@@ -1,0 +1,28 @@
+.createUserPage {
+	height: calc(100vh - 7rem);
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: flex-start;
+	align-items: center;
+	padding: 3rem;
+}
+
+.loading {
+	height: calc(100vh - 7rem);
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+}
+
+@media screen and (min-width: 500px) {
+	.createTaskPage {
+		height: calc(100vh - 8.5rem);
+	}
+	.loading {
+		height: calc(100vh - 8.5rem);
+	}
+}

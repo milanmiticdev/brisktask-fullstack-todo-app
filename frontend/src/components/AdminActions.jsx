@@ -47,7 +47,7 @@ const AdminActions = ({ onDispatch }) => {
 				<div className={styles.options} ref={selectRef}>
 					<AdminActionsOption text="GET ALL USERS" onClick={handleGetAllUsers} onDispatch={onDispatch} input={false} />
 					<AdminActionsOption text="GET USER BY ID" onClick={() => console.log('submit')} onDispatch={onDispatch} />
-					<AdminActionsOption text="CREATE USER" onClick={() => console.log('submit')} onDispatch={onDispatch} />
+					<AdminActionsOption text="CREATE USER" onDispatch={onDispatch} />
 					<AdminActionsOption text="GET ALL TASKS" onClick={handleGetAllTasks} onDispatch={onDispatch} input={false} />
 					<AdminActionsOption text="GET TASKS BY USER ID" onClick={() => console.log('submit')} onDispatch={onDispatch} />
 					<AdminActionsOption text="GET TASK BY ID" onClick={() => console.log('submit')} onDispatch={onDispatch} />

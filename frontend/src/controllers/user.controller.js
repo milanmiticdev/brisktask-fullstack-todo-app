@@ -62,6 +62,54 @@ const getUserById = async (userId, token, dispatch, e) => {
 	}
 };
 
+const createUser = async (token, state, dispatch, navigate, e) => {
+	if (e) {
+		e.preventDefault();
+	}
+
+	const nameStatus = validateName(state.nameField.value);
+	const emailStatus = validateEmail(state.emailField.value);
+	const passwordStatus = validatePassword(state.passwordField.value);
+	const roleStatus = validateRole(state.roleField.value);
+
+	if (nameStatus.error || emailStatus.error || passwordStatus.error || roleStatus.error) {
+		dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Check your inputs.' } });
+	} else {
+		try {
+			dispatch({ type: 'loading-change', payload: true });
+			dispatch({ type: 'spinner-change', payload: 'Creating' });
+
+			const user = {
+				name: state.nameField.value,
+				email: state.emailField.value,
+				password: state.passwordField.value,
+				role: state.roleField.value,
+			};
+
+			const response = await fetch('http://localhost:5174/api/v1/users/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify(user),
+			});
+			const data = await response.json();
+
+			if (data.status === 201) {
+				navigate('/dashboard');
+			} else {
+				dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });
+			}
+		} catch {
+			dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Something went wrong.' } });
+		} finally {
+			dispatch({ type: 'loading-change', payload: false });
+			dispatch({ type: 'spinner-change', payload: '' });
+		}
+	}
+};
+
 const updateUserById = async (userId, userRole, token, state, dispatch, login, navigate, e) => {
 	if (e) {
 		e.preventDefault();
@@ -207,6 +255,6 @@ const changePassword = async (userId, token, state, dispatch, e) => {
 	}
 };
 
-const controller = { getAllUsers, getUserById, updateUserById, deleteUserById, changePassword };
+const controller = { getAllUsers, getUserById, createUser, updateUserById, deleteUserById, changePassword };
 
 export default controller;
