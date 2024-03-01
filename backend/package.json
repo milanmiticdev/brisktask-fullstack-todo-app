@@ -1,7 +1,6 @@
 {
-	"name": "fullstack-todo-app",
+	"name": "backend",
 	"version": "1.0.0",
-	"description": "Fullstack Todo App created with React, Node and MySQL",
 	"main": "app.js",
 	"type": "module",
 	"scripts": {
