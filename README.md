@@ -1,3 +1,5 @@
+![BriskTask Fullstack App Preview](./frontend/public/brisktask-preview.png)
+
 # BriskTask - Fullstack Todo App
 
 Responsive Todo app created with React, Node and MySQL.
