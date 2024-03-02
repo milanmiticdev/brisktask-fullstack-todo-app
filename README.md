@@ -4,7 +4,7 @@
 
 Responsive Todo app created with React, Node and MySQL.
 
-Frontend is deployed on Netlify: https://brisktask.netlify.app
+App is deployed on Render: https://brisktask-fullstack.onrender.com
 
 ## Built with
 
@@ -21,7 +21,7 @@ Frontend is deployed on Netlify: https://brisktask.netlify.app
 -   To be able to run this on a localhost you need to navigate to the `controllers` folder inside the `frontend` folder.
 -   In there you will find the controllers and they all run a `fetch()` function to the backend.
 -   In front of the `/api/v1...` add something like `http://localhost:PORT_NUMBER` for every fetch for all of the controllers.
--   Example: `http://localhost:5000/api/v1/users...`
+-   Example: `http://localhost:5174/api/v1/users...`
 
 ### DATABASE SETUP
 
