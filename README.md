@@ -41,7 +41,7 @@ Frontend is deployed on Netlify: https://brisktask.netlify.app
 
 ### FRONTEND AND BACKEND SETUP
 
--   Navigate to the root folder and run: `npm install` and then `npm start` to start the Node server.
+-   Navigate to the root folder and run: `npm install` and then `npm run dev` to start the Node server.
 -   Navigate to the `/frontend` folder and run: `npm install` and then `npm run dev` to run React.
 
 -   React frontend was created using Vite: https://vitejs.dev. Vite uses port `5173` by default.
