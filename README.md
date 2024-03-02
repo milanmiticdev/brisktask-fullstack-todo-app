@@ -52,6 +52,10 @@ App is deployed on Render: https://brisktask-fullstack.onrender.com
 ## Description and Usage
 
 -   You can perform authentication actions via login or registration form.
+-   IMPORTANT: You don't have to use your real email since this app doesn't perform email verification.
+    -   Just make sure email is in the valid format
+    -   Examples: `apptesting@gmail.com`, `somerandomuser@yahoo.com` etc
+    -   Keep in mind that email must be unique and there can't be duplicate users registered with the same email
 -   When you are logged in you can perform CRUD operations on your tasks.
 -   While viewing your tasks, clicking on a pencil icon navigates to the update task page.
 -   Clicking a trash can icon deletes a task from the database.
