@@ -18,6 +18,10 @@ Frontend is deployed on Netlify: https://brisktask.netlify.app
 ## Installation and Setup
 
 -   You can clone this repository if you would like to check out app functionalities.
+-   To be able to run this on a localhost you need to navigate to the `controllers` folder inside the `frontend` folder.
+-   In there you will find the controllers and they all run a `fetch()` function to the backend.
+-   In front of the `/api/v1...` add something like `http://localhost:PORT_NUMBER` for every fetch for all of the controllers.
+-   Example: `http://localhost:5000/api/v1/users...`
 
 ### DATABASE SETUP
 
@@ -34,8 +38,6 @@ Frontend is deployed on Netlify: https://brisktask.netlify.app
     -   `DATABASE_USER` = Your MySQL user name, default is `root`
     -   `DATABASE_PASSWORD` = Password for your local MySQL access
     -   `DATABASE_NAME` = Name of the database you created during setup above
-    -   `SERVER_HOSTNAME` = You can put the default `http://localhost` for the server hostname
-    -   `SERVER_PORT` = Port number to run your local server on
     -   `JWT_SECRET` = JSON Web Token secret key, can be any string
     -   `JWT_TOKEN_EXPIRES` = Set token expiration time, for example `1h` means that token expires in 1 hour
 
