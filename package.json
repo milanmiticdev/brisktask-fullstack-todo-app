@@ -5,7 +5,9 @@
 	"description": "Fullstack Todo App created with React, Node and MySQL",
 	"type": "module",
 	"scripts": {
-		"start": "nodemon /backend/app.js"
+		"dev": "nodemon backend/app.js",
+		"start": "node backend/app.js",
+		"build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
 	},
 	"author": "Milan Mitic",
 	"license": "MIT",
