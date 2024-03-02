@@ -2,10 +2,8 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import path from 'path';
-import config from './config/config.js';
 
 const __dirname = path.resolve();
-const { serverPort } = config;
 
 import authRouter from './routes/auth.router.js';
 import userRouter from './routes/user.router.js';
@@ -39,5 +37,3 @@ app.use(express.static(path.join(__dirname, '/frontend/dist')));
 app.get('*', (req, res) => {
 	res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'));
 });
-
-app.listen(serverPort);

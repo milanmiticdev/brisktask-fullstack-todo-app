@@ -10,7 +10,7 @@ const getAllUsers = async (token, dispatch, e) => {
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Loading' });
 
-		const response = await fetch('http://localhost:5174/api/v1/users', {
+		const response = await fetch('/api/v1/users', {
 			method: 'GET',
 			headers: {
 				Authorization: `Bearer ${token}`,
@@ -41,7 +41,7 @@ const getUserById = async (userId, token, dispatch, e) => {
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Loading' });
 
-		const response = await fetch(`http://localhost:5174/api/v1/users/${Number(userId)}`, {
+		const response = await fetch(`/api/v1/users/${Number(userId)}`, {
 			method: 'GET',
 			body: null,
 			headers: {
@@ -90,7 +90,7 @@ const createUser = async (token, state, dispatch, navigate, e) => {
 				role: state.roleField.value,
 			};
 
-			const response = await fetch('http://localhost:5174/api/v1/users/', {
+			const response = await fetch('/api/v1/users/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -145,7 +145,7 @@ const updateUserById = async (userId, userRole, token, state, dispatch, login, n
 			dispatch({ type: 'loading-change', payload: true });
 			dispatch({ type: 'spinner-change', payload: 'Updating' });
 
-			const response = await fetch(`http://localhost:5174/api/v1/users/${Number(userId)}`, {
+			const response = await fetch(`/api/v1/users/${Number(userId)}`, {
 				method: 'PATCH',
 				headers: {
 					'Content-Type': 'application/json',
@@ -186,7 +186,7 @@ const deleteUserById = async (userId, userRole, token, dispatch, logout, navigat
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Deleting' });
 
-		const response = await fetch(`http://localhost:5174/api/v1/users/${Number(userId)}`, {
+		const response = await fetch(`/api/v1/users/${Number(userId)}`, {
 			method: 'DELETE',
 			body: null,
 			headers: {
@@ -235,7 +235,7 @@ const changePassword = async (userId, token, state, dispatch, e) => {
 			dispatch({ type: 'loading-change', payload: true });
 			dispatch({ type: 'spinner-change', payload: 'Updating' });
 
-			const response = await fetch(`http://localhost:5174/api/v1/users/change-password/${Number(userId)}`, {
+			const response = await fetch(`/api/v1/users/change-password/${Number(userId)}`, {
 				method: 'PATCH',
 				headers: {
 					'Content-Type': 'application/json',

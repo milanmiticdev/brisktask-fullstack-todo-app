@@ -10,7 +10,7 @@ const getAllTasks = async (token, dispatch, e) => {
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Loading' });
 
-		const response = await fetch('http://localhost:5174/api/v1/tasks', {
+		const response = await fetch('/api/v1/tasks', {
 			method: 'GET',
 			headers: {
 				Authorization: `Bearer ${token}`,
@@ -41,7 +41,7 @@ const getTasksByUserId = async (userId, token, dispatch, e) => {
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Loading' });
 
-		const response = await fetch(`http://localhost:5174/api/v1/tasks/user/${Number(userId)}`, {
+		const response = await fetch(`/api/v1/tasks/user/${Number(userId)}`, {
 			method: 'GET',
 			body: null,
 			headers: {
@@ -75,7 +75,7 @@ const getTaskById = async (taskId, token, dispatch, e) => {
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Loading' });
 
-		const response = await fetch(`http://localhost:5174/api/v1/tasks/${Number(taskId)}`, {
+		const response = await fetch(`/api/v1/tasks/${Number(taskId)}`, {
 			method: 'GET',
 			body: null,
 			headers: {
@@ -118,7 +118,7 @@ const createTask = async (userId, token, state, dispatch, navigate, e) => {
 				name: state.nameField.value,
 			};
 
-			const response = await fetch(`http://localhost:5174/api/v1/tasks/create/${Number(userId)}`, {
+			const response = await fetch(`/api/v1/tasks/create/${Number(userId)}`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -160,7 +160,7 @@ const updateTaskById = async (taskId, userRole, token, state, dispatch, navigate
 				name: state.nameField.value,
 			};
 
-			const response = await fetch(`http://localhost:5174/api/v1/tasks/${Number(taskId)}`, {
+			const response = await fetch(`/api/v1/tasks/${Number(taskId)}`, {
 				method: 'PATCH',
 				headers: {
 					'Content-Type': 'application/json',
@@ -193,7 +193,7 @@ const deleteTaskById = async (taskId, userRole, token, dispatch, navigate, e) =>
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Deleting' });
 
-		const response = await fetch(`http://localhost:5174/api/v1/tasks/${Number(taskId)}`, {
+		const response = await fetch(`/api/v1/tasks/${Number(taskId)}`, {
 			method: 'DELETE',
 			body: null,
 			headers: {

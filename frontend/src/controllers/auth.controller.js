@@ -21,7 +21,7 @@ const loginUser = async (state, dispatch, login, navigate, e) => {
 			dispatch({ type: 'loading-change', payload: true });
 			dispatch({ type: 'spinner-change', payload: 'Login' });
 
-			const response = await fetch('http://localhost:5174/api/v1/auth/login', {
+			const response = await fetch('/api/v1/auth/login', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ const registerUser = async (state, dispatch, login, navigate, e) => {
 			dispatch({ type: 'loading-change', payload: true });
 			dispatch({ type: 'spinner-change', payload: 'Register' });
 
-			const response = await fetch('http://localhost:5174/api/v1/auth/register', {
+			const response = await fetch('/api/v1/auth/register', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
