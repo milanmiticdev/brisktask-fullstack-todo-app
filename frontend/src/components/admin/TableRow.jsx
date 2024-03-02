@@ -96,7 +96,7 @@ const TableRow = ({ parent, section, id, email }) => {
 				</>
 			) : (
 				<>
-					<th scope="row">{id + 998}</th>
+					<th scope="row">{id}</th>
 					<td>{emailField}</td>
 					<td>
 						<Link to={`/dashboard/${section}/${id}`} className={styles.link}>
