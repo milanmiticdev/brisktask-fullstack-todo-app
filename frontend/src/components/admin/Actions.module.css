@@ -1,0 +1,52 @@
+.actions {
+	position: relative;
+	margin-top: 3rem;
+	width: 26rem;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 3rem;
+}
+
+.options {
+	position: absolute;
+	top: 6rem;
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	border-radius: 0.5rem;
+
+	background-color: #ffffff;
+	box-shadow: 0.1rem 0.1rem 0.9rem #2c2c2c;
+}
+
+.options:first-child {
+	border-top-left-radius: 0.5rem;
+	border-top-right-radius: 0.5rem;
+}
+
+.options:last-child {
+	border-bottom-left-radius: 0.5rem;
+	border-bottom-right-radius: 0.5rem;
+}
+
+.toggle {
+	width: 100%;
+	font-size: 1.5rem;
+	font-weight: bold;
+	padding: 1rem 0rem;
+	border: none;
+	border-radius: 0.5rem;
+	cursor: pointer;
+	text-align: center;
+	color: #ffffff;
+	background-color: #1e449e;
+	box-shadow: 0.1rem 0.1rem 0.9rem #2c2c2c;
+}
+
+.toggle:hover {
+	opacity: 0.85;
+}

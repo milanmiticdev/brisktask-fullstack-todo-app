@@ -1,0 +1,38 @@
+.section {
+	width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	padding-bottom: 2rem;
+	gap: 2rem;
+	border-bottom: 0.1rem solid #d5d5d5;
+}
+
+.section:last-child {
+	border: none;
+}
+
+@media screen and (min-width: 400px) {
+	.section {
+		padding-bottom: 2.5rem;
+	}
+}
+
+@media screen and (min-width: 500px) {
+	.section {
+		gap: 2.5rem;
+	}
+}
+
+@media screen and (min-width: 600px) {
+	.section {
+		width: 54rem;
+	}
+}
+
+@media screen and (min-width: 800px) {
+	.section {
+		gap: 3rem;
+	}
+}

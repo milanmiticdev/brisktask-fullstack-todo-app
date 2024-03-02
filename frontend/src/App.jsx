@@ -6,17 +6,18 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AuthContext from './contexts/AuthContext.js';
 
 // Pages
-import AppSharedLayout from './pages/AppSharedLayout.jsx';
-import HomePage from './pages/HomePage.jsx';
-import TasksPage from './pages/TasksPage.jsx';
-import CreateTaskPage from './pages/CreateTaskPage.jsx';
-import UpdateTaskPage from './pages/UpdateTaskPage.jsx';
-import AuthPage from './pages/AuthPage.jsx';
-import ProfilePage from './pages/ProfilePage.jsx';
-import AdminDashboardPage from './pages/AdminDashboardPage.jsx';
-import AdminUserViewPage from './pages/AdminUserViewPage.jsx';
-import AdminTaskViewPage from './pages/AdminTaskViewPage.jsx';
-import CreateUserPage from './pages/CreateUserPage.jsx';
+import AppSharedLayout from './pages/shared/AppSharedLayout.jsx';
+import Home from './pages/shared/Home.jsx';
+import PageNotFound from './pages/shared/PageNotFound.jsx';
+import Tasks from './pages/tasks/Tasks.jsx';
+import CreateTask from './pages/tasks/CreateTask.jsx';
+import UpdateTask from './pages/tasks/UpdateTask.jsx';
+import Auth from './pages/users/Auth.jsx';
+import Profile from './pages/users/Profile.jsx';
+import Dashboard from './pages/admin/Dashboard.jsx';
+import ViewUser from './pages/admin/ViewUser.jsx';
+import ViewTask from './pages/admin/ViewTask.jsx';
+import CreateUser from './pages/admin/CreateUser.jsx';
 
 const initialState = {
 	userId: null,
@@ -87,28 +88,29 @@ const App = () => {
 				{state.token && state.userRole === 'admin' ? (
 					<Routes>
 						<Route path="/" element={<AppSharedLayout />}>
-							<Route path="/dashboard/create-user" element={<CreateUserPage />} />
-							<Route path="/dashboard/users/:userId" element={<AdminUserViewPage />} />
-							<Route path="/dashboard/tasks/:taskId" element={<AdminTaskViewPage />} />
-							<Route path="/dashboard" element={<AdminDashboardPage />} />
-							<Route index element={<HomePage />} />
+							<Route path="/dashboard/create-user" element={<CreateUser />} />
+							<Route path="/dashboard/users/:userId" element={<ViewUser />} />
+							<Route path="/dashboard/tasks/:taskId" element={<ViewTask />} />
+							<Route path="/dashboard" element={<Dashboard />} />
+							<Route path="/*" element={<PageNotFound />} />
+							<Route index element={<Home />} />
 						</Route>
 					</Routes>
 				) : state.token && state.userRole === 'user' ? (
 					<Routes>
 						<Route path="/" element={<AppSharedLayout />}>
-							<Route path="/tasks" element={<TasksPage />} />
-							<Route path="/update-task/:taskId" element={<UpdateTaskPage />} />
-							<Route path="/create-task" element={<CreateTaskPage />} />
-							<Route path="/profile" element={<ProfilePage />} />
-							<Route index element={<HomePage />} />
+							<Route path="/tasks" element={<Tasks />} />
+							<Route path="/update-task/:taskId" element={<UpdateTask />} />
+							<Route path="/create-task" element={<CreateTask />} />
+							<Route path="/profile" element={<Profile />} />
+							<Route index element={<Home />} />
 						</Route>
 					</Routes>
 				) : (
 					<Routes>
 						<Route path="/" element={<AppSharedLayout />}>
-							<Route path="/auth" element={<AuthPage />} />
-							<Route index element={<HomePage />} />
+							<Route path="/auth" element={<Auth />} />
+							<Route index element={<Home />} />
 						</Route>
 					</Routes>
 				)}

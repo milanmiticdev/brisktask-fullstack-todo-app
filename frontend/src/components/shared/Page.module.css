@@ -1,0 +1,33 @@
+.page {
+	height: calc(100vh - 7rem);
+	width: 100%;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	padding: 2rem;
+	gap: 2rem;
+}
+
+.home {
+	height: calc(100vh - 7rem);
+	background-image: url('/todo-image-background.jpg');
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	opacity: 0.85;
+}
+
+.loading {
+	justify-content: center;
+}
+
+@media screen and (min-width: 500px) {
+	.page {
+		height: calc(100vh - 8.5rem);
+	}
+	.home {
+		height: calc(100vh - 8.5rem);
+	}
+}
