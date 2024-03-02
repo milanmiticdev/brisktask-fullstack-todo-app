@@ -27,7 +27,7 @@ Frontend is deployed on Netlify: https://brisktask.netlify.app
 
 ### .env SETUP
 
--   In the `/backend` folder create .env file with the following options:
+-   In the root folder create .env file with the following options:
 
     -   `DATABASE_PORT` = Port number that your MySQL server is running on
     -   `DATABASE_HOST` = Your MySQL host, default is `127.0.0.1`
@@ -41,8 +41,8 @@ Frontend is deployed on Netlify: https://brisktask.netlify.app
 
 ### FRONTEND AND BACKEND SETUP
 
--   Navigate to `/backend` folder and run: `npm install` and then `npm start` to run the backend server.
--   Navigate to `/frontend` folder and run: `npm install` and then `npm run dev` to run React.
+-   Navigate to the root folder and run: `npm install` and then `npm start` to start the Node server.
+-   Navigate to the `/frontend` folder and run: `npm install` and then `npm run dev` to run React.
 
 -   React frontend was created using Vite: https://vitejs.dev. Vite uses port `5173` by default.
 -   To view the app, go to http://localhost:5173 in the browser.
@@ -56,6 +56,33 @@ Frontend is deployed on Netlify: https://brisktask.netlify.app
 -   In the navbar, clicking the user icon shows a dropdown menu with the following options: profile and logout.
 -   Clicking on profile will take you to the profile page.
 -   This page displays user info and allows you to edit your name, email, change your password and delete your account.
+
+## MySQL Tables
+
+### USERS
+
+| COLUMNS    | DESCRIPTION                                      |
+| :--------- | :----------------------------------------------- |
+| id         | INT NOT NULL PRIMARY KEY AUTO_INCREMENT          |
+| name       | VARCHAR(255) NOT NULL                            |
+| email      | VARCHAR(255) NOT NULL UNIQUE                     |
+| password   | VARCHAR(255) NOT NULL                            |
+| role       | VARCHAR(255) NOT NULL DEFAULT 'user'             |
+| created_at | TIMESTAMP NOT NULL DEFAULT NOW()                 |
+| updated_at | TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW() |
+
+### TASKS
+
+| COLUMNS                  | DESCRIPTION                                      |
+| :----------------------- | :----------------------------------------------- |
+| id                       | INT NOT NULL PRIMARY KEY AUTO_INCREMENT          |
+| name                     | VARCHAR(255) NOT NULL                            |
+| user_id                  | INT NOT NULL                                     |
+| user_email               | VARCHAR(255) NOT NULL                            |
+| created_at               | TIMESTAMP NOT NULL DEFAULT NOW()                 |
+| updated_at               | TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW() |
+| FOREIGN KEY (user_id)    | REFERENCES users(id) ON DELETE CASCADE           |
+| FOREIGN KEY (user_email) | REFERENCES users(email) ON DELETE CASCADE        |
 
 ## License
 

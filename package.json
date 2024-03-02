@@ -1,10 +1,11 @@
 {
-	"name": "backend",
+	"name": "fullstack-todo-app",
 	"version": "1.0.0",
-	"main": "app.js",
+	"main": "backend/app.js",
+	"description": "Fullstack Todo App created with React, Node and MySQL",
 	"type": "module",
 	"scripts": {
-		"start": "nodemon app.js"
+		"start": "nodemon /backend/app.js"
 	},
 	"author": "Milan Mitic",
 	"license": "MIT",
