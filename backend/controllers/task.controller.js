@@ -13,7 +13,7 @@ const getAllTasks = async (req, res, next) => {
 
 	if (userData.role === 'admin') {
 		try {
-			const sql = 'SELECT * FROM tasks';
+			const sql = `SELECT tasks.id AS 'id', tasks.name AS 'name', users.id AS 'user_id', users.email AS 'user_email', tasks.created_at AS 'created_at', tasks.updated_at AS 'updated_at' FROM tasks INNER JOIN users ON tasks.user_id = users.id ORDER BY id ASC`;
 			const [result] = await pool.query(sql);
 
 			if (result && result.length > 0) {
@@ -51,7 +51,7 @@ const getTasksByUserId = async (req, res, next) => {
 		return res.status(400).json({ message: 'No user id.', status: 400 });
 	} else if (userData.role === 'admin') {
 		try {
-			const sql = `SELECT tasks.id AS 'id', tasks.name AS 'name', users.id AS 'user_id', users.email AS 'user_email', tasks.created_at AS 'created_at', tasks.updated_at AS 'updated_at' FROM tasks INNER JOIN users ON tasks.user_id = ? AND tasks.user_id = users.id`;
+			const sql = `SELECT tasks.id AS 'id', tasks.name AS 'name', users.id AS 'user_id', users.email AS 'user_email', tasks.created_at AS 'created_at', tasks.updated_at AS 'updated_at' FROM tasks INNER JOIN users ON tasks.user_id = ? AND tasks.user_id = users.id ORDER BY id ASC`;
 			const [result] = await pool.query(sql, [Number(userId)]);
 
 			if (!result) {
@@ -81,7 +81,7 @@ const getTasksByUserId = async (req, res, next) => {
 			return res.status(403).json({ message: 'Not authorized.', status: 403 });
 		} else {
 			try {
-				const sql = `SELECT tasks.id AS 'id', tasks.name AS 'name', users.id AS 'user_id', users.email AS 'user_email', tasks.created_at AS 'created_at', tasks.updated_at AS 'updated_at' FROM tasks INNER JOIN users ON tasks.user_id = ? AND tasks.user_id = users.id`;
+				const sql = `SELECT tasks.id AS 'id', tasks.name AS 'name', users.id AS 'user_id', users.email AS 'user_email', tasks.created_at AS 'created_at', tasks.updated_at AS 'updated_at' FROM tasks INNER JOIN users ON tasks.user_id = ? AND tasks.user_id = users.id ORDER BY id ASC`;
 				const [result] = await pool.query(sql, [userData.id]);
 
 				if (!result) {

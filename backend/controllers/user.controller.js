@@ -20,7 +20,7 @@ const getAllUsers = async (req, res, next) => {
 	const userData = req.userData;
 
 	if (userData.role === 'admin') {
-		const sql = 'SELECT * FROM users';
+		const sql = 'SELECT * FROM users ORDER BY id ASC';
 
 		try {
 			const [result] = await pool.query(sql);

@@ -18,9 +18,9 @@ import Table from './../../components/admin/Table.jsx';
 
 const initialState = {
 	result: null,
-	idForUserById: 0,
-	idForTaskById: 0,
-	idForTasksByUserId: 0,
+	idForUserById: null,
+	idForTaskById: null,
+	idForTasksByUserId: null,
 	loading: false,
 	error: false,
 	selecting: false,
