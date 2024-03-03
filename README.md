@@ -6,6 +6,8 @@ Responsive Todo app created with React, Node and MySQL.
 
 App is deployed on Render: https://brisktask-fullstack.onrender.com
 
+If the app is inactive for 15 minutes, Render will spin it down which can cause up to 30 seconds delay for the next request-response, so keep that in mind when you try to run the app.
+
 ## Built with
 
 -   HTML
