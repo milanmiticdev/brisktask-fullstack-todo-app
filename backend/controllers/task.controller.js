@@ -54,7 +54,11 @@ const getTasksByUserId = async (req, res, next) => {
 			const sql = `SELECT tasks.id AS 'id', tasks.name AS 'name', users.id AS 'user_id', users.email AS 'user_email', tasks.created_at AS 'created_at', tasks.updated_at AS 'updated_at' FROM tasks INNER JOIN users ON tasks.user_id = ? AND tasks.user_id = users.id`;
 			const [result] = await pool.query(sql, [Number(userId)]);
 
-			if (result && result.length > 0) {
+			if (!result) {
+				throw new ApiError(404, `User doesn't exist.`);
+			} else if (result.length === 0) {
+				throw new ApiError(404, 'User has no tasks.');
+			} else {
 				return res.status(200).json({
 					tasks: result.map(task => ({
 						id: task.id,
@@ -68,19 +72,6 @@ const getTasksByUserId = async (req, res, next) => {
 					message: 'Tasks fetched.',
 					status: 200,
 				});
-			} else {
-				try {
-					const sql = 'SELECT * FROM users WHERE id = ?';
-					const [[result]] = await pool.query(sql, [Number(userId)]);
-
-					if (result && result.length === 0) {
-						throw new ApiError(404, 'User has no tasks.');
-					} else {
-						throw new ApiError(404, `User doesn't exist.`);
-					}
-				} catch (error) {
-					return next(error);
-				}
 			}
 		} catch (error) {
 			return next(error);
@@ -93,7 +84,11 @@ const getTasksByUserId = async (req, res, next) => {
 				const sql = `SELECT tasks.id AS 'id', tasks.name AS 'name', users.id AS 'user_id', users.email AS 'user_email', tasks.created_at AS 'created_at', tasks.updated_at AS 'updated_at' FROM tasks INNER JOIN users ON tasks.user_id = ? AND tasks.user_id = users.id`;
 				const [result] = await pool.query(sql, [userData.id]);
 
-				if (result && result.length > 0) {
+				if (!result) {
+					throw new ApiError(404, `User doesn't exist.`);
+				} else if (result.length === 0) {
+					throw new ApiError(404, 'No tasks.');
+				} else {
 					return res.status(200).json({
 						tasks: result.map(task => ({
 							id: task.id,
@@ -107,19 +102,6 @@ const getTasksByUserId = async (req, res, next) => {
 						message: 'Tasks fetched.',
 						status: 200,
 					});
-				} else {
-					try {
-						const sql = 'SELECT * FROM users WHERE id = ?';
-						const [[result]] = await pool.query(sql, [Number(userId)]);
-
-						if (result && result.length === 0) {
-							throw new ApiError(404, 'No tasks.');
-						} else {
-							throw new ApiError(404, `User doesn't exist.`);
-						}
-					} catch (error) {
-						return next(error);
-					}
 				}
 			} catch (error) {
 				return next(error);
@@ -139,7 +121,9 @@ const getTaskById = async (req, res, next) => {
 			const sql = `SELECT tasks.id AS 'id', tasks.name AS 'name', users.id AS 'user_id', users.email AS 'user_email', tasks.created_at AS 'created_at', tasks.updated_at AS 'updated_at' FROM tasks INNER JOIN users ON tasks.id = ? AND tasks.user_id = users.id`;
 			const [[result]] = await pool.query(sql, [Number(taskId)]);
 
-			if (result) {
+			if (!result) {
+				throw new ApiError(404, `Task doesn't exist.`);
+			} else {
 				return res.status(200).json({
 					message: 'Task fetched.',
 					task: {
@@ -153,8 +137,6 @@ const getTaskById = async (req, res, next) => {
 					},
 					status: 200,
 				});
-			} else {
-				throw new ApiError(404, `Task doesn't exist.`);
 			}
 		} catch (error) {
 			return next(error);
