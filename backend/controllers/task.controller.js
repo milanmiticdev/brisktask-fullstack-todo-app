@@ -185,8 +185,8 @@ const createTask = async (req, res, next) => {
 				return res.status(403).json({ message: 'Not authorized.', status: 403 });
 			} else {
 				try {
-					const sql = 'INSERT INTO tasks (name, user_id, user_email) VALUES(?, ?, ?)';
-					const [result] = await pool.query(sql, [name.trim(), userData.id, userData.email]);
+					const sql = 'INSERT INTO tasks (name, user_id) VALUES(?, ?)';
+					const [result] = await pool.query(sql, [name.trim(), userData.id]);
 
 					if (result && result.affectedRows !== 0) {
 						return res.status(201).json({ message: 'Task created.', status: 201 });
