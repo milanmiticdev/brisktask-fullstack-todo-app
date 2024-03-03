@@ -6,9 +6,9 @@ Responsive Todo app created with React, Node and MySQL.
 
 App is deployed on Render: https://brisktask-fullstack.onrender.com
 
-If the app is inactive for 15 minutes, Render will spin it down which can cause up to 30 seconds delay for the next request-response, so keep that in mind when you try to run the app.
+If the app is inactive for 15 minutes, Render will spin it down which can cause around 30 seconds delay for the next request-response, so keep that in mind when you try to run the app after being inactive.
 
-## Built with
+### Built with
 
 -   HTML
 -   CSS
@@ -27,26 +27,64 @@ If the app is inactive for 15 minutes, Render will spin it down which can cause 
 
 ### DATABASE SETUP
 
--   On your local MySQL server create new database.
--   Navigate to `/backend/config/tables` where you will find SQL commands to recreate the tables needed.
--   Add those tables to the new databse you just created.
+-   On your local MySQL server, create a new database and add the following tables
+
+USERS
+
+```
+    CREATE TABLE users(
+        id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL,
+        role VARCHAR(255) NOT NULL DEFAULT 'user',
+        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW()
+    );
+```
+
+TASKS
+
+```
+CREATE TABLE tasks(
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW(),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+);
+```
 
 ### .env SETUP
 
--   In the root folder create .env file with the following options:
+-   Create `.env` file in the root folder. Example of the environment variables needed:
 
-    -   `DATABASE_PORT` = Port number that your MySQL server is running on
-    -   `DATABASE_HOST` = Your MySQL host, default is `127.0.0.1`
-    -   `DATABASE_USER` = Your MySQL user name, default is `root`
-    -   `DATABASE_PASSWORD` = Password for your local MySQL access
-    -   `DATABASE_NAME` = Name of the database you created during setup above
-    -   `JWT_SECRET` = JSON Web Token secret key, can be any string
-    -   `JWT_TOKEN_EXPIRES` = Set token expiration time, for example `1h` means that token expires in 1 hour
+```
+    DATABASE_PORT = 3306 (or some other port your MySQL is running on)
+    DATABASE_HOST = 127.0.0.1
+    DATABASE_USER = yourUsername (default is root)
+    DATABASE_PASSWORD = yourDatabasePassword
+    DATABASE_NAME = databaseNameYouCreatedAbove
+    JWT_SECRET = canBeAnyString
+    JWT_TOKEN_EXPIRES = 1h (means that token expires in 1 hour, put something else if you want to)
+```
 
 ### FRONTEND AND BACKEND SETUP
 
--   Navigate to the root folder and run: `npm install` and then `npm run dev` to start the Node server.
--   Navigate to the `/frontend` folder and run: `npm install` and then `npm run dev` to run React.
+-   Navigate to the `root` folder, install packages and start the Node server
+
+```
+    npm install
+    npm run dev
+```
+
+-   Navigate to the `/frontend` folder, install packages and run React
+
+```
+    npm install
+    npm run dev
+```
 
 -   React frontend was created using Vite: https://vitejs.dev. Vite uses port `5173` by default.
 -   To view the app, go to http://localhost:5173 in the browser.
@@ -54,7 +92,7 @@ If the app is inactive for 15 minutes, Render will spin it down which can cause 
 ## Description and Usage
 
 -   You can perform authentication actions via login or registration form.
--   IMPORTANT: You don't have to use your real email since this app doesn't perform email verification.
+-   `IMPORTANT`: You don't have to use your real email since this app doesn't perform email verification.
     -   Just make sure email is in the valid format
     -   Examples: `apptesting@gmail.com`, `somerandomuser@yahoo.com` etc
     -   Keep in mind that email must be unique and there can't be duplicate users registered with the same email
@@ -65,34 +103,6 @@ If the app is inactive for 15 minutes, Render will spin it down which can cause 
 -   Clicking on profile will take you to the profile page.
 -   This page displays user info and allows you to edit your name, email, change your password and delete your account.
 
-## MySQL Tables
-
-### USERS
-
-| COLUMNS    | DESCRIPTION                                      |
-| :--------- | :----------------------------------------------- |
-| id         | INT NOT NULL PRIMARY KEY AUTO_INCREMENT          |
-| name       | VARCHAR(255) NOT NULL                            |
-| email      | VARCHAR(255) NOT NULL UNIQUE                     |
-| password   | VARCHAR(255) NOT NULL                            |
-| role       | VARCHAR(255) NOT NULL DEFAULT 'user'             |
-| created_at | TIMESTAMP NOT NULL DEFAULT NOW()                 |
-| updated_at | TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW() |
-
-### TASKS
-
-| COLUMNS               | DESCRIPTION                                      |
-| :-------------------- | :----------------------------------------------- |
-| id                    | INT NOT NULL PRIMARY KEY AUTO_INCREMENT          |
-| name                  | VARCHAR(255) NOT NULL                            |
-| user_id               | INT NOT NULL                                     |
-| created_at            | TIMESTAMP NOT NULL DEFAULT NOW()                 |
-| updated_at            | TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW() |
-| FOREIGN KEY (user_id) | REFERENCES users(id) ON DELETE CASCADE           |
-
 ## License
 
 MIT License. See `LICENSE.txt` for more information.
-
-Background image used:
-https://pixabay.com/illustrations/notes-pen-desk-flat-coffee-task-6399119/
