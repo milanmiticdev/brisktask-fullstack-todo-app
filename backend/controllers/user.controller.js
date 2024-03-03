@@ -179,21 +179,52 @@ const updateUserById = async (req, res, next) => {
 				if (!result) {
 					throw new ApiError(404, `User doesn't exist.`);
 				} else {
-					try {
-						if (role && (role.trim() === 'admin' || role.trim() === 'user')) {
-							const sql = 'UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?';
-							const [result] = await pool.query(sql, [name.trim(), email.trim(), role.trim(), Number(userId)]);
+					// If the email doesn't change just update the name and role
+					if (result.email === email.trim()) {
+						try {
+							if (role && (role.trim() === 'admin' || role.trim() === 'user')) {
+								const sql = 'UPDATE users SET name = ?, role = ? WHERE id = ?';
+								const [result] = await pool.query(sql, [name.trim(), role.trim(), Number(userId)]);
 
-							if (result && result.affectedRows !== 0) {
-								return res.status(200).json({ message: 'User updated.', status: 200 });
+								if (result && result.affectedRows !== 0) {
+									return res.status(200).json({ message: 'User updated.', status: 200 });
+								} else {
+									throw new ApiError(500, 'Something went wrong.');
+								}
 							} else {
-								throw new ApiError(500, 'Something went wrong.');
+								throw new ApiError(400, `Invalid user role.`);
 							}
-						} else {
-							throw new ApiError(400, `Invalid user role.`);
+						} catch (error) {
+							return next(error);
 						}
-					} catch (error) {
-						return next(error);
+					} else {
+						try {
+							const sql = 'SELECT * FROM users WHERE email = ?';
+							const [[result]] = await pool.query(sql, email);
+
+							if (result) {
+								throw new ApiError(422, `Email already in use.`);
+							} else {
+								try {
+									if (role && (role.trim() === 'admin' || role.trim() === 'user')) {
+										const sql = 'UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?';
+										const [result] = await pool.query(sql, [name.trim(), email.trim(), role.trim(), Number(userId)]);
+
+										if (result && result.affectedRows !== 0) {
+											return res.status(200).json({ message: 'User updated.', status: 200 });
+										} else {
+											throw new ApiError(500, 'Something went wrong.');
+										}
+									} else {
+										throw new ApiError(400, `Invalid user role.`);
+									}
+								} catch (error) {
+									return next(error);
+								}
+							}
+						} catch (error) {
+							return next(error);
+						}
 					}
 				}
 			} catch (error) {
@@ -210,7 +241,7 @@ const updateUserById = async (req, res, next) => {
 					if (!result) {
 						throw new ApiError(404, `User doesn't exist.`);
 					} else {
-						// If the email doesn't change there is no need to recreate a token
+						// If the email doesn't change there is no need to recreate a token, just update the name
 						if (result.email === email.trim()) {
 							try {
 								const sql = 'UPDATE users SET name = ? WHERE id = ?';
@@ -226,20 +257,31 @@ const updateUserById = async (req, res, next) => {
 							}
 						} else {
 							try {
-								const sql = 'UPDATE users SET name = ?, email = ? WHERE id = ?';
-								const [result] = await pool.query(sql, [name.trim(), email.trim(), userData.id]);
+								const sql = 'SELECT * FROM users WHERE email = ?';
+								const [[result]] = await pool.query(sql, email);
 
-								if (result && result.affectedRows !== 0) {
-									// Creating a token
-									const token = jwt.sign(
-										{ userId: userData.id, userEmail: email.trim(), userRole: userData.role },
-										jwtSecret,
-										{ expiresIn: jwtExpires }
-									);
-
-									return res.status(200).json({ token, message: 'User updated.', status: 200 });
+								if (result) {
+									throw new ApiError(422, `Email already in use.`);
 								} else {
-									throw new ApiError(500, 'Something went wrong.');
+									try {
+										const sql = 'UPDATE users SET name = ?, email = ? WHERE id = ?';
+										const [result] = await pool.query(sql, [name.trim(), email.trim(), userData.id]);
+
+										if (result && result.affectedRows !== 0) {
+											// Creating a token
+											const token = jwt.sign(
+												{ userId: userData.id, userEmail: email.trim(), userRole: userData.role },
+												jwtSecret,
+												{ expiresIn: jwtExpires }
+											);
+
+											return res.status(200).json({ token, message: 'User updated.', status: 200 });
+										} else {
+											throw new ApiError(500, 'Something went wrong.');
+										}
+									} catch (error) {
+										return next(error);
+									}
 								}
 							} catch (error) {
 								return next(error);

@@ -65,7 +65,7 @@ const register = async (req, res, next) => {
 			const [[result]] = await pool.query(sql, [email.trim()]);
 
 			if (result) {
-				throw new ApiError(422, 'User already exists.');
+				throw new ApiError(422, 'Email already in use.');
 			} else {
 				try {
 					const sql = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';

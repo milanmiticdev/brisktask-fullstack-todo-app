@@ -79,16 +79,14 @@ App is deployed on Render: https://brisktask-fullstack.onrender.com
 
 ### TASKS
 
-| COLUMNS                  | DESCRIPTION                                      |
-| :----------------------- | :----------------------------------------------- |
-| id                       | INT NOT NULL PRIMARY KEY AUTO_INCREMENT          |
-| name                     | VARCHAR(255) NOT NULL                            |
-| user_id                  | INT NOT NULL                                     |
-| user_email               | VARCHAR(255) NOT NULL                            |
-| created_at               | TIMESTAMP NOT NULL DEFAULT NOW()                 |
-| updated_at               | TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW() |
-| FOREIGN KEY (user_id)    | REFERENCES users(id) ON DELETE CASCADE           |
-| FOREIGN KEY (user_email) | REFERENCES users(email) ON DELETE CASCADE        |
+| COLUMNS               | DESCRIPTION                                      |
+| :-------------------- | :----------------------------------------------- |
+| id                    | INT NOT NULL PRIMARY KEY AUTO_INCREMENT          |
+| name                  | VARCHAR(255) NOT NULL                            |
+| user_id               | INT NOT NULL                                     |
+| created_at            | TIMESTAMP NOT NULL DEFAULT NOW()                 |
+| updated_at            | TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW() |
+| FOREIGN KEY (user_id) | REFERENCES users(id) ON DELETE CASCADE           |
 
 ## License
 
