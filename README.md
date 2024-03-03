@@ -58,7 +58,7 @@ CREATE TABLE tasks(
 
 ### .env SETUP
 
--   Create `.env` file in the root folder. Example of the environment variables needed:
+-   Create new `.env` file in the root folder. Example of the environment variables needed:
 
 ```
     DATABASE_PORT = 3306 (or some other port your MySQL is running on)
