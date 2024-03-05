@@ -4,13 +4,13 @@ import styles from './Page.module.css';
 // PropTypes
 import PropTypes from 'prop-types';
 
-const Page = ({ loading, children }) => {
-	return <main className={loading ? `${styles.page} ${styles.loading}` : `${styles.page}`}>{children}</main>;
+const Page = ({ center, children }) => {
+	return <main className={center ? `${styles.page} ${styles.center}` : `${styles.page}`}>{children}</main>;
 };
 
 export default Page;
 
 Page.propTypes = {
-	loading: PropTypes.bool,
+	center: PropTypes.bool,
 	children: PropTypes.node,
 };

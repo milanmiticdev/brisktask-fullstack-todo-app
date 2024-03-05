@@ -8,8 +8,8 @@ import AuthContext from './../../contexts/AuthContext.js';
 import { useParams, useNavigate } from 'react-router-dom';
 
 // Components
+import Button from './../../components/shared/Button.jsx';
 import Form from './../../components/shared/Form.jsx';
-import FormBtn from './../../components/shared/FormBtn.jsx';
 import FormField from './../../components/shared/FormField.jsx';
 import Modal from './../../components/shared/Modal.jsx';
 import Page from './../../components/shared/Page.jsx';
@@ -75,7 +75,7 @@ const UpdateTaskPage = () => {
 	const handleUpdateTaskById = async e => await updateTaskById(taskId, userRole, token, state, dispatch, navigate, e);
 
 	return (
-		<Page loading={state.loading}>
+		<Page center={state.loading}>
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && !state.error && state.result && Object.keys(state.result).length > 0 && (
@@ -90,7 +90,7 @@ const UpdateTaskPage = () => {
 						readOnly={false}
 						autoFocus={true}
 					/>
-					<FormBtn text="UPDATE" type="submit" color="blue" />
+					<Button text="UPDATE" type="submit" color="blue" />
 				</Form>
 			)}
 		</Page>

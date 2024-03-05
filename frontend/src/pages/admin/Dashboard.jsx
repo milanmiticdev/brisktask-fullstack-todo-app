@@ -99,7 +99,7 @@ const Dashboard = () => {
 	}, [selectRef]);
 
 	return (
-		<Page loading={state.loading}>
+		<Page center={state.loading}>
 			{state.loading && <Spinner text={state.spinnerText} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && (

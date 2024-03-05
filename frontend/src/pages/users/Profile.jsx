@@ -8,9 +8,9 @@ import { useNavigate } from 'react-router-dom';
 import AuthContext from './../../contexts/AuthContext.js';
 
 // Components
+import Button from './../../components/shared/Button.jsx';
 import Form from './../../components/shared/Form.jsx';
-import FormBtn from './../../components/shared/FormBtn.jsx';
-import FormBtns from './../../components/shared/FormBtns.jsx';
+import FormButtons from './../../components/shared/FormButtons.jsx';
 import FormField from './../../components/shared/FormField.jsx';
 import Modal from './../../components/shared/Modal.jsx';
 import Page from './../../components/shared/Page.jsx';
@@ -111,7 +111,7 @@ const ProfilePage = () => {
 	}, [userId, token, getUserById]);
 
 	return (
-		<Page loading={state.loading}>
+		<Page center={state.loading}>
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && !state.error && state.result && Object.keys(state.result).length > 0 && (
@@ -139,12 +139,12 @@ const ProfilePage = () => {
 								autoFocus={false}
 							/>
 							{state.editing ? (
-								<FormBtns>
-									<FormBtn text="SAVE" type="submit" color="blue" />
-									<FormBtn text="X" type="button" color="red" onClick={handleCancelBtn} />
-								</FormBtns>
+								<FormButtons>
+									<Button text="SAVE" type="submit" color="blue" />
+									<Button text="X" type="button" color="red" onClick={handleCancelBtn} />
+								</FormButtons>
 							) : (
-								<FormBtn text="EDIT" type="button" color="gray" onClick={handleEditBtn} />
+								<Button text="EDIT" type="button" color="gray" onClick={handleEditBtn} />
 							)}
 						</Form>
 					</Section>
@@ -168,12 +168,12 @@ const ProfilePage = () => {
 								readOnly={false}
 								autoFocus={false}
 							/>
-							<FormBtn text="CHANGE" type="submit" color="blue" />
+							<Button text="CHANGE" type="submit" color="blue" />
 						</Form>
 					</Section>
 					<Section>
 						<Form onSubmit={handleDeleteUserById} heading="DELETE ACCOUNT">
-							<FormBtn text="DELETE" type="submit" color="red" />
+							<Button text="DELETE" type="submit" color="red" />
 						</Form>
 					</Section>
 				</>

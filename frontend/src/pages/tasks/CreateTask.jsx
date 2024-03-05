@@ -8,8 +8,8 @@ import AuthContext from './../../contexts/AuthContext.js';
 import { useNavigate } from 'react-router-dom';
 
 // Components
+import Button from './../../components/shared/Button.jsx';
 import Form from './../../components/shared/Form.jsx';
-import FormBtn from './../../components/shared/FormBtn.jsx';
 import FormField from './../../components/shared/FormField.jsx';
 import Modal from './../../components/shared/Modal.jsx';
 import Page from './../../components/shared/Page.jsx';
@@ -63,7 +63,7 @@ const CreateTask = () => {
 	const handleCreateTask = async e => await createTask(userId, token, state, dispatch, navigate, e);
 
 	return (
-		<Page loading={state.loading}>
+		<Page center={state.loading}>
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && (
@@ -77,7 +77,7 @@ const CreateTask = () => {
 						readOnly={false}
 						autoFocus={true}
 					/>
-					<FormBtn text="CREATE" type="submit" color="blue" />
+					<Button text="CREATE" type="submit" color="blue" />
 				</Form>
 			)}
 		</Page>

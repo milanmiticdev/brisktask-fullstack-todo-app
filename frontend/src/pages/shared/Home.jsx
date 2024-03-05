@@ -4,7 +4,7 @@ import PulseEffect from '../../components/shared/PulseEffect.jsx';
 
 const Home = () => {
 	return (
-		<Page loading={true}>
+		<Page center={true}>
 			<PulseEffect text="Welcome" />
 		</Page>
 	);

@@ -55,7 +55,7 @@ const TasksPage = () => {
 	}, [userId, token, getTasksByUserId]);
 
 	return (
-		<Page loading={state.loading}>
+		<Page center={state.loading}>
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading &&

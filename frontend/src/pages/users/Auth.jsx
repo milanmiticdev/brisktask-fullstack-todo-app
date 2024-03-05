@@ -8,8 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import AuthContext from './../../contexts/AuthContext.js';
 
 // Components
+import Button from './../../components/shared/Button.jsx';
 import Form from './../../components/shared/Form.jsx';
-import FormBtn from './../../components/shared/FormBtn.jsx';
 import FormField from './../../components/shared/FormField.jsx';
 import Modal from './../../components/shared/Modal.jsx';
 import Page from './../../components/shared/Page.jsx';
@@ -81,7 +81,7 @@ const AuthPage = () => {
 	const handleRegisterUser = async e => await registerUser(state, dispatch, login, navigate, e);
 
 	return (
-		<Page loading={state.loading}>
+		<Page center={true}>
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading && (
@@ -131,7 +131,7 @@ const AuthPage = () => {
 						readOnly={false}
 						autoFocus={false}
 					/>
-					<FormBtn text={state.section === 'login' ? 'LOGIN' : 'REGISTER'} type="submit" color="blue" />
+					<Button text={state.section === 'login' ? 'LOGIN' : 'REGISTER'} type="submit" color="blue" />
 				</Form>
 			)}
 		</Page>

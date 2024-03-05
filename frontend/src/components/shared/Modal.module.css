@@ -20,7 +20,7 @@
 	padding: 2rem;
 	border-radius: 1rem;
 	background-color: #ffffff;
-	box-shadow: 0.1rem 0.1rem 1rem #2c2c2c;
+	box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37);
 }
 
 .closeBtn {
@@ -34,7 +34,7 @@
 	font-weight: bold;
 	color: #ffffff;
 	background-color: #414141;
-	box-shadow: 0.1rem 0.1rem 0.5rem #2c2c2c;
+	box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37);
 }
 
 .closeBtn:hover {
