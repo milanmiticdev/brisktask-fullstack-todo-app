@@ -21,7 +21,7 @@ import styles from './Task.module.css';
 // PropTypes
 import PropTypes from 'prop-types';
 
-const Task = ({ task, onDispatch }) => {
+const Task = ({ task, onDispatch, state }) => {
 	const [taskName, setTaskName] = useState(task.name ? task.name : '');
 	const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
 
@@ -30,7 +30,7 @@ const Task = ({ task, onDispatch }) => {
 
 	const { deleteTaskById } = taskController;
 
-	const handleDeleteTaskById = async () => await deleteTaskById(task.id, userRole, token, onDispatch, navigate);
+	const handleDeleteTaskById = async () => await deleteTaskById(task.id, userRole, state, token, onDispatch, navigate);
 
 	useEffect(() => {
 		function handleWindowResize() {
@@ -120,4 +120,5 @@ export default Task;
 Task.propTypes = {
 	task: PropTypes.object,
 	onDispatch: PropTypes.func,
+	state: PropTypes.object,
 };

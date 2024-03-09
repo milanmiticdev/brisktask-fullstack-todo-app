@@ -184,7 +184,7 @@ const updateTaskById = async (taskId, userRole, token, state, dispatch, navigate
 	}
 };
 
-const deleteTaskById = async (taskId, userRole, token, dispatch, navigate, e) => {
+const deleteTaskById = async (taskId, userRole, state, token, dispatch, navigate, e) => {
 	if (e) {
 		e.preventDefault();
 	}
@@ -193,16 +193,18 @@ const deleteTaskById = async (taskId, userRole, token, dispatch, navigate, e) =>
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Deleting' });
 
-		const response = await fetch(`/api/v1/tasks/${Number(taskId)}`, {
+		const response = await fetch(`http://localhost:5174/api/v1/tasks/${Number(taskId)}`, {
 			method: 'DELETE',
 			body: null,
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
 		});
-
 		if (response.status === 204) {
-			userRole === 'admin' ? navigate('/dashboard') : navigate(0);
+			console.log(response);
+			userRole === 'admin'
+				? navigate('/dashboard')
+				: dispatch({ type: 'result-change', payload: state.result.filter(task => task.id !== taskId) });
 		} else {
 			const data = await response.json();
 			dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });

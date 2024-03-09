@@ -62,7 +62,7 @@ const TasksPage = () => {
 				!state.error &&
 				state.result &&
 				state.result.length > 0 &&
-				state.result.map(task => <Task key={task.id} task={task} onDispatch={dispatch} />)}
+				state.result.map(task => <Task key={task.id} task={task} onDispatch={dispatch} state={state} />)}
 		</Page>
 	);
 };

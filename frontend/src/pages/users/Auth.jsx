@@ -74,11 +74,11 @@ const AuthPage = () => {
 	const { login } = useContext(AuthContext);
 	const navigate = useNavigate();
 
-	const { loginUser, registerUser } = authController;
+	const { authenticateUser } = authController;
 	const { validateName, validateEmail, validatePassword } = validators;
 
-	const handleLoginUser = async e => await loginUser(state, dispatch, login, navigate, e);
-	const handleRegisterUser = async e => await registerUser(state, dispatch, login, navigate, e);
+	const handleLoginUser = async e => await authenticateUser('login', state, dispatch, login, navigate, e);
+	const handleRegisterUser = async e => await authenticateUser('register', state, dispatch, login, navigate, e);
 
 	return (
 		<Page center={true}>
