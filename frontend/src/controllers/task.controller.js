@@ -59,7 +59,7 @@ const getTasksByUserId = async (userId, token, dispatch, e) => {
 		}
 	} catch {
 		dispatch({ type: 'error-change', payload: true });
-		dispatch({ type: 'modal-change', payload: 'Something went wrong.' });
+		dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Something went wrong.' } });
 	} finally {
 		dispatch({ type: 'spinner-change', payload: '' });
 		dispatch({ type: 'loading-change', payload: false });
@@ -93,7 +93,7 @@ const getTaskById = async (taskId, token, dispatch, e) => {
 		}
 	} catch {
 		dispatch({ type: 'error-change', payload: true });
-		dispatch({ type: 'modal-change', payload: 'Something went wrong.' });
+		dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Something went wrong.' } });
 	} finally {
 		dispatch({ type: 'spinner-change', payload: '' });
 		dispatch({ type: 'loading-change', payload: false });
