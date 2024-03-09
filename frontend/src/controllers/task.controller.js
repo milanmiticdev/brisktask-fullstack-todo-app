@@ -193,7 +193,7 @@ const deleteTaskById = async (taskId, userRole, state, token, dispatch, navigate
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: 'Deleting' });
 
-		const response = await fetch(`http://localhost:5174/api/v1/tasks/${Number(taskId)}`, {
+		const response = await fetch(`/api/v1/tasks/${Number(taskId)}`, {
 			method: 'DELETE',
 			body: null,
 			headers: {
