@@ -201,7 +201,6 @@ const deleteTaskById = async (taskId, userRole, state, token, dispatch, navigate
 			},
 		});
 		if (response.status === 204) {
-			console.log(response);
 			userRole === 'admin'
 				? navigate('/dashboard')
 				: dispatch({ type: 'result-change', payload: state.result.filter(task => task.id !== taskId) });
