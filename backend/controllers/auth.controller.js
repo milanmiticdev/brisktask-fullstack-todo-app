@@ -38,7 +38,7 @@ const login = async (req, res, next) => {
 					token,
 					user: { id: result.id, email: result.email, role: result.role },
 					message: 'Login successful.',
-					status: 200,
+					status: 201,
 				});
 			} else {
 				throw new ApiError(401, 'Incorrect credentials.');

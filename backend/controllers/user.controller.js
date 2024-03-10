@@ -27,7 +27,7 @@ const getAllUsers = async (req, res, next) => {
 
 			if (result && result.length > 0) {
 				return res.status(200).json({
-					users: result.map(user => ({
+					result: result.map(user => ({
 						id: user.id,
 						name: user.name,
 						email: user.email,
@@ -64,7 +64,7 @@ const getUserById = async (req, res, next) => {
 			if (result) {
 				return res.status(200).json({
 					message: 'User found.',
-					user: {
+					result: {
 						id: result.id,
 						name: result.name,
 						email: result.email,
@@ -95,7 +95,7 @@ const getUserById = async (req, res, next) => {
 					return res.status(200).json({
 						message: 'User found.',
 						status: 200,
-						user: {
+						result: {
 							id: result.id,
 							name: result.name,
 							email: result.email,

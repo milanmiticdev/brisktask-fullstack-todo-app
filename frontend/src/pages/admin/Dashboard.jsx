@@ -102,7 +102,7 @@ const Dashboard = () => {
 		<Page center={state.loading}>
 			{state.loading && <Spinner text={state.spinnerText} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
-			{!state.loading && (
+			{!state.loading && !state.error && (
 				<Actions selecting={state.selecting} onDispatch={dispatch}>
 					<ActionsOption text="GET ALL USERS" onSubmit={handleGetAllUsers} input={false} />
 					<ActionsOption text="GET ALL TASKS" onSubmit={handleGetAllTasks} input={false} />

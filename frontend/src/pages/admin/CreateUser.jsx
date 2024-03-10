@@ -90,7 +90,7 @@ const CreateUser = () => {
 		<Page center={state.loading}>
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
-			{!state.loading && (
+			{!state.loading && !state.error && (
 				<Form onSubmit={handleCreateUser} heading="CREATE USER">
 					<FormField
 						name="name"

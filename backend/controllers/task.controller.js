@@ -18,7 +18,7 @@ const getAllTasks = async (req, res, next) => {
 
 			if (result && result.length > 0) {
 				return res.status(200).json({
-					tasks: result.map(task => {
+					result: result.map(task => {
 						return {
 							id: task.id,
 							name: task.name,
@@ -60,7 +60,7 @@ const getTasksByUserId = async (req, res, next) => {
 				throw new ApiError(404, 'User has no tasks.');
 			} else {
 				return res.status(200).json({
-					tasks: result.map(task => ({
+					result: result.map(task => ({
 						id: task.id,
 						name: task.name,
 						userId: task.user_id,
@@ -90,7 +90,7 @@ const getTasksByUserId = async (req, res, next) => {
 					throw new ApiError(404, 'No tasks.');
 				} else {
 					return res.status(200).json({
-						tasks: result.map(task => ({
+						result: result.map(task => ({
 							id: task.id,
 							name: task.name,
 							userId: task.user_id,
@@ -126,7 +126,7 @@ const getTaskById = async (req, res, next) => {
 			} else {
 				return res.status(200).json({
 					message: 'Task fetched.',
-					task: {
+					result: {
 						id: result.id,
 						name: result.name,
 						userId: result.user_id,
@@ -153,7 +153,7 @@ const getTaskById = async (req, res, next) => {
 			} else {
 				return res.status(200).json({
 					message: 'Task fetched.',
-					task: {
+					result: {
 						id: result.id,
 						name: result.name,
 						userId: result.user_id,

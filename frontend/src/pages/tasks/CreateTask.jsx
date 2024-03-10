@@ -66,7 +66,7 @@ const CreateTask = () => {
 		<Page center={state.loading}>
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
-			{!state.loading && (
+			{!state.loading && !state.error && (
 				<Form onSubmit={handleCreateTask} heading="CREATE TASK">
 					<FormField
 						name="name"
