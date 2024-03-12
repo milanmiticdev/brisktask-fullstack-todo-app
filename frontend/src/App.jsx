@@ -1,23 +1,23 @@
 // React
-import { useReducer, useEffect, useCallback } from 'react';
+import { useReducer, useEffect, useCallback, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // Context
 import AuthContext from './contexts/AuthContext.js';
 
 // Pages
-import AppSharedLayout from './pages/shared/AppSharedLayout.jsx';
-import Home from './pages/shared/Home.jsx';
-import PageNotFound from './pages/shared/PageNotFound.jsx';
-import Tasks from './pages/tasks/Tasks.jsx';
-import CreateTask from './pages/tasks/CreateTask.jsx';
-import UpdateTask from './pages/tasks/UpdateTask.jsx';
-import Auth from './pages/users/Auth.jsx';
-import Profile from './pages/users/Profile.jsx';
-import Dashboard from './pages/admin/Dashboard.jsx';
-import ViewUser from './pages/admin/ViewUser.jsx';
-import ViewTask from './pages/admin/ViewTask.jsx';
-import CreateUser from './pages/admin/CreateUser.jsx';
+const AppSharedLayout = lazy(() => import('./pages/shared/AppSharedLayout.jsx'));
+const Home = lazy(() => import('./pages/shared/Home.jsx'));
+const PageNotFound = lazy(() => import('./pages/shared/PageNotFound.jsx'));
+const Tasks = lazy(() => import('./pages/tasks/Tasks.jsx'));
+const CreateTask = lazy(() => import('./pages/tasks/CreateTask.jsx'));
+const UpdateTask = lazy(() => import('./pages/tasks/UpdateTask.jsx'));
+const Auth = lazy(() => import('./pages/users/Auth.jsx'));
+const Profile = lazy(() => import('./pages/users/Profile.jsx'));
+const Dashboard = lazy(() => import('./pages/admin/Dashboard.jsx'));
+const ViewUser = lazy(() => import('./pages/admin/ViewUser.jsx'));
+const ViewTask = lazy(() => import('./pages/admin/ViewTask.jsx'));
+const CreateUser = lazy(() => import('./pages/admin/CreateUser.jsx'));
 
 const initialState = {
 	userId: null,
