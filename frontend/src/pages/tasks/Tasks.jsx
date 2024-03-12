@@ -17,7 +17,6 @@ import taskController from './../../controllers/task.controller.js';
 const initialState = {
 	result: [],
 	loading: false,
-	error: false,
 	spinner: '',
 	modal: {
 		open: false,
@@ -33,8 +32,6 @@ const reducer = (state, action) => {
 			return { ...state, result: action.payload };
 		case 'loading-change':
 			return { ...state, loading: action.payload };
-		case 'error-change':
-			return { ...state, error: action.payload };
 		case 'spinner-change':
 			return { ...state, spinner: action.payload };
 		case 'modal-change':
@@ -59,7 +56,6 @@ const TasksPage = () => {
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
 			{!state.loading &&
-				!state.error &&
 				state.result &&
 				state.result.length > 0 &&
 				state.result.map(task => <Task key={task.id} task={task} onDispatch={dispatch} />)}

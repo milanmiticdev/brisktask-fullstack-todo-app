@@ -47,7 +47,6 @@ const initialState = {
 		message: '',
 	},
 	loading: false,
-	error: false,
 	editing: false,
 	spinner: '',
 	modal: {
@@ -72,8 +71,6 @@ const reducer = (state, action) => {
 			return { ...state, confirmPasswordField: action.payload };
 		case 'loading-change':
 			return { ...state, loading: action.payload };
-		case 'error-change':
-			return { ...state, error: action.payload };
 		case 'editing-change':
 			return { ...state, editing: action.payload };
 		case 'spinner-change':
@@ -114,7 +111,7 @@ const ProfilePage = () => {
 		<Page center={state.loading}>
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
-			{!state.loading && !state.error && state.result && Object.keys(state.result).length > 0 && (
+			{!state.loading && state.result && Object.keys(state.result).length > 0 && (
 				<>
 					<Section>
 						<Form onSubmit={handleUpdateUserById} heading="PROFILE INFO">

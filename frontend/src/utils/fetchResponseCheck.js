@@ -4,7 +4,6 @@ const fetchResponseCheck = async (response, data, route, method, body, dispatch,
 		// Processing GET method for all routes
 		if (method === 'GET') {
 			dispatch({ type: 'result-change', payload: data.result });
-			dispatch({ type: 'error-change', payload: false });
 		} else {
 			// Responses coming from USERS route
 			if (route === 'users') {
@@ -29,7 +28,7 @@ const fetchResponseCheck = async (response, data, route, method, body, dispatch,
 
 	// Processing the 201 status code
 	else if (data && data.status === 201) {
-		if (route === 'login' || route === 'register') login(data.user.id, data.user.role, data.token);
+		if (route === 'login' || route === 'register') login(data.result.userId, data.result.userRole, data.token);
 		route === 'login' || route === 'register' ? navigate('/') : route === 'users' ? navigate('/dashboard') : navigate('/tasks');
 	}
 
@@ -48,7 +47,6 @@ const fetchResponseCheck = async (response, data, route, method, body, dispatch,
 	// Processing statuses not in the 200 range
 	else {
 		if (method === 'DELETE') data = await response.json();
-		dispatch({ type: 'error-change', payload: true });
 		dispatch({ type: 'modal-change', payload: { open: true, error: true, message: data.message } });
 	}
 };

@@ -22,7 +22,6 @@ const initialState = {
 	idForTaskById: null,
 	idForTasksByUserId: null,
 	loading: false,
-	error: false,
 	selecting: false,
 	spinner: '',
 	modal: {
@@ -44,8 +43,6 @@ const reducer = (state, action) => {
 			return { ...state, idForTasksByUserId: action.payload };
 		case 'loading-change':
 			return { ...state, loading: action.payload };
-		case 'error-change':
-			return { ...state, error: action.payload };
 		case 'selecting-change':
 			return { ...state, selecting: action.payload };
 		case 'spinner-change':
@@ -102,7 +99,7 @@ const Dashboard = () => {
 		<Page center={state.loading}>
 			{state.loading && <Spinner text={state.spinnerText} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
-			{!state.loading && !state.error && (
+			{!state.loading && (
 				<Actions selecting={state.selecting} onDispatch={dispatch}>
 					<ActionsOption text="GET ALL USERS" onSubmit={handleGetAllUsers} input={false} />
 					<ActionsOption text="GET ALL TASKS" onSubmit={handleGetAllTasks} input={false} />

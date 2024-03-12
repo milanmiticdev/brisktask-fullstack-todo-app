@@ -1,41 +1,8 @@
-// jsonwebtoken
-import jwt from 'jsonwebtoken';
-
-// Config
-import config from './../config/config.js';
-const { jwtSecret } = config;
-
-// Custom error
-import ApiError from './../utils/ApiError.js';
+// Utils
+import routeProtection from './../utils/middlewareUtils/routeProtection.js';
 
 const middleware = (req, res, next) => {
-	if (req.method === 'OPTIONS') {
-		return next();
-	} else {
-		try {
-			// Spliting 'Bearer TOKEN'
-			const token = req.headers.authorization.split(' ')[1];
-
-			if (!token) {
-				throw new ApiError(401, 'Not authenticated.');
-			} else {
-				const decodedToken = jwt.verify(token, jwtSecret);
-
-				if (decodedToken.userRole === 'admin') {
-					req.userData = {
-						id: decodedToken.userId,
-						email: decodedToken.userEmail,
-						role: decodedToken.userRole,
-					};
-					return next();
-				} else {
-					throw new ApiError(403, 'Not authorized.');
-				}
-			}
-		} catch (error) {
-			return next(error);
-		}
-	}
+	routeProtection(req, next, 'admin');
 };
 
 export default middleware;

@@ -1,6 +1,5 @@
-// bcrypt and jsonwebtoken
+// bcrypt
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 
 // Database pool
 import pool from './../config/database.js';
@@ -8,38 +7,26 @@ import pool from './../config/database.js';
 // Custom Error
 import ApiError from './../utils/ApiError.js';
 
-// Validation functions
+// Utils and validators
+import sharedUtils from './../utils/controllerUtils/sharedUtils.js';
+import authUtils from './../utils/controllerUtils/authUtils.js';
 import validators from './../utils/validators.js';
-const { validateName, validateEmail, validatePassword } = validators;
-
-// Config
-import config from './../config/config.js';
-const { jwtSecret, jwtExpires } = config;
+const { getSingle } = sharedUtils;
+const { createToken, authResponse } = authUtils;
+const { validateInputs } = validators;
 
 // Login controller
 const login = async (req, res, next) => {
 	const { email, password } = req.body;
-
-	const emailStatus = validateEmail(email);
-	const passwordStatus = validatePassword(password);
+	const { emailStatus, passwordStatus } = validateInputs(req.body);
 
 	if (!emailStatus.error && !passwordStatus.error) {
 		try {
-			const sql = 'SELECT * FROM users WHERE email = ?';
-			const [[result]] = await pool.query(sql, [email.trim()]);
+			const result = await getSingle('email', email.trim(), 'users');
 
 			if (result && (await bcrypt.compare(password.trim(), result.password))) {
-				// Creating a token
-				const token = jwt.sign({ userId: result.id, userEmail: result.email, userRole: result.role }, jwtSecret, {
-					expiresIn: jwtExpires,
-				});
-
-				return res.status(201).json({
-					token,
-					user: { id: result.id, email: result.email, role: result.role },
-					message: 'Login successful.',
-					status: 201,
-				});
+				const token = createToken('login', result, email);
+				authResponse(res, 'login', result, email, token);
 			} else {
 				throw new ApiError(401, 'Incorrect credentials.');
 			}
@@ -54,15 +41,11 @@ const login = async (req, res, next) => {
 // Registration controller
 const register = async (req, res, next) => {
 	const { name, email, password } = req.body;
-
-	const nameStatus = validateName(name);
-	const emailStatus = validateEmail(email);
-	const passwordStatus = validatePassword(password);
+	const { nameStatus, emailStatus, passwordStatus } = validateInputs(req.body);
 
 	if (!nameStatus.error && !emailStatus.error && !passwordStatus.error) {
 		try {
-			const sql = 'SELECT * FROM users WHERE email = ?';
-			const [[result]] = await pool.query(sql, [email.trim()]);
+			const result = await getSingle('email', email.trim(), 'users');
 
 			if (result) {
 				throw new ApiError(422, 'Email already in use.');
@@ -72,17 +55,8 @@ const register = async (req, res, next) => {
 					const [result] = await pool.query(sql, [name.trim(), email.trim(), await bcrypt.hash(password.trim(), 12)]);
 
 					if (result && result.affectedRows !== 0) {
-						// Creating a token
-						const token = jwt.sign({ userId: result.insertId, userEmail: email.trim(), userRole: 'user' }, jwtSecret, {
-							expiresIn: jwtExpires,
-						});
-
-						return res.status(201).json({
-							token,
-							user: { id: result.insertId, email: email.trim(), role: 'user' },
-							message: 'Registration successful.',
-							status: 201,
-						});
+						const token = createToken('register', result, email);
+						authResponse(res, 'register', result, email, token);
 					} else {
 						throw new ApiError(500, 'Something went wrong.');
 					}

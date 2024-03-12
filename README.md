@@ -21,9 +21,8 @@ If the app is inactive for 15 minutes, Render will spin it down which can cause 
 
 -   You can clone this repository if you would like to check out app functionalities.
 -   To be able to run this on a localhost you need to navigate to the `controllers` folder inside the `frontend` folder.
--   In there you will find the controllers and they all run a `fetch()` function to the backend.
--   In front of the `/api/v1...` add something like `http://localhost:PORT_NUMBER` for every fetch for all of the controllers.
--   Example: `http://localhost:5174/api/v1/users...`
+-   For every controller change `baseUrl` variable by adding something like `http://localhost:PORT_NUMBER` in front of `/api/v1...`.
+-   Example: `http://localhost:5174/api/v1/users`
 
 ### DATABASE SETUP
 

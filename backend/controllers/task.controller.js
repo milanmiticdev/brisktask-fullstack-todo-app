@@ -1,202 +1,50 @@
-// Database pool
-import pool from './../config/database.js';
-
-// Custom Error
-import ApiError from './../utils/ApiError.js';
-
-// Validation functions
+// Utils and Validators
+import sharedUtils from './../utils/controllerUtils/sharedUtils.js';
+import taskUtils from './../utils/controllerUtils/taskUtils.js';
 import validators from './../utils/validators.js';
-const { validateName } = validators;
+const { getAll, getById, create, deleteById } = sharedUtils;
+const { getByUserId, updateById } = taskUtils;
+const { validateInputs } = validators;
 
 const getAllTasks = async (req, res, next) => {
-	const userData = req.userData;
-
-	if (userData.role === 'admin') {
-		try {
-			const sql = `SELECT tasks.id AS 'id', tasks.name AS 'name', users.id AS 'user_id', users.email AS 'user_email', tasks.created_at AS 'created_at', tasks.updated_at AS 'updated_at' FROM tasks INNER JOIN users ON tasks.user_id = users.id ORDER BY id ASC`;
-			const [result] = await pool.query(sql);
-
-			if (result && result.length > 0) {
-				return res.status(200).json({
-					result: result.map(task => {
-						return {
-							id: task.id,
-							name: task.name,
-							userId: task.user_id,
-							userEmail: task.user_email,
-							createdAt: task.created_at,
-							updatedAt: task.updated_at,
-							section: 'tasks',
-						};
-					}),
-					message: 'Tasks fetched.',
-					status: 200,
-				});
-			} else {
-				throw new ApiError(404, 'No tasks.');
-			}
-		} catch (error) {
-			return next(error);
-		}
-	} else {
-		return res.status(403).json({ message: 'Not authorized.', status: 403 });
-	}
+	const sql = `SELECT tasks.id AS 'id', tasks.name AS 'name', users.id AS 'user_id', users.email AS 'user_email', tasks.created_at AS 'created_at', tasks.updated_at AS 'updated_at' FROM tasks INNER JOIN users ON tasks.user_id = users.id ORDER BY id ASC`;
+	await getAll(res, next, sql, 'tasks');
 };
 
 const getTasksByUserId = async (req, res, next) => {
-	const { userId } = req.params;
 	const userData = req.userData;
+	const { userId } = req.params;
 
-	if (!userId) {
-		return res.status(400).json({ message: 'No user id.', status: 400 });
-	} else if (userData.role === 'admin') {
-		try {
-			const sql = `SELECT tasks.id AS 'id', tasks.name AS 'name', users.id AS 'user_id', users.email AS 'user_email', tasks.created_at AS 'created_at', tasks.updated_at AS 'updated_at' FROM tasks INNER JOIN users ON tasks.user_id = ? AND tasks.user_id = users.id ORDER BY id ASC`;
-			const [result] = await pool.query(sql, [Number(userId)]);
-
-			if (!result) {
-				throw new ApiError(404, `User doesn't exist.`);
-			} else if (result.length === 0) {
-				throw new ApiError(404, 'User has no tasks.');
-			} else {
-				return res.status(200).json({
-					result: result.map(task => ({
-						id: task.id,
-						name: task.name,
-						userId: task.user_id,
-						userEmail: task.user_email,
-						createdAt: task.created_at,
-						updatedAt: task.updated_at,
-						section: 'tasks',
-					})),
-					message: 'Tasks fetched.',
-					status: 200,
-				});
-			}
-		} catch (error) {
-			return next(error);
-		}
+	if (userId) {
+		await getByUserId(res, next, userData, Number(userId));
 	} else {
-		if (Number(userId) !== userData.id) {
-			return res.status(403).json({ message: 'Not authorized.', status: 403 });
-		} else {
-			try {
-				const sql = `SELECT tasks.id AS 'id', tasks.name AS 'name', users.id AS 'user_id', users.email AS 'user_email', tasks.created_at AS 'created_at', tasks.updated_at AS 'updated_at' FROM tasks INNER JOIN users ON tasks.user_id = ? AND tasks.user_id = users.id ORDER BY id ASC`;
-				const [result] = await pool.query(sql, [userData.id]);
-
-				if (!result) {
-					throw new ApiError(404, `User doesn't exist.`);
-				} else if (result.length === 0) {
-					throw new ApiError(404, 'No tasks.');
-				} else {
-					return res.status(200).json({
-						result: result.map(task => ({
-							id: task.id,
-							name: task.name,
-							userId: task.user_id,
-							userEmail: task.user_email,
-							createdAt: task.created_at,
-							updatedAt: task.updated_at,
-							section: 'tasks',
-						})),
-						message: 'Tasks fetched.',
-						status: 200,
-					});
-				}
-			} catch (error) {
-				return next(error);
-			}
-		}
+		return res.status(400).json({ message: 'No user id.', status: 400 });
 	}
 };
 
 const getTaskById = async (req, res, next) => {
-	const { taskId } = req.params;
 	const userData = req.userData;
+	const { taskId } = req.params;
 
-	if (!taskId) {
-		return res.status(400).json({ message: 'No task id.', status: 400 });
-	} else if (userData.role === 'admin') {
-		try {
-			const sql = `SELECT tasks.id AS 'id', tasks.name AS 'name', users.id AS 'user_id', users.email AS 'user_email', tasks.created_at AS 'created_at', tasks.updated_at AS 'updated_at' FROM tasks INNER JOIN users ON tasks.id = ? AND tasks.user_id = users.id`;
-			const [[result]] = await pool.query(sql, [Number(taskId)]);
-
-			if (!result) {
-				throw new ApiError(404, `Task doesn't exist.`);
-			} else {
-				return res.status(200).json({
-					message: 'Task fetched.',
-					result: {
-						id: result.id,
-						name: result.name,
-						userId: result.user_id,
-						userEmail: result.user_email,
-						createdAt: result.created_at,
-						updatedAt: result.updated_at,
-						section: 'tasks',
-					},
-					status: 200,
-				});
-			}
-		} catch (error) {
-			return next(error);
-		}
+	if (taskId) {
+		await getById(res, next, userData, Number(taskId), 'tasks');
 	} else {
-		try {
-			const sql = `SELECT tasks.id AS 'id', tasks.name AS 'name', users.id AS 'user_id', users.email AS 'user_email', tasks.created_at AS 'created_at', tasks.updated_at AS 'updated_at' FROM tasks INNER JOIN users ON tasks.id = ? AND tasks.user_id = users.id`;
-			const [[result]] = await pool.query(sql, [Number(taskId)]);
-
-			if (!result) {
-				throw new ApiError(404, `Task doesn't exist.`);
-			} else if (result.user_id !== userData.id) {
-				throw new ApiError(403, 'Not authorized.');
-			} else {
-				return res.status(200).json({
-					message: 'Task fetched.',
-					result: {
-						id: result.id,
-						name: result.name,
-						userId: result.user_id,
-						userEmail: result.user_email,
-						createdAt: result.created_at,
-						updatedAt: result.updated_at,
-						section: 'tasks',
-					},
-					status: 200,
-				});
-			}
-		} catch (error) {
-			return next(error);
-		}
+		return res.status(400).json({ message: 'No task id.', status: 400 });
 	}
 };
 
 const createTask = async (req, res, next) => {
-	const { name } = req.body;
-	const { userId } = req.params;
 	const userData = req.userData;
-	const nameStatus = validateName(name);
+	const { userId } = req.params;
+	const { nameStatus } = validateInputs(req.body);
 
 	if (!nameStatus.error) {
 		if (!userId) {
 			return res.status(400).json({ message: 'No user id.', status: 400 });
+		} else if (userData.role === 'user' && Number(userId) !== userData.id) {
+			return res.status(403).json({ message: 'Not authorized.', status: 403 });
 		} else {
-			if (Number(userId) !== userData.id) {
-				return res.status(403).json({ message: 'Not authorized.', status: 403 });
-			} else {
-				try {
-					const sql = 'INSERT INTO tasks (name, user_id) VALUES(?, ?)';
-					const [result] = await pool.query(sql, [name.trim(), userData.id]);
-
-					if (result && result.affectedRows !== 0) {
-						return res.status(201).json({ message: 'Task created.', status: 201 });
-					} else {
-						throw new ApiError(500, 'Something went wrong.');
-					}
-				} catch (error) {
-					return next(error);
-				}
-			}
+			await create(req, res, next, userData, 'tasks');
 		}
 	} else {
 		return res.status(400).json({ message: 'Check your input.', status: 400 });
@@ -204,64 +52,15 @@ const createTask = async (req, res, next) => {
 };
 
 const updateTaskById = async (req, res, next) => {
-	const { taskId } = req.params;
-	const { name } = req.body;
 	const userData = req.userData;
-	const nameStatus = validateName(name);
+	const { taskId } = req.params;
+	const { nameStatus } = validateInputs(req.body);
 
 	if (!nameStatus.error) {
-		if (!taskId) {
-			return res.status(400).json({ message: 'No task id.', status: 400 });
-		} else if (userData.role === 'admin') {
-			try {
-				const sql = 'SELECT * FROM tasks WHERE id = ?';
-				const [[result]] = await pool.query(sql, [Number(taskId)]);
-
-				if (!result) {
-					throw new ApiError(404, `Task doesn't exist.`);
-				} else {
-					try {
-						const sql = 'UPDATE tasks SET name = ? WHERE id = ?';
-						const [result] = await pool.query(sql, [name.trim(), Number(taskId)]);
-
-						if (result && result.affectedRows !== 0) {
-							return res.status(200).json({ message: 'Task updated.', status: 200 });
-						} else {
-							throw new ApiError(500, 'Something went wrong.');
-						}
-					} catch (error) {
-						return next(error);
-					}
-				}
-			} catch (error) {
-				return next(error);
-			}
+		if (taskId) {
+			await updateById(req, res, next, userData, Number(taskId));
 		} else {
-			try {
-				const sql = 'SELECT * FROM tasks WHERE id = ?';
-				const [[result]] = await pool.query(sql, [Number(taskId)]);
-
-				if (!result) {
-					throw new ApiError(404, `Task doesn't exist.`);
-				} else if (result.user_id !== userData.id) {
-					throw new ApiError(403, 'Not authorized.');
-				} else {
-					try {
-						const sql = 'UPDATE tasks SET name = ? WHERE id = ? AND user_id = ?';
-						const [result] = await pool.query(sql, [name.trim(), Number(taskId), userData.id]);
-
-						if (result && result.affectedRows !== 0) {
-							return res.status(200).json({ message: 'Task updated.', status: 200 });
-						} else {
-							throw new ApiError(500, 'Something went wrong.');
-						}
-					} catch (error) {
-						return next(error);
-					}
-				}
-			} catch (error) {
-				return next(error);
-			}
+			return res.status(400).json({ message: 'No task id.', status: 400 });
 		}
 	} else {
 		return res.status(400).json({ message: 'Check your input.', status: 400 });
@@ -269,61 +68,13 @@ const updateTaskById = async (req, res, next) => {
 };
 
 const deleteTaskById = async (req, res, next) => {
-	const { taskId } = req.params;
 	const userData = req.userData;
+	const { taskId } = req.params;
 
-	if (!taskId) {
-		return res.status(400).json({ message: 'No task id.', status: 400 });
-	} else if (userData.role === 'admin') {
-		try {
-			const sql = 'SELECT * FROM tasks WHERE id = ?';
-			const [[result]] = await pool.query(sql, [Number(taskId)]);
-
-			if (!result) {
-				throw new ApiError(404, `Task doesn't exist.`);
-			} else {
-				try {
-					const sql = 'DELETE FROM tasks WHERE id = ?';
-					const [result] = await pool.query(sql, [Number(taskId)]);
-
-					if (result && result.affectedRows !== 0) {
-						return res.status(204).end();
-					} else {
-						throw new ApiError(500, 'Something went wrong.');
-					}
-				} catch (error) {
-					return next(error);
-				}
-			}
-		} catch (error) {
-			return next(error);
-		}
+	if (taskId) {
+		await deleteById(res, next, userData, Number(taskId), 'tasks');
 	} else {
-		try {
-			const sql = 'SELECT * FROM tasks WHERE id = ?';
-			const [[result]] = await pool.query(sql, [Number(taskId)]);
-
-			if (!result) {
-				throw new ApiError(404, `Task doesn't exist.`);
-			} else if (result.user_id !== userData.id) {
-				throw new ApiError(403, 'Not authorized.');
-			} else {
-				try {
-					const sql = 'DELETE FROM tasks WHERE id = ? AND user_id = ?';
-					const [result] = await pool.query(sql, [Number(taskId), userData.id]);
-
-					if (result && result.affectedRows !== 0) {
-						return res.status(204).end();
-					} else {
-						throw new ApiError(500, 'Something went wrong.');
-					}
-				} catch (error) {
-					return next(error);
-				}
-			}
-		} catch (error) {
-			return next(error);
-		}
+		return res.status(400).json({ message: 'No task id.', status: 400 });
 	}
 };
 

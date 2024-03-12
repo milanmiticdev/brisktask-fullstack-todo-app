@@ -30,7 +30,6 @@ const initialState = {
 		message: '',
 	},
 	loading: false,
-	error: false,
 	spinner: '',
 	modal: {
 		open: false,
@@ -48,8 +47,6 @@ const reducer = (state, action) => {
 			return { ...state, nameField: action.payload };
 		case 'loading-change':
 			return { ...state, loading: action.payload };
-		case 'error-change':
-			return { ...state, error: action.payload };
 		case 'spinner-change':
 			return { ...state, spinner: action.payload };
 		case 'modal-change':
@@ -68,7 +65,7 @@ const UpdateTaskPage = () => {
 	const { validateName } = validators;
 
 	useEffect(() => {
-		const handleGetTaskById = async e => await getTaskById(taskId, token, dispatch, e);
+		const handleGetTaskById = async () => await getTaskById(taskId, token, dispatch);
 		handleGetTaskById();
 	}, [taskId, token, getTaskById]);
 
@@ -78,7 +75,7 @@ const UpdateTaskPage = () => {
 		<Page center={state.loading}>
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
-			{!state.loading && !state.error && state.result && Object.keys(state.result).length > 0 && (
+			{!state.loading && state.result && Object.keys(state.result).length > 0 && (
 				<Form onSubmit={handleUpdateTaskById} heading="UPDATE TASK">
 					<FormField
 						name="name"

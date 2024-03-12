@@ -1,159 +1,46 @@
-// bcrypt and jsonwebtoken
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-
-// Database pool
-import pool from './../config/database.js';
-
 // Custom Error
 import ApiError from './../utils/ApiError.js';
 
-// Validation functions
+// Utils and validators
+import sharedUtils from '../utils/controllerUtils/sharedUtils.js';
+import userUtils from '../utils/controllerUtils/userUtils.js';
 import validators from './../utils/validators.js';
-const { validateName, validateEmail, validatePassword, validateRole } = validators;
-
-// Config
-import config from './../config/config.js';
-const { jwtSecret, jwtExpires } = config;
+const { getSingle, getAll, getById, create, deleteById } = sharedUtils;
+const { updateById, passChange } = userUtils;
+const { validateInputs } = validators;
 
 const getAllUsers = async (req, res, next) => {
-	const userData = req.userData;
-
-	if (userData.role === 'admin') {
-		const sql = 'SELECT * FROM users ORDER BY id ASC';
-
-		try {
-			const [result] = await pool.query(sql);
-
-			if (result && result.length > 0) {
-				return res.status(200).json({
-					result: result.map(user => ({
-						id: user.id,
-						name: user.name,
-						email: user.email,
-						role: user.role,
-						createdAt: user.created_at,
-						updatedAt: user.updated_at,
-						section: 'users',
-					})),
-					message: 'Users fetched.',
-					status: 200,
-				});
-			} else {
-				throw new ApiError(404, 'No users.');
-			}
-		} catch (error) {
-			return next(error);
-		}
-	} else {
-		return res.status(403).json({ message: 'Not Authorized.', status: 403 });
-	}
+	const sql = 'SELECT * FROM users ORDER BY id ASC';
+	await getAll(res, next, sql, 'users');
 };
 
 const getUserById = async (req, res, next) => {
-	const { userId } = req.params;
 	const userData = req.userData;
+	const { userId } = req.params;
 
-	if (!userId) {
-		return res.status(400).json({ message: 'No user id.', status: 400 });
-	} else if (userData.role === 'admin') {
-		try {
-			const sql = 'SELECT * FROM users WHERE id = ?';
-			const [[result]] = await pool.query(sql, Number(userId));
-
-			if (result) {
-				return res.status(200).json({
-					message: 'User found.',
-					result: {
-						id: result.id,
-						name: result.name,
-						email: result.email,
-						role: result.role,
-						createdAt: result.created_at,
-						updatedAt: result.updated_at,
-						section: 'users',
-					},
-					status: 200,
-				});
-			} else {
-				throw new ApiError(404, `User doesn't exist.`);
-			}
-		} catch (error) {
-			return next(error);
-		}
+	if (userId) {
+		await getById(res, next, userData, Number(userId), 'users');
 	} else {
-		if (Number(userId) !== userData.id) {
-			return res.status(403).json({ message: 'Not Authorized.', status: 403 });
-		} else {
-			try {
-				const sql = 'SELECT * FROM users WHERE id = ?';
-				const [[result]] = await pool.query(sql, [userData.id]);
-
-				if (!result) {
-					throw new ApiError(404, `User doesn't exist.`);
-				} else {
-					return res.status(200).json({
-						message: 'User found.',
-						status: 200,
-						result: {
-							id: result.id,
-							name: result.name,
-							email: result.email,
-							role: result.role,
-							createdAt: result.created_at,
-							updatedAt: result.updated_at,
-							section: 'users',
-						},
-					});
-				}
-			} catch (error) {
-				return next(error);
-			}
-		}
+		return res.status(400).json({ message: 'No user id.', status: 400 });
 	}
 };
 
 const createUser = async (req, res, next) => {
-	const { name, email, password, role } = req.body;
 	const userData = req.userData;
-
-	const nameStatus = validateName(name);
-	const emailStatus = validateEmail(email);
-	const passwordStatus = validatePassword(password);
-	const roleStatus = validateRole(role);
+	const { email } = req.body;
+	const { nameStatus, emailStatus, passwordStatus, roleStatus } = validateInputs(req.body);
 
 	if (!nameStatus.error && !emailStatus.error && !passwordStatus.error && !roleStatus.error) {
-		if (userData.role === 'admin') {
-			try {
-				const sql = 'SELECT * FROM users WHERE email = ?';
-				const [[result]] = await pool.query(sql, [email.trim()]);
+		try {
+			const result = await getSingle('email', email.trim(), 'users');
 
-				if (result) {
-					throw new ApiError(422, 'User already exists.');
-				} else {
-					try {
-						const sql = 'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)';
-						const [result] = await pool.query(sql, [
-							name.trim(),
-							email.trim(),
-							await bcrypt.hash(password.trim(), 12),
-							role.trim(),
-						]);
-
-						if (result && result.affectedRows !== 0) {
-							return res.status(201).json({ message: 'User created.', status: 201 });
-						} else {
-							throw new ApiError(500, 'Something went wrong.');
-						}
-					} catch (error) {
-						return next(error);
-					}
-				}
-			} catch (error) {
-				return next(error);
+			if (result) {
+				throw new ApiError(422, 'User already exists.');
+			} else {
+				await create(req, res, next, userData, 'users');
 			}
-		} else {
-			return res.status(403).json({ message: 'Not authorized.', status: 403 });
+		} catch (error) {
+			return next(error);
 		}
 	} else {
 		return res.status(400).json({ message: 'Check your inputs.', status: 400 });
@@ -161,137 +48,15 @@ const createUser = async (req, res, next) => {
 };
 
 const updateUserById = async (req, res, next) => {
-	const { name, email, role } = req.body;
-	const { userId } = req.params;
 	const userData = req.userData;
+	const { userId } = req.params;
+	const { nameStatus, emailStatus, roleStatus } = validateInputs(req.body);
 
-	const nameStatus = validateName(name);
-	const emailStatus = validateEmail(email);
-
-	if (!nameStatus.error && !emailStatus.error) {
-		if (!userId) {
-			return res.status(400).json({ message: 'No user id.', status: 400 });
-		} else if (userData.role === 'admin') {
-			try {
-				const sql = 'SELECT * FROM users WHERE id = ?';
-				const [[result]] = await pool.query(sql, Number(userId));
-
-				if (!result) {
-					throw new ApiError(404, `User doesn't exist.`);
-				} else {
-					// If the email doesn't change just update the name and role
-					if (result.email === email.trim()) {
-						try {
-							if (role && (role.trim() === 'admin' || role.trim() === 'user')) {
-								const sql = 'UPDATE users SET name = ?, role = ? WHERE id = ?';
-								const [result] = await pool.query(sql, [name.trim(), role.trim(), Number(userId)]);
-
-								if (result && result.affectedRows !== 0) {
-									return res.status(200).json({ message: 'User updated.', status: 200 });
-								} else {
-									throw new ApiError(500, 'Something went wrong.');
-								}
-							} else {
-								throw new ApiError(400, `Invalid user role.`);
-							}
-						} catch (error) {
-							return next(error);
-						}
-					} else {
-						try {
-							const sql = 'SELECT * FROM users WHERE email = ?';
-							const [[result]] = await pool.query(sql, email);
-
-							if (result) {
-								throw new ApiError(422, `Email already in use.`);
-							} else {
-								try {
-									if (role && (role.trim() === 'admin' || role.trim() === 'user')) {
-										const sql = 'UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?';
-										const [result] = await pool.query(sql, [name.trim(), email.trim(), role.trim(), Number(userId)]);
-
-										if (result && result.affectedRows !== 0) {
-											return res.status(200).json({ message: 'User updated.', status: 200 });
-										} else {
-											throw new ApiError(500, 'Something went wrong.');
-										}
-									} else {
-										throw new ApiError(400, `Invalid user role.`);
-									}
-								} catch (error) {
-									return next(error);
-								}
-							}
-						} catch (error) {
-							return next(error);
-						}
-					}
-				}
-			} catch (error) {
-				return next(error);
-			}
+	if (!nameStatus.error && !emailStatus.error && (userData.role === 'user' || !roleStatus.error)) {
+		if (userId) {
+			await updateById(req, res, next, userData, Number(userId));
 		} else {
-			if (Number(userId) !== userData.id) {
-				return res.status(403).json({ message: 'Not Authorized.', status: 403 });
-			} else {
-				try {
-					const sql = 'SELECT * FROM users WHERE id = ?';
-					const [[result]] = await pool.query(sql, userData.id);
-
-					if (!result) {
-						throw new ApiError(404, `User doesn't exist.`);
-					} else {
-						// If the email doesn't change there is no need to recreate a token, just update the name
-						if (result.email === email.trim()) {
-							try {
-								const sql = 'UPDATE users SET name = ? WHERE id = ?';
-								const [result] = await pool.query(sql, [name.trim(), userData.id]);
-
-								if (result && result.affectedRows !== 0) {
-									return res.status(200).json({ message: 'User updated.', status: 200 });
-								} else {
-									throw new ApiError(500, 'Something went wrong.');
-								}
-							} catch (error) {
-								return next(error);
-							}
-						} else {
-							try {
-								const sql = 'SELECT * FROM users WHERE email = ?';
-								const [[result]] = await pool.query(sql, email);
-
-								if (result) {
-									throw new ApiError(422, `Email already in use.`);
-								} else {
-									try {
-										const sql = 'UPDATE users SET name = ?, email = ? WHERE id = ?';
-										const [result] = await pool.query(sql, [name.trim(), email.trim(), userData.id]);
-
-										if (result && result.affectedRows !== 0) {
-											// Creating a token
-											const token = jwt.sign(
-												{ userId: userData.id, userEmail: email.trim(), userRole: userData.role },
-												jwtSecret,
-												{ expiresIn: jwtExpires }
-											);
-
-											return res.status(200).json({ token, message: 'User updated.', status: 200 });
-										} else {
-											throw new ApiError(500, 'Something went wrong.');
-										}
-									} catch (error) {
-										return next(error);
-									}
-								}
-							} catch (error) {
-								return next(error);
-							}
-						}
-					}
-				} catch (error) {
-					return next(error);
-				}
-			}
+			return res.status(400).json({ message: 'No user id.', status: 400 });
 		}
 	} else {
 		return res.status(400).json({ message: 'Check your inputs.', status: 400 });
@@ -299,130 +64,28 @@ const updateUserById = async (req, res, next) => {
 };
 
 const deleteUserById = async (req, res, next) => {
-	const { userId } = req.params;
 	const userData = req.userData;
+	const { userId } = req.params;
 
-	if (!userId) {
-		return res.status(400).json({ message: 'No user id.', status: 400 });
-	} else if (userData.role === 'admin') {
-		try {
-			const sql = 'SELECT * FROM users WHERE id = ?';
-			const [[result]] = await pool.query(sql, [Number(userId)]);
-
-			if (!result) {
-				throw new ApiError(404, `User doesn't exist.`);
-			} else {
-				try {
-					const sql = 'DELETE FROM users WHERE id = ?';
-					const result = await pool.query(sql, [Number(userId)]);
-
-					if (result && result.affectedRows !== 0) {
-						return res.status(204).end();
-					} else {
-						throw new ApiError(500, 'Something went wrong.');
-					}
-				} catch (error) {
-					return next(error);
-				}
-			}
-		} catch (error) {
-			return next(error);
-		}
+	if (userId) {
+		await deleteById(res, next, userData, Number(userId), 'users');
 	} else {
-		if (Number(userId) !== userData.id) {
-			return res.status(403).json({ message: 'Not authorized.', status: 403 });
-		} else {
-			try {
-				const sql = 'SELECT * FROM users WHERE id = ?';
-				const [[result]] = await pool.query(sql, [userData.id]);
-
-				if (!result) {
-					throw new ApiError(404, `User doesn't exist.`);
-				} else {
-					try {
-						const sql = 'DELETE FROM users WHERE id = ?';
-						const result = await pool.query(sql, [userData.id]);
-
-						if (result && result.affectedRows !== 0) {
-							return res.status(204).end();
-						} else {
-							throw new ApiError(500, 'Something went wrong.');
-						}
-					} catch (error) {
-						return next(error);
-					}
-				}
-			} catch (error) {
-				return next(error);
-			}
-		}
+		return res.status(400).json({ message: 'No user id.', status: 400 });
 	}
 };
 
 const changePassword = async (req, res, next) => {
-	const { password, confirmPassword } = req.body;
-	const { userId } = req.params;
 	const userData = req.userData;
-
-	const passwordStatus = validatePassword(password);
-	const confirmPasswordStatus = validatePassword(confirmPassword);
+	const { userId } = req.params;
+	const { password, confirmPassword } = req.body;
+	const { passwordStatus, confirmPasswordStatus } = validateInputs(req.body);
 
 	if (!passwordStatus.error && !confirmPasswordStatus.error) {
 		if (password === confirmPassword) {
-			if (!userId) {
-				return res.status(400).json({ message: 'No user id.', status: 400 });
-			} else if (userData.role === 'admin') {
-				try {
-					const sql = 'SELECT * FROM users WHERE id = ?';
-					const [[result]] = await pool.query(sql, Number(userId));
-
-					if (!result) {
-						throw new ApiError(404, `User doesn't exist.`);
-					} else {
-						try {
-							const sql = 'UPDATE users SET password = ? WHERE id = ?';
-							const [result] = await pool.query(sql, [await bcrypt.hash(password.trim(), 12), Number(userId)]);
-
-							if (result && result.affectedRows !== 0) {
-								return res.status(200).json({ message: 'Password changed.', status: 200 });
-							} else {
-								throw new ApiError(500, 'Something went wrong.');
-							}
-						} catch (error) {
-							return next(error);
-						}
-					}
-				} catch (error) {
-					return next(error);
-				}
+			if (userId) {
+				await passChange(req, res, next, userData, Number(userId));
 			} else {
-				if (Number(userId) !== userData.id) {
-					return res.status(403).json({ message: 'Not Authorized.', status: 403 });
-				} else {
-					try {
-						const sql = 'SELECT * FROM users WHERE id = ?';
-						const [[result]] = await pool.query(sql, userData.id);
-
-						if (!result) {
-							throw new ApiError(404, `User doesn't exist.`);
-						} else {
-							try {
-								const sql = 'UPDATE users SET password = ? WHERE id = ?';
-								const [result] = await pool.query(sql, [await bcrypt.hash(password.trim(), 12), userData.id]);
-
-								if (result && result.affectedRows !== 0) {
-									return res.status(200).json({ message: 'Password changed.', status: 200 });
-								} else {
-									throw new ApiError(500, 'Something went wrong.');
-								}
-							} catch (error) {
-								return next(error);
-							}
-						}
-					} catch (error) {
-						return next(error);
-					}
-				}
+				return res.status(400).json({ message: 'No user id.', status: 400 });
 			}
 		} else {
 			return res.status(400).json({ message: `Passwords don't match.`, status: 400 });

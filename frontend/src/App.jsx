@@ -103,6 +103,7 @@ const App = () => {
 							<Route path="/update-task/:taskId" element={<UpdateTask />} />
 							<Route path="/create-task" element={<CreateTask />} />
 							<Route path="/profile" element={<Profile />} />
+							<Route path="/*" element={<PageNotFound />} />
 							<Route index element={<Home />} />
 						</Route>
 					</Routes>
@@ -110,6 +111,7 @@ const App = () => {
 					<Routes>
 						<Route path="/" element={<AppSharedLayout />}>
 							<Route path="/auth" element={<Auth />} />
+							<Route path="/*" element={<PageNotFound />} />
 							<Route index element={<Home />} />
 						</Route>
 					</Routes>

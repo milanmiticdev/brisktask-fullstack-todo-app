@@ -97,6 +97,18 @@ const validateRole = role => {
 	}
 };
 
-const validators = { validateName, validateEmail, validatePassword, validateRole };
+const validateInputs = body => {
+	const { name, email, password, role } = body;
+
+	const nameStatus = validateName(name);
+	const emailStatus = validateEmail(email);
+	const passwordStatus = validatePassword(password);
+	const confirmPasswordStatus = validatePassword(password);
+	const roleStatus = validateRole(role);
+
+	return { nameStatus, emailStatus, passwordStatus, confirmPasswordStatus, roleStatus };
+};
+
+const validators = { validateName, validateEmail, validatePassword, validateRole, validateInputs };
 
 export default validators;

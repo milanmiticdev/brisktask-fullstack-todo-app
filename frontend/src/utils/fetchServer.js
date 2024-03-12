@@ -11,8 +11,8 @@ const fetchServer = async (route, url, method, token, body, dispatch, userId, us
 	} else if (method === 'PATCH') payload = 'Updating';
 	else payload = 'Deleting';
 
+	let response;
 	try {
-		dispatch({ type: 'error-change', payload: false });
 		dispatch({ type: 'loading-change', payload: true });
 		dispatch({ type: 'spinner-change', payload: payload });
 
@@ -27,17 +27,16 @@ const fetchServer = async (route, url, method, token, body, dispatch, userId, us
 			options = { ...options, headers: { ...options.headers, 'Content-Type': 'application/json' } };
 		}
 
-		const response = await fetch(url, options);
+		response = await fetch(url, options);
 
 		let data = null;
 		if (method !== 'DELETE') data = await response.json();
 
 		await fetchResponseCheck(response, data, route, method, body, dispatch, userId, userRole, navigate, login, logout, state);
 	} catch {
-		dispatch({ type: 'error-change', payload: true });
 		dispatch({ type: 'modal-change', payload: { open: true, error: true, message: 'Something went wrong.' } });
 	} finally {
-		if (method === 'GET' || url.includes('change-password')) {
+		if (method === 'GET' || url.includes('change-password') || !response.ok) {
 			dispatch({ type: 'loading-change', payload: false });
 			dispatch({ type: 'spinner-change', payload: '' });
 		}

@@ -41,7 +41,6 @@ const initialState = {
 	},
 	section: 'login',
 	loading: false,
-	error: false,
 	spinner: '',
 	modal: {
 		open: false,
@@ -62,8 +61,6 @@ const reducer = (state, action) => {
 			return { ...state, section: action.payload };
 		case 'loading-change':
 			return { ...state, loading: action.payload };
-		case 'error-change':
-			return { ...state, error: action.payload };
 		case 'spinner-change':
 			return { ...state, spinner: action.payload };
 		case 'modal-change':
@@ -87,7 +84,7 @@ const AuthPage = () => {
 		<Page center={true}>
 			{state.loading && <Spinner text={state.spinner} />}
 			{!state.loading && state.modal.open && <Modal modal={state.modal} onDispatch={dispatch} />}
-			{!state.loading && !state.error && (
+			{!state.loading && (
 				<TabsToggle>
 					<Tab section={state.section} onDispatch={dispatch} type="section-change" payload="login" position="left" text="LOGIN" />
 					<Tab
