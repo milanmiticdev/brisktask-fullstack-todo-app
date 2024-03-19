@@ -14,7 +14,7 @@ If the app is inactive for some time Render will spin it down which can cause ar
 
 -   HTML
 -   CSS
--   JavaScript
+-   JavaScript / TypeScript
 -   React
 -   Node
 -   MySQL
