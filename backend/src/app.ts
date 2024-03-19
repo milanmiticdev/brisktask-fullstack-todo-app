@@ -33,10 +33,10 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/tasks', taskRouter);
 
-app.use(express.static(path.join(path.resolve(), '/frontend/dist')));
+app.use(express.static(path.join(path.resolve(), '..', '/frontend/dist')));
 
 app.get('*', (req: ExtendedRequest, res: Response) => {
-	res.sendFile(path.join(path.resolve(), 'frontend', 'dist', 'index.html'));
+	res.sendFile(path.join(path.resolve(), '..', 'frontend', 'dist', 'index.html'));
 });
 
 app.listen(5174);
