@@ -2,19 +2,19 @@
 
 # BriskTask - Fullstack Todo App
 
-Responsive Todo app created with React, Node and MySQL.
+Responsive Todo app built with TypeScript, React, Node and MySQL.
 
 App is deployed on Render: https://brisktask-fullstack.onrender.com
 
-This app is deployed online using Render free tier.
+### Render Delay
 
-If the app is inactive for some time Render will spin it down which can cause around 50 seconds delay for the next request-response, so keep that in mind when you run the app for the first time or after being inactive.
+This app is deployed online using Render free tier and if the app is inactive for some time Render will spin it down which can cause around 50 seconds delay for the next request-response, so keep that in mind when you run the app for the first time or after being inactive.
 
 ### Built with
 
 -   HTML
 -   CSS
--   JavaScript / TypeScript
+-   TypeScript
 -   React
 -   Node
 -   MySQL
@@ -59,7 +59,7 @@ CREATE TABLE tasks(
 
 ### .env SETUP
 
--   Create new `.env` file in the root folder. Example of the environment variables needed:
+-   Create new `.env` file in the `backend` folder. Example of the environment variables needed:
 
 ```
     DATABASE_PORT = 3306 (or some other port your MySQL is running on)
@@ -73,7 +73,7 @@ CREATE TABLE tasks(
 
 ### FRONTEND AND BACKEND SETUP
 
--   Navigate to the `root` folder, install packages and start the Node server
+-   Navigate to the `backend` folder, install packages and start the Node server
 
 ```
     npm install

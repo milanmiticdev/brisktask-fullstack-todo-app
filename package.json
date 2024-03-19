@@ -1,26 +1,16 @@
 {
-	"name": "fullstack-todo-app",
+	"name": "ts-setup",
 	"version": "1.0.0",
-	"main": "backend/app.js",
-	"description": "Fullstack Todo App created with React, Node and MySQL",
-	"type": "module",
+	"description": "",
+	"main": "./backend/src/app.ts",
 	"scripts": {
-		"dev": "nodemon backend/app.js",
-		"start": "node backend/app.js",
-		"build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
+		"build-server": "npm install --prefix backend && npm run build --prefix backend",
+		"build-client": "npm install --prefix frontend && npm run build --prefix frontend",
+		"build": "npm run build-server && npm run build-client",
+		"start-server": "npm run start --prefix backend",
+		"start": "npm run start-server",
+		"test": "echo \"Error: no test specified\" && exit 1"
 	},
-	"author": "Milan Mitic",
-	"license": "MIT",
-	"dependencies": {
-		"bcrypt": "^5.1.1",
-		"cors": "^2.8.5",
-		"dotenv": "^16.4.4",
-		"express": "^4.18.2",
-		"helmet": "^7.1.0",
-		"jsonwebtoken": "^9.0.2",
-		"mysql2": "^3.9.1"
-	},
-	"devDependencies": {
-		"nodemon": "^3.0.3"
-	}
+	"author": "",
+	"license": "ISC"
 }
